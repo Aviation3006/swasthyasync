@@ -7,6 +7,20 @@ const patientStore = new StorageStore<Patient[]>('patients', mockPatientDirector
 
 export const patientService = {
   /**
+   * Get all registered and mock patients
+   */
+  getAllPatients(): Patient[] {
+    return patientStore.get();
+  },
+
+  /**
+   * Subscribe to live reactive patient store changes
+   */
+  subscribe(listener: (data: Patient[]) => void): () => void {
+    return patientStore.subscribe(listener);
+  },
+
+  /**
    * Get or dynamically construct the patient profile for the authenticated user
    */
   getPatientForUser(user: User | null): Patient {
@@ -30,7 +44,8 @@ export const patientService = {
           village: '',
           taluka: '',
           district: '',
-          state: '', pincode: ''
+          state: '',
+          pincode: ''
         },
         emergencyContact: {
           name: '',
@@ -58,6 +73,17 @@ export const patientService = {
       return mockPrimaryPatient;
     }
 
+    // Check if user has saved health/demographic metadata in localStorage session profile
+    let sessionMeta: any = {};
+    if (user.email) {
+      const savedSessionRaw = localStorage.getItem(`user_profile_${user.email.trim().toLowerCase()}`);
+      if (savedSessionRaw) {
+        try {
+          sessionMeta = JSON.parse(savedSessionRaw);
+        } catch (e) {}
+      }
+    }
+
     // Check if a record already exists in the store for this user
     const list = patientStore.get();
     const existing = list.find((p) => p.id === user.id || (user.email && p.email?.toLowerCase() === user.email.toLowerCase()));
@@ -66,17 +92,48 @@ export const patientService = {
         ...existing,
         name: user.name || existing.name,
         email: user.email || existing.email,
-        phone: user.phone || existing.phone
+        phone: user.phone || existing.phone,
+        bloodGroup: existing.bloodGroup || sessionMeta.bloodGroup || '',
+        address: {
+          village: existing.address?.village || user.location?.locality || user.location?.city || sessionMeta.location?.locality || '',
+          taluka: existing.address?.taluka || user.location?.city || sessionMeta.location?.city || '',
+          district: user.district || existing.address?.district || user.location?.district || sessionMeta.district || '',
+          state: user.state || existing.address?.state || user.location?.state || sessionMeta.state || '',
+          pincode: existing.address?.pincode || user.location?.pinCode || sessionMeta.location?.pinCode || ''
+        }
       };
     }
 
-    const userDistrict = user.district || user.location?.district || '';
-    const userState = user.state || user.location?.state || '';
-    const userCity = user.location?.city || '';
-    const userLocality = user.location?.locality || '';
-    const userPin = user.location?.pinCode || '';
+    const userDistrict = user.district || user.location?.district || sessionMeta.district || '';
+    const userState = user.state || user.location?.state || sessionMeta.state || '';
+    const userCity = user.location?.city || sessionMeta.location?.city || '';
+    const userLocality = user.location?.locality || sessionMeta.location?.locality || '';
+    const userPin = user.location?.pinCode || sessionMeta.location?.pinCode || '';
+    const userDob = sessionMeta.dob || '';
+    const userAge = sessionMeta.age || (userDob ? Math.floor((Date.now() - new Date(userDob).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : 0);
+    const userGender = sessionMeta.gender || 'Male';
+    const userBloodGroup = sessionMeta.bloodGroup || '';
+    const userHeight = sessionMeta.height || 0;
+    const userWeight = sessionMeta.weight || 0;
 
-    // Create clean, non-populated patient profile for newly registered user
+    const userAllergies = (sessionMeta.allergies || []).map((alg: string | any, idx: number) => ({
+      id: `alg-new-${idx}`,
+      substance: typeof alg === 'string' ? alg : alg.substance,
+      severity: 'Moderate' as const,
+      reaction: 'Documented at registration'
+    }));
+
+    const userConditions = (sessionMeta.chronicConditions || []).map((cond: string | any, idx: number) => ({
+      id: `cond-new-${idx}`,
+      name: typeof cond === 'string' ? cond : cond.name,
+      diagnosedDate: new Date().toISOString().split('T')[0],
+      status: 'Controlled' as const,
+      treatingDoctor: 'Primary Care Physician',
+      hospital: 'Empaneled Facility',
+      notes: 'Reported during registration'
+    }));
+
+    // Create clean patient profile for newly registered user
     const newPatient: Patient = {
       id: user.id,
       careSetuId: `CSU-IND-${(userDistrict || 'IND').slice(0,3).toUpperCase()}-${Math.floor(10000000 + Math.random() * 90000000).toString().slice(0,8)}`,
@@ -85,10 +142,10 @@ export const patientService = {
       abhaId: '', // Unlinked until citizen links ABHA
       abhaAddress: '',
       name: user.name || 'Citizen User',
-      dob: '',
-      age: 0,
-      gender: 'Male',
-      bloodGroup: '' as any,
+      dob: userDob,
+      age: userAge,
+      gender: userGender,
+      bloodGroup: userBloodGroup,
       phone: user.phone || '',
       email: user.email,
       aadhaarMasked: '',
@@ -100,16 +157,26 @@ export const patientService = {
         pincode: userPin
       },
       emergencyContact: {
-        name: '',
-        relationship: '',
-        phone: ''
+        name: sessionMeta.emergencyContactName || '',
+        relationship: sessionMeta.emergencyContactRelation || 'Next of Kin',
+        phone: sessionMeta.emergencyContactPhone || ''
       },
       registeredHospital: '',
       activeScheme: '',
       preferredLanguage: 'en',
-      allergies: [],
-      chronicConditions: [],
-      vitals: null as any,
+      allergies: userAllergies,
+      chronicConditions: userConditions,
+      vitals: {
+        bloodPressure: '120/80',
+        heartRate: 72,
+        bloodSugarFasting: 95,
+        spO2: 98,
+        temperature: 98.4,
+        weight: userWeight,
+        height: userHeight,
+        bmi: userHeight > 0 && userWeight > 0 ? parseFloat((userWeight / ((userHeight / 100) ** 2)).toFixed(1)) : 0,
+        lastUpdated: new Date().toISOString().split('T')[0]
+      },
       consent: {
         allowEmergencyAccess: false,
         shareRecordsWithEmpaneledHospitals: false,
@@ -127,7 +194,6 @@ export const patientService = {
     return mockPrimaryPatient;
   },
 
-
   getPatientByCareSetuId(careSetuId: string): Patient | undefined {
     if (!careSetuId) return undefined;
     const cleanId = careSetuId.trim().toUpperCase();
@@ -137,124 +203,46 @@ export const patientService = {
 
   ensureCareSetuId(patient: Patient): string {
     if (patient.careSetuId) return patient.careSetuId;
-    const distCode = (patient.address?.district || 'PUN').slice(0, 3).toUpperCase();
-    const serial = Math.floor(10000000 + Math.random() * 90000000).toString().slice(0, 8);
-    const newId = `CSU-IND-${distCode}-${serial}`;
+    const districtCode = (patient.address?.district || 'PUN').slice(0, 3).toUpperCase();
+    const randomSerial = Math.floor(10000000 + Math.random() * 90000000).toString().slice(0, 8);
+    const newId = `CSU-IND-${districtCode}-${randomSerial}`;
     patient.careSetuId = newId;
     patient.careSetuStatus = 'Active';
     patient.careSetuIssueDate = new Date().toISOString().split('T')[0];
-    this.updatePatient(patient.id, { careSetuId: newId, careSetuStatus: 'Active', careSetuIssueDate: patient.careSetuIssueDate });
+    this.updatePatient(patient);
     return newId;
   },
+
+  getPatient(id: string): Patient | undefined {
+    const list = patientStore.get();
+    return list.find((p) => p.id === id);
+  },
+
   getPatientById(id: string): Patient | undefined {
-    return patientStore.get().find((p) => p.id === id);
+    return this.getPatient(id);
   },
 
-  getAllPatients(): Patient[] {
-    return patientStore.get();
-  },
+  updatePatient(idOrPatient: string | Patient, maybePatient?: Partial<Patient>): Patient {
+    const id = typeof idOrPatient === 'string' ? idOrPatient : idOrPatient.id;
+    const patch = typeof idOrPatient === 'string' ? maybePatient || {} : idOrPatient;
+    let updatedPatient: Patient = mockPrimaryPatient;
 
-  searchPatients(query: string): Patient[] {
-    const q = query.toLowerCase().trim();
-    if (!q) return patientStore.get();
-    return patientStore.get().filter((p) => 
-      p.name.toLowerCase().includes(q) ||
-      p.abhaId.toLowerCase().includes(q) ||
-      p.phone.includes(q) ||
-      p.aadhaarMasked.includes(q)
-    );
-  },
-
-  updatePatient(id: string, updates: Partial<Patient>): Patient {
-    let updatedPatient: Patient | undefined;
     patientStore.set((prev) =>
       prev.map((p) => {
         if (p.id === id) {
-          updatedPatient = { ...p, ...updates };
+          updatedPatient = { ...p, ...patch } as Patient;
           return updatedPatient;
         }
         return p;
       })
     );
-    if (!updatedPatient) {
-      const fallback: Patient = {
-        ...this.getPatientForUser(null),
-        ...updates,
-        id
-      };
-      patientStore.set((prev) => [fallback, ...prev]);
-      return fallback;
-    }
+
     return updatedPatient;
   },
 
-  registerPatientProfile(patientData: Partial<Patient>): Patient {
-    const list = patientStore.get();
-    const existingIndex = list.findIndex(p => p.id === patientData.id || (patientData.email && p.email?.toLowerCase() === patientData.email.toLowerCase()));
-    
-    const newProfile: Patient = {
-      id: patientData.id || `pat-${Date.now()}`,
-      careSetuId: patientData.careSetuId || `CSU-IND-${(patientData.address?.district || 'PUN').slice(0,3).toUpperCase()}-${Math.floor(10000000 + Math.random() * 90000000).toString().slice(0,8)}`,
-      careSetuStatus: patientData.careSetuStatus || 'Active',
-      careSetuIssueDate: patientData.careSetuIssueDate || new Date().toISOString().split('T')[0],
-      abhaId: patientData.abhaId || '',
-      abhaAddress: patientData.abhaAddress || '',
-      name: patientData.name || 'Citizen User',
-      dob: patientData.dob || '',
-      age: patientData.age || 0,
-      gender: patientData.gender || 'Male',
-      bloodGroup: patientData.bloodGroup || ('' as any),
-      phone: patientData.phone || '',
-      email: patientData.email || '',
-      aadhaarMasked: patientData.aadhaarMasked || '',
-      address: {
-        village: patientData.address?.village || '',
-        taluka: patientData.address?.taluka || '',
-        district: patientData.address?.district || '',
-        state: patientData.address?.state || '',
-        pincode: patientData.address?.pincode || ''
-      },
-      emergencyContact: {
-        name: patientData.emergencyContact?.name || '',
-        relationship: patientData.emergencyContact?.relationship || '',
-        phone: patientData.emergencyContact?.phone || ''
-      },
-      registeredHospital: patientData.registeredHospital || '',
-      activeScheme: patientData.activeScheme || '',
-      preferredLanguage: patientData.preferredLanguage || 'en',
-      allergies: patientData.allergies || [],
-      chronicConditions: patientData.chronicConditions || [],
-      vitals: null as any,
-      consent: patientData.consent || {
-        allowEmergencyAccess: false,
-        shareRecordsWithEmpaneledHospitals: false,
-        shareAllergyAlerts: false,
-        sharePastRecords30Days: false,
-        notifyOnAccess: true
-      }
-    };
-
-    if (existingIndex >= 0) {
-      patientStore.set(prev => {
-        const next = [...prev];
-        next[existingIndex] = newProfile;
-        return next;
-      });
-    } else {
-      patientStore.set(prev => [newProfile, ...prev]);
-    }
-
-    return newProfile;
-  },
-
-  updateConsent(id: string, consent: Partial<ConsentSettings>): Patient {
-    const p = this.getPatientById(id);
-    if (!p) throw new Error('Patient not found');
-    const newConsent = { ...p.consent, ...consent };
-    return this.updatePatient(id, { consent: newConsent });
-  },
-
-  subscribe(listener: (patients: Patient[]) => void): () => void {
-    return patientStore.subscribe(listener);
+  updateConsent(patientId: string, consent: ConsentSettings): void {
+    patientStore.set((prev) =>
+      prev.map((p) => (p.id === patientId ? { ...p, consent } : p))
+    );
   }
 };

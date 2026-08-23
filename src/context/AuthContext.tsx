@@ -271,8 +271,20 @@ interface AuthContextType {
     email: string;
     password: string;
     fullName: string;
-    role: UserRole;
-    phone?: string;
+    role?: UserRole;
+    phone: string;
+    dob?: string;
+    age?: number;
+    gender?: 'Male' | 'Female' | 'Other';
+    bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    height?: number;
+    weight?: number;
+    allergies?: string[];
+    chronicConditions?: string[];
+    currentMedications?: string[];
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelation?: string;
     facilityName?: string;
     district?: string;
     state?: string;
@@ -463,8 +475,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email: string;
     password: string;
     fullName: string;
-    role: UserRole;
-    phone?: string;
+    role?: UserRole;
+    phone: string;
+    dob?: string;
+    age?: number;
+    gender?: 'Male' | 'Female' | 'Other';
+    bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    height?: number;
+    weight?: number;
+    allergies?: string[];
+    chronicConditions?: string[];
+    currentMedications?: string[];
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelation?: string;
     facilityName?: string;
     district?: string;
     state?: string;
@@ -488,7 +512,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: sessionUser.fullName,
         email: sessionUser.email,
         role: sessionUser.role,
-        roleTitle: sessionUser.role === 'patient' ? 'Citizen Patient (Registered)' : sessionUser.role === 'hospital' ? 'Healthcare Professional' : 'District Administrator',
+        roleTitle: 'Citizen / Patient (Registered)',
         district: sessionUser.district,
         state: sessionUser.state,
         phone: sessionUser.phone || '+91 98000 00000',

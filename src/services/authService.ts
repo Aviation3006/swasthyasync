@@ -7,10 +7,22 @@ export interface AuthSessionUser {
   email: string;
   fullName: string;
   role: UserRole;
+  phone?: string;
+  dob?: string;
+  age?: number;
+  gender?: 'Male' | 'Female' | 'Other';
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  height?: number;
+  weight?: number;
+  allergies?: string[];
+  chronicConditions?: string[];
+  currentMedications?: string[];
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyContactRelation?: string;
   facilityName?: string;
   district?: string;
   state?: string;
-  phone?: string;
   location?: LocationInfo;
   professionalProfile?: HealthcareProfessionalProfile;
   adminProfile?: AdministratorProfile;
@@ -34,6 +46,18 @@ export const authService = {
     fullName: string;
     role?: UserRole; // Ignored / Overridden to 'patient' at authorization boundary
     phone?: string;
+    dob?: string;
+    age?: number;
+    gender?: 'Male' | 'Female' | 'Other';
+    bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    height?: number;
+    weight?: number;
+    allergies?: string[];
+    chronicConditions?: string[];
+    currentMedications?: string[];
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelation?: string;
     facilityName?: string;
     district?: string;
     state?: string;
@@ -68,9 +92,21 @@ export const authService = {
         email: params.email.trim(),
         fullName: params.fullName.trim(),
         role: enforcedRole,
+        phone: params.phone?.trim() || '+91 98000 00000',
+        dob: params.dob,
+        age: params.age,
+        gender: params.gender || 'Male',
+        bloodGroup: params.bloodGroup,
+        height: params.height,
+        weight: params.weight,
+        allergies: params.allergies,
+        chronicConditions: params.chronicConditions,
+        currentMedications: params.currentMedications,
+        emergencyContactName: params.emergencyContactName,
+        emergencyContactPhone: params.emergencyContactPhone,
+        emergencyContactRelation: params.emergencyContactRelation,
         district: userDistrict,
         state: userState,
-        phone: params.phone?.trim() || '+91 98000 00000',
         location
       };
 
@@ -88,6 +124,18 @@ export const authService = {
             full_name: params.fullName.trim(),
             role: enforcedRole,
             phone: params.phone?.trim(),
+            dob: params.dob,
+            age: params.age,
+            gender: params.gender || 'Male',
+            blood_group: params.bloodGroup,
+            height: params.height,
+            weight: params.weight,
+            allergies: params.allergies,
+            chronic_conditions: params.chronicConditions,
+            current_medications: params.currentMedications,
+            emergency_contact_name: params.emergencyContactName,
+            emergency_contact_phone: params.emergencyContactPhone,
+            emergency_contact_relation: params.emergencyContactRelation,
             district: userDistrict,
             state: userState,
             city: userCity,
@@ -120,9 +168,21 @@ export const authService = {
         email: data.user.email || params.email.trim(),
         fullName: params.fullName.trim(),
         role: enforcedRole,
+        phone: params.phone?.trim(),
+        dob: params.dob,
+        age: params.age,
+        gender: params.gender || 'Male',
+        bloodGroup: params.bloodGroup,
+        height: params.height,
+        weight: params.weight,
+        allergies: params.allergies,
+        chronicConditions: params.chronicConditions,
+        currentMedications: params.currentMedications,
+        emergencyContactName: params.emergencyContactName,
+        emergencyContactPhone: params.emergencyContactPhone,
+        emergencyContactRelation: params.emergencyContactRelation,
         district: userDistrict,
         state: userState,
-        phone: params.phone?.trim(),
         location
       };
 
@@ -351,6 +411,18 @@ export const authService = {
         district: userDistrict,
         state: userState,
         phone: profile?.phone || data.user.user_metadata?.phone,
+        dob: data.user.user_metadata?.dob,
+        age: data.user.user_metadata?.age,
+        gender: data.user.user_metadata?.gender,
+        bloodGroup: data.user.user_metadata?.blood_group,
+        height: data.user.user_metadata?.height,
+        weight: data.user.user_metadata?.weight,
+        allergies: data.user.user_metadata?.allergies,
+        chronicConditions: data.user.user_metadata?.chronic_conditions,
+        currentMedications: data.user.user_metadata?.current_medications,
+        emergencyContactName: data.user.user_metadata?.emergency_contact_name,
+        emergencyContactPhone: data.user.user_metadata?.emergency_contact_phone,
+        emergencyContactRelation: data.user.user_metadata?.emergency_contact_relation,
         location
       };
 
