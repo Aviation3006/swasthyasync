@@ -1,0 +1,59 @@
+@import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    scroll-behavior: smooth;
+  }
+  html[lang='ur'], body.font-urdu {
+    font-family: 'Noto Nastaliq Urdu', 'Inter', system-ui, sans-serif;
+  }
+  html[lang='hi'], html[lang='mr'], html[lang='sa'], html[lang='mai'], html[lang='kok'], html[lang='ne'], html[lang='doi'], html[lang='brx'] {
+    font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+  }
+  html[lang='ta'] {
+    font-family: 'Inter', 'Noto Sans Tamil', system-ui, sans-serif;
+  }
+  html[lang='te'] {
+    font-family: 'Inter', 'Noto Sans Telugu', system-ui, sans-serif;
+  }
+  html[lang='bn'], html[lang='as'], html[lang='mni'] {
+    font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 min-h-screen antialiased;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Custom print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header, aside, footer, nav, .no-print {
+    display: none !important;
+  }
+}
