@@ -70,10 +70,16 @@ export const patientService = {
       };
     }
 
+    const userDistrict = user.district || user.location?.district || '';
+    const userState = user.state || user.location?.state || '';
+    const userCity = user.location?.city || '';
+    const userLocality = user.location?.locality || '';
+    const userPin = user.location?.pinCode || '';
+
     // Create clean, non-populated patient profile for newly registered user
     const newPatient: Patient = {
       id: user.id,
-      careSetuId: `CSU-IND-${(user.district || 'PUN').slice(0,3).toUpperCase()}-${Math.floor(10000000 + Math.random() * 90000000).toString().slice(0,8)}`,
+      careSetuId: `CSU-IND-${(userDistrict || 'IND').slice(0,3).toUpperCase()}-${Math.floor(10000000 + Math.random() * 90000000).toString().slice(0,8)}`,
       careSetuStatus: 'Active',
       careSetuIssueDate: new Date().toISOString().split('T')[0],
       abhaId: '', // Unlinked until citizen links ABHA
@@ -87,11 +93,11 @@ export const patientService = {
       email: user.email,
       aadhaarMasked: '',
       address: {
-        village: '',
-        taluka: '',
-        district: user.district || '',
-        state: user.state || '',
-        pincode: ''
+        village: userLocality || userCity || '',
+        taluka: userCity || '',
+        district: userDistrict,
+        state: userState,
+        pincode: userPin
       },
       emergencyContact: {
         name: '',

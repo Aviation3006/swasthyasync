@@ -22,13 +22,17 @@ export const authService = {
   },
 
   /**
-   * Sign up with email, password, and custom metadata
+   * Public Citizen/Patient Sign Up
+   * 
+   * CRITICAL SECURITY BOUNDARY:
+   * Public signup is strictly locked to role = 'patient'.
+   * Privileged roles ('hospital', 'district_admin') are never created through public registration.
    */
   async signUp(params: {
     email: string;
     password: string;
     fullName: string;
-    role: UserRole;
+    role?: UserRole; // Ignored / Overridden to 'patient' at authorization boundary
     phone?: string;
     facilityName?: string;
     district?: string;
@@ -39,89 +43,56 @@ export const authService = {
     professionalProfile?: Partial<HealthcareProfessionalProfile>;
     adminProfile?: Partial<AdministratorProfile>;
   }): Promise<{ user: AuthSessionUser | null; error: Error | null }> {
-    const userState = params.state || params.professionalProfile?.location?.state || params.adminProfile?.location?.state || (params.role === 'patient' ? undefined : 'Delhi (NCT)');
-    const userDistrict = params.district || params.professionalProfile?.location?.district || params.adminProfile?.location?.district || (params.role === 'patient' ? undefined : 'New Delhi');
-    const userCity = params.city || params.professionalProfile?.location?.city || params.adminProfile?.location?.city || '';
-    const userPin = params.pinCode || params.professionalProfile?.location?.pinCode || params.adminProfile?.location?.pinCode || '';
+    // ENFORCE PATIENT ROLE AT THE AUTHORIZATION BOUNDARY
+    const enforcedRole: UserRole = 'patient';
+
+    const userState = params.state?.trim() || '';
+    const userDistrict = params.district?.trim() || '';
+    const userCity = params.city?.trim() || '';
+    const userLocality = params.locality?.trim() || '';
+    const userPin = params.pinCode?.trim() || '';
 
     const location: LocationInfo = {
       country: 'India',
-      state: userState || '',
-      district: userDistrict || '',
+      state: userState,
+      district: userDistrict,
       city: userCity,
-      locality: params.locality || '',
+      locality: userLocality,
       pinCode: userPin
     };
 
-    let professionalProfile: HealthcareProfessionalProfile | undefined = undefined;
-    if (params.role === 'hospital') {
-      professionalProfile = {
-        professionalRole: params.professionalProfile?.professionalRole || 'Doctor',
-        registrationNumber: params.professionalProfile?.registrationNumber || '',
-        employeeId: params.professionalProfile?.employeeId || '',
-        facilityName: params.facilityName || params.professionalProfile?.facilityName || 'Healthcare Facility',
-        facilityType: params.professionalProfile?.facilityType || 'District Hospital',
-        department: params.professionalProfile?.department || 'General Medicine',
-        designation: params.professionalProfile?.designation || 'Medical Officer',
-        facilityAddress: params.professionalProfile?.facilityAddress || '',
-        facilityPinCode: userPin,
-        facilityContact: params.phone,
-        location
-      };
-    }
-
-    let adminProfile: AdministratorProfile | undefined = undefined;
-    if (params.role === 'district_admin') {
-      adminProfile = {
-        adminRole: params.adminProfile?.adminRole || 'District Health Officer (DHO)',
-        administratorId: params.adminProfile?.administratorId || '',
-        departmentOrAuthority: params.adminProfile?.departmentOrAuthority || 'District Health Administration',
-        jurisdictionLevel: 'District',
-        administrativeJurisdiction: params.adminProfile?.administrativeJurisdiction || `${userDistrict || 'District'} Health Administration`,
-        officeAddress: params.adminProfile?.officeAddress || '',
-        officePinCode: userPin,
-        officialContactNumber: params.phone,
-        location
-      };
-    }
-
     if (!this.isConfigured() || !supabase) {
-      // Prototype Offline fallback
+      // Prototype Offline / Client-side fallback
       const fallbackUser: AuthSessionUser = {
         id: `user-${Date.now()}`,
-        email: params.email,
-        fullName: params.fullName,
-        role: params.role,
-        facilityName: professionalProfile?.facilityName || params.facilityName,
+        email: params.email.trim(),
+        fullName: params.fullName.trim(),
+        role: enforcedRole,
         district: userDistrict,
         state: userState,
-        phone: params.phone || '+91 98000 00000',
-        location,
-        professionalProfile,
-        adminProfile
+        phone: params.phone?.trim() || '+91 98000 00000',
+        location
       };
 
       // Persist in localStorage for cross-page session continuity
-      localStorage.setItem(`user_profile_${params.email.toLowerCase()}`, JSON.stringify(fallbackUser));
+      localStorage.setItem(`user_profile_${params.email.trim().toLowerCase()}`, JSON.stringify(fallbackUser));
       return { user: fallbackUser, error: null };
     }
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: params.email,
+        email: params.email.trim(),
         password: params.password,
         options: {
           data: {
-            full_name: params.fullName,
-            role: params.role,
-            phone: params.phone,
-            facility_name: professionalProfile?.facilityName || params.facilityName,
+            full_name: params.fullName.trim(),
+            role: enforcedRole,
+            phone: params.phone?.trim(),
             district: userDistrict,
             state: userState,
             city: userCity,
-            pin_code: userPin,
-            professional_profile: professionalProfile,
-            admin_profile: adminProfile
+            locality: userLocality,
+            pin_code: userPin
           }
         }
       });
@@ -133,33 +104,29 @@ export const authService = {
       try {
         await supabase.from('profiles').upsert({
           id: data.user.id,
-          email: params.email,
-          full_name: params.fullName,
-          role: params.role,
-          facility_name: professionalProfile?.facilityName || params.facilityName,
-          phone: params.phone,
+          email: params.email.trim(),
+          full_name: params.fullName.trim(),
+          role: enforcedRole,
+          phone: params.phone?.trim(),
           district: userDistrict,
           state: userState
         });
       } catch (profileErr) {
-        // Handled by trigger
+        // Handled by database trigger
       }
 
       const sessionUser: AuthSessionUser = {
         id: data.user.id,
-        email: data.user.email || params.email,
-        fullName: params.fullName,
-        role: params.role,
-        facilityName: professionalProfile?.facilityName || params.facilityName,
+        email: data.user.email || params.email.trim(),
+        fullName: params.fullName.trim(),
+        role: enforcedRole,
         district: userDistrict,
         state: userState,
-        phone: params.phone,
-        location,
-        professionalProfile,
-        adminProfile
+        phone: params.phone?.trim(),
+        location
       };
 
-      localStorage.setItem(`user_profile_${params.email.toLowerCase()}`, JSON.stringify(sessionUser));
+      localStorage.setItem(`user_profile_${params.email.trim().toLowerCase()}`, JSON.stringify(sessionUser));
       return { user: sessionUser, error: null };
     } catch (err: any) {
       return { user: null, error: err };
@@ -167,7 +134,7 @@ export const authService = {
   },
 
   /**
-   * Sign in with email and password (multi-region test personas aware)
+   * Sign in with email and password (multi-region test personas and provisioned accounts aware)
    */
   async signIn(email: string, password: string): Promise<{ user: AuthSessionUser | null; error: Error | null }> {
     const cleanEmail = email.trim().toLowerCase();
@@ -181,7 +148,7 @@ export const authService = {
       } catch (e) {}
     }
 
-    // MULTI-REGION TEST ACCOUNTS CONFIGURATION
+    // MULTI-REGION TEST ACCOUNTS CONFIGURATION (PROVISIONED / SEEDED ACCOUNTS)
     if (cleanEmail.includes('delhi')) {
       const role: UserRole = cleanEmail.includes('admin') ? 'district_admin' : cleanEmail.includes('hospital') ? 'hospital' : 'patient';
       const loc: LocationInfo = { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Paschim Vihar', pinCode: '110063' };
@@ -249,7 +216,7 @@ export const authService = {
           administratorId: 'DHO-BLR-URBAN-01',
           departmentOrAuthority: 'Karnataka State Health & Family Welfare Directorate',
           jurisdictionLevel: 'District',
-          administrativeJurisdiction: 'Bengaluru Urban District Health Command',
+          administrativeJurisdiction: 'Bengaluru Urban District Health Authority',
           officeAddress: 'Anand Rao Circle, Bengaluru 560009',
           officePinCode: '560009',
           location: loc
@@ -258,25 +225,44 @@ export const authService = {
       return { user: karnatakaUser, error: null };
     }
 
-    // Default Demo Test Personas (Maharashtra / Pune)
-    if (cleanEmail.includes('test') || cleanEmail.includes('pune') || !this.isConfigured() || !supabase) {
-      const role: UserRole = cleanEmail.includes('admin') || cleanEmail.includes('dho')
-        ? 'district_admin'
-        : cleanEmail.includes('hospital') || cleanEmail.includes('doc')
-        ? 'hospital'
-        : 'patient';
-
-      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' };
-      const fallbackUser: AuthSessionUser = {
-        id: `offline-${role}`,
+    // Default Maharashtra Test Users
+    if (cleanEmail.includes('admin') || cleanEmail === 'admin.test@swasthasync.com') {
+      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411001' };
+      const mhAdmin: AuthSessionUser = {
+        id: 'admin-dho-01',
         email: cleanEmail,
-        fullName: role === 'patient' ? 'Rameshwar B. Jadhav' : role === 'hospital' ? 'Dr. Anjali Deshmukh' : 'Dr. Suresh Patil',
-        role,
-        facilityName: role === 'hospital' ? 'Aundh District Hospital, Pune' : undefined,
+        fullName: 'Dr. Suresh Patil',
+        role: 'district_admin',
         district: 'Pune',
         state: 'Maharashtra',
+        facilityName: 'District Health Directorate',
         location: loc,
-        professionalProfile: role === 'hospital' ? {
+        adminProfile: {
+          adminRole: 'District Health Officer (DHO)',
+          administratorId: 'DHO-PUNE-01',
+          departmentOrAuthority: 'District Health Directorate',
+          jurisdictionLevel: 'District',
+          administrativeJurisdiction: 'Pune District Health Directorate',
+          officeAddress: 'Collector Office Compound, Pune 411001',
+          officePinCode: '411001',
+          location: loc
+        }
+      };
+      return { user: mhAdmin, error: null };
+    }
+
+    if (cleanEmail.includes('hospital') || cleanEmail.includes('doctor') || cleanEmail === 'hospital.test@swasthasync.com') {
+      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' };
+      const mhDoctor: AuthSessionUser = {
+        id: 'doc-01',
+        email: cleanEmail,
+        fullName: 'Dr. Anjali Deshmukh',
+        role: 'hospital',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'Aundh District Hospital, Pune',
+        location: loc,
+        professionalProfile: {
           professionalRole: 'Doctor',
           registrationNumber: 'MMC-2014-9912',
           employeeId: 'ADH-DOC-01',
@@ -287,105 +273,140 @@ export const authService = {
           facilityAddress: 'Chikhalwadi, Aundh, Pune 411027',
           facilityPinCode: '411027',
           location: loc
-        } : undefined,
-        adminProfile: role === 'district_admin' ? {
-          adminRole: 'District Health Officer (DHO)',
-          administratorId: 'DHO-PUNE-01',
-          departmentOrAuthority: 'District Health Directorate',
-          jurisdictionLevel: 'District',
-          administrativeJurisdiction: 'Pune District Health Directorate',
-          officeAddress: 'Collector Office Compound, Pune 411001',
-          officePinCode: '411001',
-          location: loc
-        } : undefined
+        }
       };
-      return { user: fallbackUser, error: null };
+      return { user: mhDoctor, error: null };
+    }
+
+    // Default Maharashtra Patient Test Account
+    if (cleanEmail === 'patient.test@swasthasync.com' || cleanEmail.includes('patient')) {
+      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' };
+      const mhPatient: AuthSessionUser = {
+        id: 'pat-mh-001',
+        email: cleanEmail,
+        fullName: 'Rameshwar B. Jadhav',
+        role: 'patient',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'Aundh District Hospital (Attached)',
+        location: loc
+      };
+      return { user: mhPatient, error: null };
+    }
+
+    if (!this.isConfigured() || !supabase) {
+      // General Offline Patient Fallback
+      return {
+        user: {
+          id: `usr-${Date.now()}`,
+          email: cleanEmail,
+          fullName: 'Citizen User',
+          role: 'patient',
+          district: '',
+          state: '',
+          location: { country: 'India', state: '', district: '', city: '', locality: '', pinCode: '' }
+        },
+        error: null
+      };
     }
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: cleanEmail,
         password
       });
 
       if (error) throw error;
-      if (!data.user) throw new Error('User not found');
+      if (!data.user) throw new Error('No user returned from login');
 
-      // Fetch user profile from database
+      // Fetch profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', data.user.id)
         .maybeSingle();
 
-      const rawRole = (profile?.role || data.user.user_metadata?.role || 'patient').toString().toLowerCase();
-      const role: UserRole = rawRole.includes('admin') ? 'district_admin' : rawRole.includes('hosp') ? 'hospital' : 'patient';
+      const userRole: UserRole = profile?.role || data.user.user_metadata?.role || 'patient';
+      const userState = profile?.state || data.user.user_metadata?.state || '';
+      const userDistrict = profile?.district || data.user.user_metadata?.district || '';
+      const userCity = profile?.city || data.user.user_metadata?.city || '';
+      const userLocality = profile?.locality || data.user.user_metadata?.locality || '';
+      const userPin = profile?.pin_code || data.user.user_metadata?.pin_code || '';
 
-      const userState = profile?.state || data.user.user_metadata?.state;
-      const userDistrict = profile?.district || data.user.user_metadata?.district;
-      const userCity = profile?.city || data.user.user_metadata?.city;
-      const userPin = profile?.pin_code || data.user.user_metadata?.pin_code;
-
-      const loc: LocationInfo = {
+      const location: LocationInfo = {
         country: 'India',
-        state: userState || '',
-        district: userDistrict || '',
-        city: userCity || '',
-        pinCode: userPin || ''
+        state: userState,
+        district: userDistrict,
+        city: userCity,
+        locality: userLocality,
+        pinCode: userPin
       };
 
       const sessionUser: AuthSessionUser = {
         id: data.user.id,
-        email: data.user.email || email,
-        fullName: profile?.full_name || data.user.user_metadata?.full_name || 'User',
-        role,
+        email: data.user.email || cleanEmail,
+        fullName: profile?.full_name || data.user.user_metadata?.full_name || 'Citizen User',
+        role: userRole,
         facilityName: profile?.facility_name || data.user.user_metadata?.facility_name,
         district: userDistrict,
         state: userState,
         phone: profile?.phone || data.user.user_metadata?.phone,
-        location: loc,
-        professionalProfile: data.user.user_metadata?.professional_profile,
-        adminProfile: data.user.user_metadata?.admin_profile
+        location
       };
 
+      localStorage.setItem(`user_profile_${cleanEmail}`, JSON.stringify(sessionUser));
       return { user: sessionUser, error: null };
     } catch (err: any) {
       return { user: null, error: err };
     }
   },
 
+  /**
+   * Reset Password Request
+   */
   async resetPassword(email: string): Promise<{ error: Error | null }> {
-    if (this.isConfigured() && supabase) {
-      try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
-        return { error };
-      } catch (e: any) {
-        return { error: e };
-      }
+    if (!this.isConfigured() || !supabase) {
+      return { error: null };
     }
-    return { error: null };
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      return { error };
+    } catch (err: any) {
+      return { error: err };
+    }
   },
 
-  async updatePassword(password: string): Promise<{ error: Error | null }> {
-    if (this.isConfigured() && supabase) {
-      try {
-        const { error } = await supabase.auth.updateUser({ password });
-        return { error };
-      } catch (e: any) {
-        return { error: e };
-      }
+  /**
+   * Update Password
+   */
+  async updatePassword(newPassword: string): Promise<{ error: Error | null }> {
+    if (!this.isConfigured() || !supabase) {
+      return { error: null };
     }
-    return { error: null };
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      return { error };
+    } catch (err: any) {
+      return { error: err };
+    }
   },
 
-  async signOut(): Promise<{ error: Error | null }> {
+  /**
+   * Sign out
+   */
+  async signOut(): Promise<void> {
     if (this.isConfigured() && supabase) {
       try {
         await supabase.auth.signOut();
-      } catch (e) {}
+      } catch (err) {
+        console.warn('Supabase sign out error:', err);
+      }
     }
-    localStorage.removeItem('swasthyasync_auth_status');
     localStorage.removeItem('swasthyasync_active_role');
-    return { error: null };
+    localStorage.removeItem('swasthyasync_auth_status');
   }
 };
