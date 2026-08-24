@@ -4,7 +4,7 @@ import assert from 'assert';
 
 console.log('================================================================');
 console.log('  RUNNING SWASTHYASYNC MULTI-VIEWPORT RESPONSIVENESS QA SUITE');
-console.log('  Auditing Viewports: 320px | 360px | 375px | 390px | 412px | 430px | 768px | 1280px');
+console.log('  Auditing Viewports: 320px | 360px | 375px | 390px | 412px | 430px | 480px | 768px | 1280px');
 console.log('================================================================\n');
 
 let passed = 0;
@@ -35,7 +35,7 @@ check('src/index.css includes global overflow guardrails and no-scrollbar utilit
   assert(indexCss.includes('no-scrollbar'));
 });
 
-// 2. LAYOUT AUDIT: AUTH, PATIENT, HOSPITAL, DISTRICT ADMIN
+// 2. LAYOUT AUDIT: AUTH, PATIENT, HOSPITAL, DISTRICT ADMIN & HEADER RESPONSIVENESS
 console.log('\n--- TEST GROUP 2: Layout Containers & Navigation Breakpoints ---');
 const authLayout = fs.readFileSync(path.resolve('src/layouts/AuthLayout.tsx'), 'utf-8');
 check('AuthLayout language dropdown is viewport-constrained for 320px screens', () => {
@@ -45,15 +45,24 @@ check('AuthLayout uses responsive padding (p-3 sm:p-6 lg:p-8)', () => {
   assert(authLayout.includes('px-3 sm:px-6 lg:px-8') || authLayout.includes('p-3 sm:p-6 lg:p-8'));
 });
 
+const roleSwitcherCode = fs.readFileSync(path.resolve('src/components/navigation/RoleSwitcherBanner.tsx'), 'utf-8');
+check('RoleSwitcherBanner uses responsive stacking (flex-col xs:flex-row) with min-w-0 and truncate', () => {
+  assert(roleSwitcherCode.includes('min-w-0 max-w-full'));
+  assert(roleSwitcherCode.includes('flex flex-col xs:flex-row xs:items-center justify-between'));
+  assert(roleSwitcherCode.includes('truncate'));
+});
+
+const navbarCode = fs.readFileSync(path.resolve('src/components/navigation/Navbar.tsx'), 'utf-8');
+check('Navbar has min-w-0 max-w-full and hides redundant QR button on < sm mobile viewports', () => {
+  assert(navbarCode.includes('min-w-0 max-w-full'));
+  assert(navbarCode.includes('hidden sm:flex items-center gap-1.5 px-3 py-1.5'));
+  assert(navbarCode.includes('w-[calc(100vw-24px)]'));
+});
+
 const patientLayout = fs.readFileSync(path.resolve('src/layouts/PatientLayout.tsx'), 'utf-8');
 check('PatientLayout main container uses responsive padding and min-w-0', () => {
   assert(patientLayout.includes('px-3 sm:px-6 lg:px-8 py-4 sm:py-6'));
   assert(patientLayout.includes('min-w-0'));
-});
-
-const navbarCode = fs.readFileSync(path.resolve('src/components/navigation/Navbar.tsx'), 'utf-8');
-check('Navbar dropdowns are mobile-constrained (w-[calc(100vw-24px)])', () => {
-  assert(navbarCode.includes('w-[calc(100vw-24px)]'));
 });
 
 const mobileNavCode = fs.readFileSync(path.resolve('src/components/navigation/MobileNav.tsx'), 'utf-8');
