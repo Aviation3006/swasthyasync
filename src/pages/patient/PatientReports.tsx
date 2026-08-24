@@ -39,6 +39,7 @@ import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { useTranslation } from '../../i18n/useTranslation';
+import { ReportAudioPlayer } from '../../components/common/ReportAudioPlayer';
 
 export const PatientReports: React.FC = () => {
   const { showSuccess, showError, showInfo } = useToast();
@@ -526,7 +527,7 @@ export const PatientReports: React.FC = () => {
                       </div>
 
                       <div className="border border-slate-200 rounded-xl overflow-hidden shadow-subtle">
-                        <table className="min-w-full divide-y divide-slate-200 text-xs text-left">
+                        <div className="overflow-x-auto w-full"><table className="min-w-full divide-y divide-slate-200 text-xs text-left">
                           <thead className="bg-slate-100/80 text-slate-700 font-semibold">
                             <tr>
                               <th className="px-3 py-2.5">Investigation</th>
@@ -555,7 +556,7 @@ export const PatientReports: React.FC = () => {
                               </tr>
                             ))}
                           </tbody>
-                        </table>
+                        </table></div>
                       </div>
                     </div>
 
@@ -575,19 +576,27 @@ export const PatientReports: React.FC = () => {
             {/* RIGHT COLUMN: AI PLAIN-LANGUAGE SUMMARY & ACTIONABLE INSIGHTS (Visible in 'side-by-side' or 'summary') */}
             {(viewMode === 'side-by-side' || viewMode === 'summary') && (
               <div className={`space-y-6 ${viewMode === 'side-by-side' ? 'lg:col-span-7' : 'w-full'}`}>
-                {/* Plain-Language Summary Box */}
-                <div className="p-5 rounded-2xl bg-gradient-to-br from-health-900 to-navy-950 text-white shadow-elevated border border-health-800 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs tracking-wider uppercase">
-                      <Sparkles className="w-4 h-4" /> {t.plainLanguageExplanation}
+                {/* Plain-Language Summary Box with Integrated Text-to-Speech Accessibility Player */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-health-900 to-navy-950 text-white shadow-elevated border border-health-800 space-y-3.5">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs tracking-wider uppercase">
+                      <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" /> {t.plainLanguageExplanation}
                     </div>
-                    <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-slate-300">
-                      Simplified for Citizen Patient
+                    <span className="text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-slate-300 font-medium">
+                      AI Simplified Report
                     </span>
                   </div>
-                  <p className="text-sm sm:text-base leading-relaxed text-slate-100 font-normal">
+                  <p className="text-xs sm:text-sm md:text-base leading-relaxed text-slate-100 font-normal">
                     {reportLang === 'mr' ? activeReport.overallSummaryMarathi : activeReport.overallSummary}
                   </p>
+
+                  {/* Accessible Multilingual Text-to-Speech Player */}
+                  <ReportAudioPlayer
+                    text={reportLang === 'mr' ? activeReport.overallSummaryMarathi : activeReport.overallSummary}
+                    language={reportLang}
+                    title={reportLang === 'mr' ? "सोप्या भाषेतील सारांश ऐका" : (t.audioExplanation || "Listen to Report Summary")}
+                    className="mt-2"
+                  />
                 </div>
 
                 {/* Key Findings Cards */}
@@ -619,7 +628,7 @@ export const PatientReports: React.FC = () => {
                   />
                   <CardContent>
                     <div className="border border-slate-200 rounded-xl overflow-hidden">
-                      <table className="min-w-full divide-y divide-slate-200 text-xs text-left">
+                      <div className="overflow-x-auto w-full"><table className="min-w-full divide-y divide-slate-200 text-xs text-left">
                         <thead className="bg-slate-50 text-slate-700 font-semibold">
                           <tr>
                             <th className="px-3 py-3">Parameter</th>
@@ -654,6 +663,7 @@ export const PatientReports: React.FC = () => {
                           ))}
                         </tbody>
                       </table>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

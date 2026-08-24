@@ -184,21 +184,21 @@ export const FunctionalHospitalMap: React.FC<FunctionalHospitalMapProps> = ({
   }, [facilities, userCoords, activeFacilityId, isDemo]);
 
   return (
-    <div className="relative w-full h-[420px] rounded-2xl overflow-hidden border border-slate-300 shadow-subtle z-0">
+    <div className="relative w-full h-[300px] sm:h-[420px] rounded-2xl overflow-hidden border border-slate-300 shadow-subtle z-0">
       <div ref={mapContainerRef} className="w-full h-full" />
       
-      {/* Map Legend Overlay */}
-      <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-xl shadow-md border border-slate-200 text-[11px] text-slate-700 z-[1000] flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-emerald-600 border border-white inline-block"></span>
-          <span>Your Location</span>
+      {/* Map Legend Overlay - Responsive for mobile */}
+      <div className="absolute bottom-2 left-2 right-2 sm:right-auto bg-white/95 backdrop-blur-sm px-2.5 py-1.5 rounded-xl shadow-md border border-slate-200 text-[10px] sm:text-[11px] text-slate-700 z-[1000] flex items-center justify-around sm:justify-start gap-2.5">
+        <div className="flex items-center gap-1">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 border border-white inline-block"></span>
+          <span>You</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-rose-600 border border-white inline-block"></span>
+        <div className="flex items-center gap-1">
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-600 border border-white inline-block"></span>
           <span>Hospitals</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-emerald-700 ring-2 ring-emerald-300 inline-block"></span>
+        <div className="flex items-center gap-1">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-700 ring-2 ring-emerald-300 inline-block"></span>
           <span>Selected</span>
         </div>
       </div>

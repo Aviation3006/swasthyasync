@@ -588,5 +588,14 @@
   "step3CareSetu": "CareSetu Medical history, allergies, and reports unlock in authorized session",
   "step4CareSetu": "CareSetu New consultations and prescriptions sync to your CareSetu record",
   "demoCareSetuNotice": "CareSetu Demo Patient Simulation Scenario",
-  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record"
+  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record",
+  "readAloud": "पढ़ि कऽ सुनाउ",
+  "pauseReading": "रोकू",
+  "resumeReading": "पुनः शुरू करू",
+  "stopReading": "बंद करू",
+  "speakingStatus": "बाज रहल अछि...",
+  "pausedStatus": "रुकल",
+  "audioExplanation": "सरल भाषा सारांश सुनू",
+  "voiceLanguage": "आवाजक भाषा",
+  "ttsSpeed": "बाजबाक गति"
 }

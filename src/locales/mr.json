@@ -588,5 +588,14 @@
   "step3CareSetu": "आपल्या ॲलर्जी, जुनाट आजार व चाचणी अहवाल वैद्यकीय सत्रात उघडतात",
   "step4CareSetu": "नवीन तपासण्या आणि ई-प्रिस्क्रिप्शन थेट केअरसेतू नोंदीमध्ये जोडले जातात",
   "demoCareSetuNotice": "डेमो रुग्ण प्रात्यक्षिक परिस्थिती",
-  "openDemoCareSetuRecord": "डेमो केअरसेतू नोंद उघडा"
+  "openDemoCareSetuRecord": "डेमो केअरसेतू नोंद उघडा",
+  "readAloud": "ऐका (वाचून दाखवा)",
+  "pauseReading": "थांबवा",
+  "resumeReading": "पुन्हा सुरू करा",
+  "stopReading": "बंद करा",
+  "speakingStatus": "वाचन सुरू आहे...",
+  "pausedStatus": "थांबवले",
+  "audioExplanation": "सोप्या भाषेतील सारांश ऐका",
+  "voiceLanguage": "आवाजाची भाषा",
+  "ttsSpeed": "बोलण्याचा वेग"
 }

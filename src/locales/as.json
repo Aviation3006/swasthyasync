@@ -588,5 +588,14 @@
   "step3CareSetu": "CareSetu Medical history, allergies, and reports unlock in authorized session",
   "step4CareSetu": "CareSetu New consultations and prescriptions sync to your CareSetu record",
   "demoCareSetuNotice": "CareSetu Demo Patient Simulation Scenario",
-  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record"
+  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record",
+  "readAloud": "পঢ়ি শুনাওক",
+  "pauseReading": "ৰখাওক",
+  "resumeReading": "পুনৰ আৰম্ভ কৰক",
+  "stopReading": "বন্ধ কৰক",
+  "speakingStatus": "কোৱা হৈছে...",
+  "pausedStatus": "স্থগিত",
+  "audioExplanation": "সহজ ভাষাৰ সাৰাংশ শুনক",
+  "voiceLanguage": "মাতৰ ভাষা",
+  "ttsSpeed": "কথাৰ গতি"
 }

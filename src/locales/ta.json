@@ -588,5 +588,14 @@
   "step3CareSetu": "மருத்துவ வரலாறு பாதுகாப்பாக திறக்கப்படுகிறது",
   "step4CareSetu": "புதிய மருத்துவ சீட்டுகள் கேர்சேதுவில் இணைகின்றன",
   "demoCareSetuNotice": "மாதிரி நோயாளி செயல்விளக்கம்",
-  "openDemoCareSetuRecord": "மாதிரி கேர்சேது பதிவைத் திறக்க"
+  "openDemoCareSetuRecord": "மாதிரி கேர்சேது பதிவைத் திறக்க",
+  "readAloud": "படித்துக் காட்டு",
+  "pauseReading": "இடைநிறுத்து",
+  "resumeReading": "மீண்டும் தொடங்கு",
+  "stopReading": "நிறுத்து",
+  "speakingStatus": "பேசுகிறது...",
+  "pausedStatus": "இடைநிறுத்தப்பட்டது",
+  "audioExplanation": "எளிய சுருக்கத்தைக் கேளுங்கள்",
+  "voiceLanguage": "குரல் மொழி",
+  "ttsSpeed": "பேச்சு வேகம்"
 }

@@ -588,5 +588,14 @@
   "step3CareSetu": "চিকিৎসা ইতিহাস এবং রিপোর্ট নিরাপদে উপলব্ধ হয়",
   "step4CareSetu": "নতুন পরামর্শ রেকর্ড স্বয়ংক্রিয়ভাবে সিঙ্ক হয়",
   "demoCareSetuNotice": "ডেমো রোগীর সিমুলেশন",
-  "openDemoCareSetuRecord": "ডেমো কেয়ারসেতু রেকর্ড খুলুন"
+  "openDemoCareSetuRecord": "ডেমো কেয়ারসেতু রেকর্ড খুলুন",
+  "readAloud": "পড়ে শোনান",
+  "pauseReading": "বিরতি",
+  "resumeReading": "পুনরায় শুরু করুন",
+  "stopReading": "থামুন",
+  "speakingStatus": "শোনানো হচ্ছে...",
+  "pausedStatus": "স্থগিত",
+  "audioExplanation": "সহজ ভাষার সারাংশ শুনুন",
+  "voiceLanguage": "কণ্ঠস্বর ভাষা",
+  "ttsSpeed": "কথা বলার গতি"
 }

@@ -588,5 +588,14 @@
   "step3CareSetu": "CareSetu Medical history, allergies, and reports unlock in authorized session",
   "step4CareSetu": "CareSetu New consultations and prescriptions sync to your CareSetu record",
   "demoCareSetuNotice": "CareSetu Demo Patient Simulation Scenario",
-  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record"
+  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record",
+  "readAloud": "വായിച്ചു കേൾപ്പിക്കുക",
+  "pauseReading": "താൽക്കാലികമായി നിർത്തുക",
+  "resumeReading": "തുടരുക",
+  "stopReading": "നിർത്തുക",
+  "speakingStatus": "സംസാരിക്കുന്നു...",
+  "pausedStatus": "താൽക്കാലികമായി നിർത്തി",
+  "audioExplanation": "ലളിതമായ സംഗ്രഹം കേൾക്കുക",
+  "voiceLanguage": "വോയ്സ് ഭാഷ",
+  "ttsSpeed": "സംസാര വേഗത"
 }

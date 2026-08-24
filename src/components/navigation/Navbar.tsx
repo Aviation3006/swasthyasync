@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                 }`}
               >
                 <QrCode className="w-4 h-4 text-emerald-700" />
-                <span className="hidden sm:inline">{t.healthCardQR || "CareSetu"}</span>
+                <span className="hidden sm:inline">"CareSetu"</span>
               </Link>
             )}
 
@@ -190,7 +190,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               </button>
 
               {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-dropdown border border-slate-200 py-2 z-50 animate-scale-up">
+                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-xs sm:w-72 bg-white rounded-2xl shadow-dropdown border border-slate-200 py-2 z-50 animate-scale-up">
                   <div className="px-3 pb-2 border-b border-slate-100">
                     <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider block mb-1.5">
                       23 Official Indian Languages
@@ -248,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               </button>
 
               {isNotifOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-dropdown border border-slate-200 overflow-hidden z-50 animate-scale-up">
+                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-white rounded-2xl shadow-dropdown border border-slate-200 overflow-hidden z-50 animate-scale-up">
                   <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-slate-900">{t.notifications}</h4>

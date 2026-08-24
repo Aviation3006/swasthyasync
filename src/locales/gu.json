@@ -588,5 +588,14 @@
   "step3CareSetu": "તબીબી ઇતિહાસ સુરક્ષિત રીતે ઉપલબ્ધ થાય છે",
   "step4CareSetu": "નવા પ્રિસ્ક્રિપ્શન કેરસેતુમાં સિંક થાય છે",
   "demoCareSetuNotice": "ડેમો દર્દી સિમ્યુલેશન",
-  "openDemoCareSetuRecord": "ડેમો કેરસેતુ રેકોર્ડ ખોલો"
+  "openDemoCareSetuRecord": "ડેમો કેરસેતુ રેકોર્ડ ખોલો",
+  "readAloud": "વાંચી સંભળાવો",
+  "pauseReading": "વિરામ",
+  "resumeReading": "ફરી શરૂ કરો",
+  "stopReading": "બંધ કરો",
+  "speakingStatus": "બોલે છે...",
+  "pausedStatus": "અટકેલ",
+  "audioExplanation": "સરળ ભાષાનો સારાંશ સાંભળો",
+  "voiceLanguage": "અવાજની ભાષા",
+  "ttsSpeed": "બોલવાની ઝડપ"
 }

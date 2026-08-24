@@ -588,5 +588,14 @@
   "step3CareSetu": "आपकी एलर्जी, पुरानी बीमारियां और रिपोर्ट सुरक्षित रूप से खुलती हैं",
   "step4CareSetu": "नए परामर्श और ई-प्रिस्क्रिप्शन आपके केयरसेतु रिकॉर्ड में सिंक होते हैं",
   "demoCareSetuNotice": "डेमो मरीज सिमुलेशन परिदृश्य",
-  "openDemoCareSetuRecord": "डेमो केयरसेतु रिकॉर्ड खोलें"
+  "openDemoCareSetuRecord": "डेमो केयरसेतु रिकॉर्ड खोलें",
+  "readAloud": "बोलकर सुनें",
+  "pauseReading": "रोकें",
+  "resumeReading": "जारी रखें",
+  "stopReading": "बंद करें",
+  "speakingStatus": "चल रहा है...",
+  "pausedStatus": "रुका हुआ",
+  "audioExplanation": "सरल भाषा सारांश सुनें",
+  "voiceLanguage": "आवाज की भाषा",
+  "ttsSpeed": "बोलने की गति"
 }

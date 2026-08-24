@@ -588,5 +588,14 @@
   "step3CareSetu": "CareSetu Medical history, allergies, and reports unlock in authorized session",
   "step4CareSetu": "CareSetu New consultations and prescriptions sync to your CareSetu record",
   "demoCareSetuNotice": "CareSetu Demo Patient Simulation Scenario",
-  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record"
+  "openDemoCareSetuRecord": "CareSetu Open Demo CareSetu Record",
+  "readAloud": "پڙهي ٻڌايو",
+  "pauseReading": "روڪيو",
+  "resumeReading": "ٻيهر شروع ڪريو",
+  "stopReading": "بند ڪريو",
+  "speakingStatus": "ڳالهائي رهيو آهي...",
+  "pausedStatus": "روڪيل",
+  "audioExplanation": "سادي ٻوليءَ جو خلاصو ٻڌو",
+  "voiceLanguage": "آواز جي ٻولي",
+  "ttsSpeed": "ڳالهائڻ جي رفتار"
 }

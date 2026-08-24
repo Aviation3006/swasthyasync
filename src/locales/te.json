@@ -588,5 +588,14 @@
   "step3CareSetu": "వైద్య చరిత్ర సురక్షితంగా అందుబాటులోకి వస్తుంది",
   "step4CareSetu": "కొత్త ప్రిస్క్రిప్షన్లు కేర్‌సేతులో సింక్ అవుతాయి",
   "demoCareSetuNotice": "డెమో రోగి సిమ్యులేషన్",
-  "openDemoCareSetuRecord": "డెమో కేర్‌సేతు రికార్డు తెరవండి"
+  "openDemoCareSetuRecord": "డెమో కేర్‌సేతు రికార్డు తెరవండి",
+  "readAloud": "చదివి వినిపించు",
+  "pauseReading": "పాజ్ చేయండి",
+  "resumeReading": "పునఃప్రారంభించండి",
+  "stopReading": "ఆపివేయండి",
+  "speakingStatus": "మాట్లాడుతోంది...",
+  "pausedStatus": "పాజ్ చేయబడింది",
+  "audioExplanation": "సులభమైన సారాంశాన్ని వినండి",
+  "voiceLanguage": "వాయిస్ భాష",
+  "ttsSpeed": "స్పీచ్ వేగం"
 }

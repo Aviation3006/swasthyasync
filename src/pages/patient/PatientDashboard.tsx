@@ -158,7 +158,7 @@ export const PatientDashboard: React.FC = () => {
                 leftIcon={<QrCode className="w-4 h-4 text-emerald-800 flex-shrink-0" />}
                 className="bg-white hover:bg-emerald-50 text-emerald-950 font-bold border-2 border-emerald-400 shadow-md w-full sm:w-auto px-4 py-2"
               >
-                {t.smartHealthCardQR}
+                "CareSetu Smart Card"
               </Button>
             </Link>
             <Link to="/patient/appointments" className="w-full sm:w-auto">
@@ -253,8 +253,8 @@ export const PatientDashboard: React.FC = () => {
               <div className="w-11 h-11 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                 <QrCode className="w-5 h-5" />
               </div>
-              <h3 className="text-xs sm:text-sm font-semibold text-slate-800">{t.healthCardQR}</h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">{t.emergencyHealthQR}</p>
+              <h3 className="text-xs sm:text-sm font-semibold text-slate-800">CareSetu</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5">Smart Health Card</p>
             </Card>
           </Link>
         </div>

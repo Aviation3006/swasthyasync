@@ -588,5 +588,14 @@
   "step3CareSetu": "طبی تاریخ محفوظ طریقے سے کھلتی ہے",
   "step4CareSetu": "نئے نسخے کیئر سیتو پروفائل میں محفوظ ہوتے ہیں",
   "demoCareSetuNotice": "ڈیمو مریض کا منظر نامہ",
-  "openDemoCareSetuRecord": "ڈیمو کیئر سیتو ریکارڈ کھولیں"
+  "openDemoCareSetuRecord": "ڈیمو کیئر سیتو ریکارڈ کھولیں",
+  "readAloud": "پڑھ کر سنائیں",
+  "pauseReading": "وقفہ",
+  "resumeReading": "دوبارہ شروع کریں",
+  "stopReading": "روکیں",
+  "speakingStatus": "بول رہا ہے...",
+  "pausedStatus": "روکا گیا",
+  "audioExplanation": "آسان زبان میں خلاصہ سنیں",
+  "voiceLanguage": "آواز کی زبان",
+  "ttsSpeed": "بولنے کی رفتار"
 }
