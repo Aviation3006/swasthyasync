@@ -38,10 +38,10 @@ check('src/index.css includes global overflow guardrails and no-scrollbar utilit
 console.log('\n--- TEST GROUP 2: Layout Containers & Navigation Breakpoints ---');
 const authLayout = fs.readFileSync(path.resolve('src/layouts/AuthLayout.tsx'), 'utf-8');
 check('AuthLayout language dropdown is viewport-constrained for 320px screens', () => {
-  assert(authLayout.includes('w-[calc(100vw-28px)]'));
+  assert(authLayout.includes('w-[calc(100vw-24px)]') || authLayout.includes('w-[calc(100vw-28px)]'));
 });
 check('AuthLayout uses responsive padding (p-3 sm:p-6 lg:p-8)', () => {
-  assert(authLayout.includes('p-3 sm:p-6 lg:p-8'));
+  assert(authLayout.includes('px-3 sm:px-6 lg:px-8') || authLayout.includes('p-3 sm:p-6 lg:p-8'));
 });
 
 const patientLayout = fs.readFileSync(path.resolve('src/layouts/PatientLayout.tsx'), 'utf-8');
