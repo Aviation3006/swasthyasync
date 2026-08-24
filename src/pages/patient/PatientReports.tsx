@@ -253,18 +253,18 @@ export const PatientReports: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => handleProcessFile({ name: preset.name, size: preset.size, type: 'application/pdf', labName: preset.labName }, true)}
-                  className="p-3 rounded-xl border border-slate-200 bg-white hover:bg-health-50/70 hover:border-health-300 cursor-pointer transition-all flex items-center justify-between group shadow-subtle"
+                  className="p-3 rounded-xl border border-slate-200 bg-white hover:bg-health-50/70 hover:border-health-300 cursor-pointer transition-all flex items-center justify-between gap-2.5 min-w-0 group shadow-subtle"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-health-50 text-health-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="w-8 h-8 rounded-lg bg-health-50 text-health-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                       <FileText className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900 line-clamp-1">{preset.name}</h4>
-                      <p className="text-[10px] text-slate-500">{preset.type} • {preset.size}</p>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs font-bold text-slate-900 truncate break-all" title={preset.name}>{preset.name}</h4>
+                      <p className="text-[10px] text-slate-500 truncate">{preset.type} • {preset.size}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-health-700">
+                  <Button variant="ghost" size="sm" className="text-health-700 shrink-0 text-xs px-2 sm:px-3">
                     {t.view} →
                   </Button>
                 </div>

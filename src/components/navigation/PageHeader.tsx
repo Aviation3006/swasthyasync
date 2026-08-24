@@ -42,16 +42,16 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       )}
 
       {/* Title Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight break-words">{title}</h1>
-            {badge && <div>{badge}</div>}
+            {badge && <div className="shrink-0">{badge}</div>}
           </div>
-          {subtitle && <p className="text-sm text-slate-500 mt-1 max-w-3xl">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-slate-500 mt-1 max-w-3xl break-words">{subtitle}</p>}
         </div>
 
-        {actions && <div className="flex items-center gap-2.5 flex-shrink-0 flex-wrap">{actions}</div>}
+        {actions && <div className="flex items-center gap-2.5 flex-shrink-0 flex-wrap min-w-0">{actions}</div>}
       </div>
     </div>
   );

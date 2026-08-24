@@ -116,99 +116,100 @@ export const PatientHealthQR: React.FC = () => {
             <div className="absolute bottom-0 left-0 transform -translate-x-12 translate-y-12 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Microchip Graphic & Card Brand Header */}
-            <div className="flex items-start justify-between gap-4 pb-5 border-b border-slate-800/80">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col xs:flex-row xs:items-start justify-between gap-3.5 pb-4 border-b border-slate-800/80 min-w-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                 {/* Gold Smart Chip Graphic */}
-                <div className="w-12 h-9 rounded-lg bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 p-0.5 shadow-md flex items-center justify-center">
+                <div className="w-11 h-8 sm:w-12 sm:h-9 rounded-lg bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 p-0.5 shadow-md flex items-center justify-center shrink-0">
                   <div className="w-full h-full border border-amber-800/40 rounded flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-amber-950" />
+                    <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-950" />
                   </div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1.5">
                       Care<span className="text-emerald-400">Setu</span>™
                     </span>
-                    <span className="text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 flex items-center gap-1">
+                    <span className="text-[9px] sm:text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 flex items-center gap-1 shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       {cardStatus}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-medium tracking-wide">
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium tracking-wide truncate">
                     {t.smartHealthCard || "Smart Health Card"} • National Health Network
                   </p>
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
+              <div className="text-left xs:text-right shrink-0 min-w-0">
+                <span className="text-[9px] sm:text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
                   {t.careSetuId || "CareSetu ID"}
                 </span>
-                <span className="font-mono font-black text-emerald-300 text-sm sm:text-base tracking-wider">
+                <span className="font-mono font-black text-emerald-300 text-xs sm:text-base tracking-wider break-all">
                   {careSetuId}
                 </span>
               </div>
             </div>
 
             {/* Middle Section: Demographics & QR Gateway */}
-            <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="py-5 flex flex-col sm:flex-row items-center justify-between gap-5 min-w-0">
               
               {/* Demographics Area */}
-              <div className="space-y-3 flex-1 text-center sm:text-left">
+              <div className="space-y-3 flex-1 text-center sm:text-left min-w-0 w-full">
                 <div>
                   <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block">
                     {t.patientName || "Patient Name"}
                   </span>
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight break-words">
                     {language === 'mr' && patient.nameMarathi ? patient.nameMarathi : (patient.name || user?.name || "Rameshwar B. Jadhav")}
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">{t.bloodGroup || "Blood Group"}</span>
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1 min-w-0">
+                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                    <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.bloodGroup || "Blood Group"}</span>
                     <span className="font-extrabold text-rose-400 text-sm flex items-center gap-1">
                       <Droplet className="w-3.5 h-3.5 fill-rose-400" />
                       {patient.bloodGroup || 'B+'}
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">{t.ageGender || "Age / Gender"}</span>
-                    <span className="font-bold text-slate-200 text-xs">
+                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                    <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.ageGender || "Age / Gender"}</span>
+                    <span className="font-bold text-slate-200 text-xs truncate block">
                       {patient.age > 0 ? `${patient.age} Yrs / ${patient.gender}` : '48 Yrs / Male'}
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">{t.district || "Location"}</span>
-                    <span className="font-semibold text-slate-200 text-xs truncate block">
+                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                    <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.district || "Location"}</span>
+                    <span className="font-semibold text-slate-200 text-xs truncate block" title={`${patient.address?.district || 'Pune'}, ${patient.address?.state || 'Maharashtra'}`}>
                       {patient.address?.district || 'Pune'}, {patient.address?.state || 'Maharashtra'}
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">{(t as any).issuedDate || "Issue Date"}</span>
-                    <span className="font-semibold text-slate-300 text-xs">{issueDate}</span>
+                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                    <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{(t as any).issuedDate || "Issue Date"}</span>
+                    <span className="font-semibold text-slate-300 text-xs truncate block">{issueDate}</span>
                   </div>
                 </div>
 
                 {/* Emergency Contact */}
                 {patient.emergencyContact?.phone && (
-                  <div className="pt-1 text-[11px] text-slate-300 flex items-center gap-1.5">
-                    <PhoneCall className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span><strong>Emergency:</strong> {patient.emergencyContact.name} ({patient.emergencyContact.phone})</span>
+                  <div className="pt-1 text-[11px] text-slate-300 flex items-center gap-1.5 flex-wrap">
+                    <PhoneCall className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="break-words"><strong>Emergency:</strong> {patient.emergencyContact.name} ({patient.emergencyContact.phone})</span>
                   </div>
                 )}
               </div>
 
               {/* Secure CareSetu QR Gateway */}
-              <div className="flex-shrink-0 p-3.5 bg-white rounded-2xl shadow-2xl border-4 border-emerald-500 flex flex-col items-center">
+              <div className="shrink-0 p-3 bg-white rounded-2xl shadow-2xl border-4 border-emerald-500 flex flex-col items-center">
                 <QRCodeSVG
                   value={secureQrPayload}
-                  size={145}
+                  size={135}
                   level="H"
                   includeMargin={false}
+                  className="w-28 h-28 sm:w-34 sm:h-34"
                 />
                 <span className="mt-2 text-[9px] font-black text-slate-800 tracking-wider uppercase flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-600" />

@@ -16,7 +16,7 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-xl border border-slate-200 shadow-card transition-all ${
+      className={`bg-white rounded-xl border border-slate-200 shadow-card transition-all max-w-full min-w-0 ${
         hoverEffect ? 'hover:shadow-elevated hover:border-slate-300' : ''
       } ${padded ? 'p-3.5 sm:p-5 sm:p-6' : ''} ${className}`}
       {...props}
@@ -34,19 +34,19 @@ export const CardHeader: React.FC<{
   className?: string;
 }> = ({ title, subtitle, action, icon, className = '' }) => {
   return (
-    <div className={`flex items-start justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 ${className}`}>
-      <div className="flex items-center gap-3">
+    <div className={`flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 min-w-0 ${className}`}>
+      <div className="flex items-center gap-3 min-w-0 flex-1">
         {icon && (
           <div className="w-10 h-10 rounded-lg bg-health-50 text-health-700 flex items-center justify-center flex-shrink-0">
             {icon}
           </div>
         )}
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold text-slate-900 leading-snug">{title}</h3>
-          {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+        <div className="min-w-0 flex-1">
+          <h3 className="text-base sm:text-lg font-semibold text-slate-900 leading-snug break-words">{title}</h3>
+          {subtitle && <p className="text-xs text-slate-500 mt-0.5 break-words">{subtitle}</p>}
         </div>
       </div>
-      {action && <div className="flex-shrink-0">{action}</div>}
+      {action && <div className="flex-shrink-0 self-start xs:self-auto min-w-0">{action}</div>}
     </div>
   );
 };

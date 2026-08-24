@@ -63,7 +63,7 @@ export const CareSetuPatientRecord: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       
       {/* Top Navigation & Back Action */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
         <button
           type="button"
           onClick={() => navigate('/hospital')}
@@ -125,8 +125,8 @@ export const CareSetuPatientRecord: React.FC = () => {
       </div>
 
       {/* 2. PATIENT IDENTITY HEADER CARD */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 min-w-0">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-800 text-white flex items-center justify-center font-black text-2xl shadow-md shrink-0">
             {patient.name.charAt(0)}
           </div>

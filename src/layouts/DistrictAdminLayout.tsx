@@ -21,7 +21,7 @@ export const DistrictAdminLayout: React.FC = () => {
       />
 
       {/* Body container */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-w-0">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
           <Sidebar
@@ -44,7 +44,7 @@ export const DistrictAdminLayout: React.FC = () => {
         )}
 
         {/* Main Administrative Command Area */}
-        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-12 max-w-7xl mx-auto w-full">
+        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-12 max-w-7xl mx-auto w-full min-w-0">
           <Outlet />
         </main>
       </div>

@@ -309,9 +309,30 @@ export const PatientRecords: React.FC = () => {
               </div>
             )}
 
+            {/* Attached Documents */}
+            {selectedRecord.attachments && selectedRecord.attachments.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Attached Documents</h4>
+                <div className="space-y-2">
+                  {selectedRecord.attachments.map((att, idx) => (
+                    <div key={idx} className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-2 min-w-0">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <FileText className="w-4 h-4 text-health-600 shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-800 truncate break-all" title={att.name}>{att.name}</p>
+                          <p className="text-[10px] text-slate-400 uppercase">{att.type} • {att.size}</p>
+                        </div>
+                      </div>
+                      <span className="text-[11px] text-health-700 font-semibold shrink-0">Attached</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Digital Signature & Verification Hash */}
-            <div className="p-3 bg-slate-900 text-slate-300 rounded-xl text-xs space-y-1.5 font-mono">
-              <div className="flex items-center justify-between text-emerald-400 font-sans font-semibold">
+            <div className="p-3 bg-slate-900 text-slate-300 rounded-xl text-xs space-y-1.5 font-mono min-w-0">
+              <div className="flex items-center justify-between text-emerald-400 font-sans font-semibold flex-wrap gap-1">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4" /> Digitally Signed ABDM Document
                 </span>

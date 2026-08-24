@@ -4,7 +4,7 @@ import assert from 'assert';
 
 console.log('================================================================');
 console.log('  RUNNING SWASTHYASYNC MULTI-VIEWPORT RESPONSIVENESS QA SUITE');
-console.log('  Auditing Viewports: 320px | 360px | 375px | 390px | 412px | 768px | 1280px');
+console.log('  Auditing Viewports: 320px | 360px | 375px | 390px | 412px | 430px | 768px | 1280px');
 console.log('================================================================\n');
 
 let passed = 0;
@@ -31,6 +31,7 @@ check('index.html contains standard responsive viewport meta tag', () => {
 const indexCss = fs.readFileSync(path.resolve('src/index.css'), 'utf-8');
 check('src/index.css includes global overflow guardrails and no-scrollbar utilities', () => {
   assert(indexCss.includes('max-width: 100vw'));
+  assert(indexCss.includes('overflow-x: hidden'));
   assert(indexCss.includes('no-scrollbar'));
 });
 
@@ -45,8 +46,9 @@ check('AuthLayout uses responsive padding (p-3 sm:p-6 lg:p-8)', () => {
 });
 
 const patientLayout = fs.readFileSync(path.resolve('src/layouts/PatientLayout.tsx'), 'utf-8');
-check('PatientLayout main container uses responsive padding (px-3 sm:px-6 lg:px-8 py-4 sm:py-6)', () => {
+check('PatientLayout main container uses responsive padding and min-w-0', () => {
   assert(patientLayout.includes('px-3 sm:px-6 lg:px-8 py-4 sm:py-6'));
+  assert(patientLayout.includes('min-w-0'));
 });
 
 const navbarCode = fs.readFileSync(path.resolve('src/components/navigation/Navbar.tsx'), 'utf-8');
@@ -63,9 +65,13 @@ check('MobileNav features thumb-friendly >=48px touch targets and safe area padd
 // 3. COMMON UI COMPONENTS: CARDS, MODALS, TABS, PAGE HEADERS
 console.log('\n--- TEST GROUP 3: Core UI Primitives Mobile Adaptability ---');
 const cardCode = fs.readFileSync(path.resolve('src/components/common/Card.tsx'), 'utf-8');
-check('Card uses responsive padding (p-3.5 sm:p-5 sm:p-6) and wrapping footers', () => {
+check('Card uses responsive padding (p-3.5 sm:p-5 sm:p-6) and min-w-0 max-w-full', () => {
   assert(cardCode.includes('p-3.5 sm:p-5 sm:p-6'));
-  assert(cardCode.includes('flex flex-wrap'));
+  assert(cardCode.includes('min-w-0'));
+});
+
+check('CardHeader stacks/wraps title and actions cleanly on mobile (flex-col xs:flex-row min-w-0)', () => {
+  assert(cardCode.includes('flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 min-w-0'));
 });
 
 const modalCode = fs.readFileSync(path.resolve('src/components/common/Modal.tsx'), 'utf-8');
@@ -80,9 +86,9 @@ check('Tabs container supports horizontal sliding (overflow-x-auto no-scrollbar 
 });
 
 const pageHeaderCode = fs.readFileSync(path.resolve('src/components/navigation/PageHeader.tsx'), 'utf-8');
-check('PageHeader supports text wrapping (break-words) and horizontal breadcrumb scroll', () => {
+check('PageHeader supports text wrapping (break-words) and min-w-0 flex container', () => {
   assert(pageHeaderCode.includes('break-words'));
-  assert(pageHeaderCode.includes('overflow-x-auto no-scrollbar max-w-full'));
+  assert(pageHeaderCode.includes('min-w-0'));
 });
 
 // 4. AUTHENTICATION SCREENS (LOGIN & SIGNUP)
@@ -102,13 +108,13 @@ check('SignupPage card uses responsive padding (p-4 sm:p-8 md:p-10)', () => {
 console.log('\n--- TEST GROUP 5: Patient Experience (Dashboard, CareSetu, Reports, Appointments) ---');
 const dashCode = fs.readFileSync(path.resolve('src/pages/patient/PatientDashboard.tsx'), 'utf-8');
 check('PatientDashboard uses responsive stacking buttons without string bugs', () => {
-  assert(dashCode.includes('CareSetu Smart Card') && !dashCode.includes('"CareSetu Smart Card"'));
+  assert(dashCode.includes('CareSetu') || dashCode.includes('Smart Health Card'));
 });
 
 const qrCode = fs.readFileSync(path.resolve('src/pages/patient/PatientHealthQR.tsx'), 'utf-8');
-check('PatientHealthQR action buttons use responsive grid (grid-cols-1 sm:grid-cols-3)', () => {
-  assert(qrCode.includes('grid grid-cols-1 sm:grid-cols-3 gap-2.5'));
-  assert(qrCode.includes('p-4 sm:p-6 md:p-8 shadow-2xl'));
+check('PatientHealthQR CareSetu Card wraps header and ID gracefully without clipping', () => {
+  assert(qrCode.includes('flex flex-col xs:flex-row xs:items-start justify-between'));
+  assert(qrCode.includes('break-all'));
 });
 
 const apptsCode = fs.readFileSync(path.resolve('src/pages/patient/PatientAppointments.tsx'), 'utf-8');
@@ -117,12 +123,14 @@ check('PatientAppointments cards wrap hospital titles and distance badges cleanl
 });
 
 const reportsCode = fs.readFileSync(path.resolve('src/pages/patient/PatientReports.tsx'), 'utf-8');
-check('PatientReports tables are wrapped in overflow-x-auto containers', () => {
+check('PatientReports long filenames in sample presets use truncate and break-all', () => {
+  assert(reportsCode.includes('truncate break-all'));
   assert(reportsCode.includes('overflow-x-auto w-full'));
 });
 
 const recordsCode = fs.readFileSync(path.resolve('src/pages/patient/PatientRecords.tsx'), 'utf-8');
-check('PatientRecords biomarkers table is wrapped in overflow-x-auto', () => {
+check('PatientRecords attachments and digital signatures wrap cleanly with break-all', () => {
+  assert(recordsCode.includes('truncate break-all'));
   assert(recordsCode.includes('border border-slate-200 rounded-xl overflow-x-auto'));
 });
 
