@@ -272,7 +272,7 @@ export const PatientRecords: React.FC = () => {
                   <span>{t.biomarkers}</span>
                   <span className="text-[10px] font-normal text-slate-500">Standard Calibration Units</span>
                 </h4>
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="border border-slate-200 rounded-xl overflow-x-auto">
                   <table className="min-w-full divide-y divide-slate-200 text-xs text-left">
                     <thead className="bg-slate-50 text-slate-700 font-semibold">
                       <tr>

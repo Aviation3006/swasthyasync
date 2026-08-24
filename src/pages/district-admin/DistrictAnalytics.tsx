@@ -235,7 +235,7 @@ export const DistrictAnalytics: React.FC = () => {
           icon={<FileSpreadsheet className="w-5 h-5 text-emerald-600" />}
         />
         <CardContent>
-          <div className="border border-slate-200 rounded-xl overflow-hidden">
+          <div className="border border-slate-200 rounded-xl overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 text-xs text-left">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>

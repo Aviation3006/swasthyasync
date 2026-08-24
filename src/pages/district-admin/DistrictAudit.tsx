@@ -383,7 +383,7 @@ export const DistrictAudit: React.FC = () => {
       </div>
 
       {/* SECTION 4: Comprehensive Doctor Performance & Ratings Table (20 Doctors) */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-2xl p-3.5 sm:p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">

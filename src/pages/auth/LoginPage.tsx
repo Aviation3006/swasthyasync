@@ -145,7 +145,7 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="w-full max-w-lg mx-auto">
       {/* Main Authentication Card */}
-      <div className="bg-slate-950/85 backdrop-blur-xl border border-slate-700/80 shadow-2xl rounded-3xl p-6 sm:p-8 text-white">
+      <div className="bg-slate-950/85 backdrop-blur-xl border border-slate-700/80 shadow-2xl rounded-3xl p-4 sm:p-8 text-white">
         
         {/* Card Header */}
         <div className="text-center space-y-1 mb-6">
@@ -385,7 +385,7 @@ export const LoginPage: React.FC = () => {
                   }
                 </span>
               </div>
-              <div className="text-slate-400 text-[11px] font-mono">
+              <div className="text-slate-400 text-[11px] font-mono break-all">
                 {identifier}
               </div>
             </div>
@@ -403,7 +403,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Backend & Compliance Footer */}
-        <div className="mt-5 p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-5 p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center flex flex-col xs:flex-row items-center justify-between gap-1.5 text-xs text-slate-400">
           <div className="flex items-center gap-2 text-[11px]">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>

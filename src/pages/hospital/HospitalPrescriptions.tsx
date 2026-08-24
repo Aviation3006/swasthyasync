@@ -479,7 +479,7 @@ export const HospitalPrescriptions: React.FC = () => {
             {/* Rx Drug Table */}
             <div>
               <h4 className="font-bold text-sm text-slate-900 mb-1">℞ Prescribed Medicines</h4>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <div className="border border-slate-200 rounded-lg overflow-x-auto">
                 <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
                   <thead className="bg-slate-50 font-semibold text-slate-700">
                     <tr>

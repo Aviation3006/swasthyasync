@@ -150,7 +150,7 @@ export const PatientDashboard: React.FC = () => {
           </div>
 
           {/* Quick Health Card Link - Clearly visible high-contrast buttons */}
-          <div className="flex flex-row sm:flex-col lg:flex-row gap-2.5 w-full lg:w-auto flex-wrap items-stretch sm:items-center">
+          <div className="flex flex-col sm:flex-row lg:flex-row gap-2.5 w-full lg:w-auto items-stretch">
             <Link to="/patient/health-qr" className="w-full sm:w-auto">
               <Button
                 variant="primary"
@@ -158,7 +158,7 @@ export const PatientDashboard: React.FC = () => {
                 leftIcon={<QrCode className="w-4 h-4 text-emerald-800 flex-shrink-0" />}
                 className="bg-white hover:bg-emerald-50 text-emerald-950 font-bold border-2 border-emerald-400 shadow-md w-full sm:w-auto px-4 py-2"
               >
-                "CareSetu Smart Card"
+                CareSetu Smart Card
               </Button>
             </Link>
             <Link to="/patient/appointments" className="w-full sm:w-auto">

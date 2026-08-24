@@ -793,7 +793,7 @@ export const PatientAppointments: React.FC = () => {
                 activeDemoHospital && (
                   <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             {activeDemoHospital.facilityType}
@@ -861,7 +861,7 @@ export const PatientAppointments: React.FC = () => {
                 activeRealFacility && (
                   <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             {activeRealFacility.facilityType}
@@ -938,7 +938,7 @@ export const PatientAppointments: React.FC = () => {
                 demoHospitalsWithDistance.map(hosp => (
                   <Card key={hosp.id} className="border-slate-200 hover:border-health-400 transition-all">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             {hosp.facilityType}
@@ -982,7 +982,7 @@ export const PatientAppointments: React.FC = () => {
                 realFacilities.map(fac => (
                   <Card key={fac.id} className="border-slate-200 hover:border-health-400 transition-all">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             {fac.facilityType}

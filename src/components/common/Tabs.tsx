@@ -24,7 +24,7 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   if (variant === 'pills') {
     return (
-      <div className={`flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 overflow-x-auto ${className}`}>
+      <div className={`flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 overflow-x-auto no-scrollbar max-w-full ${className}`}>
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
@@ -58,7 +58,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }
 
   return (
-    <div className={`border-b border-slate-200 overflow-x-auto ${className}`}>
+    <div className={`border-b border-slate-200 overflow-x-auto no-scrollbar max-w-full ${className}`}>
       <nav className="flex space-x-6 min-w-max" aria-label="Tabs">
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;

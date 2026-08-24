@@ -22,7 +22,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     <div className="mb-6 space-y-2">
       {/* Breadcrumbs */}
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <nav className="flex items-center space-x-1.5 text-xs text-slate-500 mb-1" aria-label="Breadcrumb">
+        <nav className="flex items-center space-x-1.5 text-xs text-slate-500 mb-1 overflow-x-auto no-scrollbar max-w-full" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-slate-800 transition-colors flex items-center gap-1">
             <Home className="w-3.5 h-3.5" />
           </Link>
@@ -45,7 +45,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight break-words">{title}</h1>
             {badge && <div>{badge}</div>}
           </div>
           {subtitle && <p className="text-sm text-slate-500 mt-1 max-w-3xl">{subtitle}</p>}

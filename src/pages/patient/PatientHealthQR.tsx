@@ -109,7 +109,7 @@ export const PatientHealthQR: React.FC = () => {
         
         {/* 1. CARESETU SMART HEALTH CARD (7 COLS) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-emerald-500/40 relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-emerald-500/40 relative overflow-hidden group">
             
             {/* Background Holographic & Watermark Accents */}
             <div className="absolute top-0 right-0 transform translate-x-12 -translate-y-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -230,7 +230,7 @@ export const PatientHealthQR: React.FC = () => {
           </div>
 
           {/* Quick Action Bar Below Card */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <button
               type="button"
               onClick={() => window.print()}

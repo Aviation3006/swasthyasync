@@ -180,7 +180,7 @@ export const SignupPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto my-4">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 sm:p-10 space-y-8 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 sm:p-8 md:p-10 space-y-6 sm:space-y-8 animate-fade-in">
         
         {/* Header & Registration Advisory */}
         <div className="text-center space-y-2">

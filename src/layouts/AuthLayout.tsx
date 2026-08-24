@@ -29,7 +29,7 @@ export const AuthLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between selection:bg-health-600 selection:text-white">
       {/* Top Header with 23-Language Selector */}
-      <header className="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md px-4 sm:px-8 py-3.5 sticky top-0 z-40">
+      <header className="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md px-3.5 sm:px-8 py-3 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-health-700 to-emerald-600 flex items-center justify-center text-white shadow-md">
@@ -42,7 +42,7 @@ export const AuthLayout: React.FC = () => {
                   DIGITAL HEALTH PLATFORM
                 </span>
               </div>
-              <p className="text-xs text-slate-400">Unified Health Records & Hospital OPD Network</p>
+              <p className="text-xs text-slate-400 hidden sm:block">Unified Health Records & Hospital OPD Network</p>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ export const AuthLayout: React.FC = () => {
               </button>
 
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 py-2.5 z-50 animate-scale-up text-white">
+                <div className="absolute right-0 mt-2 w-[calc(100vw-28px)] max-w-xs sm:w-72 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 py-2.5 z-50 animate-scale-up text-white">
                   <div className="px-3 pb-2 border-b border-slate-700">
                     <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
                       Select Preferred Language (23 Languages)
@@ -123,7 +123,7 @@ export const AuthLayout: React.FC = () => {
       </header>
 
       {/* Main Outlet */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 flex items-center justify-center p-3 sm:p-6 lg:p-8">
         <Outlet />
       </main>
 

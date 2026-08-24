@@ -18,7 +18,7 @@ export const Card: React.FC<CardProps> = ({
     <div
       className={`bg-white rounded-xl border border-slate-200 shadow-card transition-all ${
         hoverEffect ? 'hover:shadow-elevated hover:border-slate-300' : ''
-      } ${padded ? 'p-5 sm:p-6' : ''} ${className}`}
+      } ${padded ? 'p-3.5 sm:p-5 sm:p-6' : ''} ${className}`}
       {...props}
     >
       {children}
@@ -34,7 +34,7 @@ export const CardHeader: React.FC<{
   className?: string;
 }> = ({ title, subtitle, action, icon, className = '' }) => {
   return (
-    <div className={`flex items-start justify-between gap-3 pb-4 border-b border-slate-100 ${className}`}>
+    <div className={`flex items-start justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 ${className}`}>
       <div className="flex items-center gap-3">
         {icon && (
           <div className="w-10 h-10 rounded-lg bg-health-50 text-health-700 flex items-center justify-center flex-shrink-0">
@@ -63,7 +63,7 @@ export const CardFooter: React.FC<{ children: React.ReactNode; className?: strin
   className = ''
 }) => {
   return (
-    <div className={`pt-4 mt-4 border-t border-slate-100 flex items-center justify-between ${className}`}>
+    <div className={`pt-3.5 sm:pt-4 mt-3.5 sm:mt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 ${className}`}>
       {children}
     </div>
   );

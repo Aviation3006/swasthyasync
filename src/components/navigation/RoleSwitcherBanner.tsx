@@ -22,12 +22,12 @@ export const RoleSwitcherBanner: React.FC = () => {
 
   return (
     <aside aria-label="Authenticated environment banner" className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-950 text-white text-xs border-b border-slate-800 px-3 sm:px-6 py-2">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-center sm:text-left">
           <span className="flex items-center gap-1.5 font-semibold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80 text-[11px]">
             <ShieldCheck className="w-3.5 h-3.5" /> {t.secureSession}
           </span>
-          <span className="text-slate-300 text-xs">
+          <span className="text-slate-300 text-xs truncate max-w-[220px] sm:max-w-none">
             {t.departmentName} • <strong>{roleLabel}</strong>
           </span>
         </div>

@@ -161,7 +161,7 @@ export const HospitalReports: React.FC = () => {
             </div>
 
             {selectedRecord.biomarkers && (
-              <div className="border rounded-xl overflow-hidden">
+              <div className="border rounded-xl overflow-x-auto">
                 <table className="min-w-full divide-y text-xs text-left">
                   <thead className="bg-slate-50 font-bold text-slate-700">
                     <tr>
