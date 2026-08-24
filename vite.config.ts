@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import dotenv from 'dotenv';
 import { simplifyMedicalReport, analyzeSymptomPattern, isGeminiConfigured } from './server/geminiService';
+import { generateCloudTTS } from './server/ttsService';
 
 dotenv.config();
 
@@ -19,6 +20,29 @@ function geminiApiPlugin(): Plugin {
             geminiConfigured: isGeminiConfigured,
             environment: process.env.NODE_ENV || 'development'
           }));
+          return;
+        }
+
+        if (req.url === '/api/tts' && req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', async () => {
+            try {
+              const data = JSON.parse(body || '{}');
+              const result = await generateCloudTTS({
+                text: data.text,
+                languageCode: data.languageCode
+              });
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(result));
+            } catch (error: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: error.message || 'Internal Cloud TTS Error' }));
+            }
+          });
           return;
         }
 

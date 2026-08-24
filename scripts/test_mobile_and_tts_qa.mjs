@@ -80,8 +80,8 @@ console.log('\n--- TEST GROUP 2: Report Audio Player UI & Status Indicators ---'
 const playerCode = fs.readFileSync(path.resolve('src/components/common/ReportAudioPlayer.tsx'), 'utf-8');
 
 check('ReportAudioPlayer displays Indian language & voice indicator chip', () => {
-  assert(playerCode.includes('voiceInfo?.languageLabel'));
-  assert(playerCode.includes('🇮🇳 Indian English (en-IN)') || playerCode.includes('languageLabel'));
+  assert(playerCode.includes('selectedLanguage.cloudVoiceName') || playerCode.includes('voiceInfo?.languageLabel'));
+  assert(playerCode.includes('English (India)') || playerCode.includes('languageLabel'));
 });
 
 check('ReportAudioPlayer provides Listen/Read Aloud, Pause, Resume, and Stop controls', () => {

@@ -1,4 +1,5 @@
 import { Language } from '../types/common';
+import { fetchCloudTTSAudio, cleanTextForCloudTTS } from '../services/cloudTtsService';
 
 /**
  * Standard BCP-47 Locale mapping for India's 22 official languages + English
@@ -29,293 +30,227 @@ export const LANGUAGE_LOCALE_MAP: Record<Language, { primary: string; aliases: s
   sat: { primary: 'sat-IN', aliases: ['sat_IN', 'or-IN', 'hi-IN'], nameEn: 'Santali', nameNative: 'ᱥᱟᱱᱛᱟᱲᱤ' }
 };
 
-export const CORE_TTS_LANGUAGES: { code: Language; label: string; locale: string; flag: string }[] = [
-  { code: 'en', label: 'English (India)', locale: 'en-IN', flag: '🇮🇳' },
-  { code: 'hi', label: 'हिन्दी', locale: 'hi-IN', flag: '🇮🇳' },
-  { code: 'mr', label: 'मराठी', locale: 'mr-IN', flag: '🇮🇳' }
+export interface TTSLanguageOption {
+  code: 'en' | 'hi' | 'mr';
+  languageCode: 'en-IN' | 'hi-IN' | 'mr-IN';
+  label: string;
+  nativeLabel: string;
+  flag: string;
+  cloudVoiceName: string;
+}
+
+export const CLOUD_TTS_LANGUAGES: TTSLanguageOption[] = [
+  {
+    code: 'en',
+    languageCode: 'en-IN',
+    label: 'English (India)',
+    nativeLabel: 'English (India)',
+    flag: '🇮🇳',
+    cloudVoiceName: 'Gemini Cloud TTS — English (India)'
+  },
+  {
+    code: 'hi',
+    languageCode: 'hi-IN',
+    label: 'हिन्दी',
+    nativeLabel: 'हिन्दी',
+    flag: '🇮🇳',
+    cloudVoiceName: 'Gemini Cloud TTS — हिन्दी'
+  },
+  {
+    code: 'mr',
+    languageCode: 'mr-IN',
+    label: 'मराठी',
+    nativeLabel: 'मराठी',
+    flag: '🇮🇳',
+    cloudVoiceName: 'Gemini Cloud TTS — मराठी'
+  }
 ];
 
-export interface TTSVoiceInfo {
-  voice: SpeechSynthesisVoice;
-  isExactLocale: boolean;
-  displayName: string;
-  languageLabel: string;
-  isFallback: boolean;
-  hasNativeVoice: boolean;
-  statusNotice?: string;
-}
+export const CORE_TTS_LANGUAGES = CLOUD_TTS_LANGUAGES;
 
-/**
- * Strip Markdown & Clean medical text for natural speech pronunciation
- */
+export { cleanTextForCloudTTS };
+
 export function cleanTextForSpeech(rawText: string): string {
-  if (!rawText) return '';
-  return rawText
-    .replace(/[#*_~`]/g, '') // remove markdown symbols
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // convert markdown links to text
-    .replace(/•|\*|-/g, ' ') // convert bullets to spaces
-    .replace(/\s+/g, ' ') // normalize whitespace
-    .replace(/(\d+)\/(\d+)\s*mmHg/gi, '$1 over $2 millimeters of mercury') // BP pronunciation
-    .replace(/mg\/dL/gi, 'milligrams per deciliter')
-    .replace(/g\/dL/gi, 'grams per deciliter')
-    .replace(/°F/g, 'degrees Fahrenheit')
-    .replace(/°C/g, 'degrees Celsius')
-    .replace(/%\s*/g, ' percent ')
-    .trim();
+  return cleanTextForCloudTTS(rawText);
 }
 
-/**
- * Check if Web Speech Synthesis API is supported by the browser
- */
 export function isSpeechSynthesisSupported(): boolean {
-  return typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  return typeof window !== 'undefined' && 'speechSynthesis' in window;
 }
 
-/**
- * Calculate match ranking score for a browser voice against a target language.
- */
 export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Language): number {
   const voiceLang = (voice.lang || '').replace('_', '-').toLowerCase();
   const voiceName = (voice.name || '').toLowerCase();
   let score = 0;
 
   if (lang === 'en') {
-    // ENGLISH: Strictly prefer en-IN over en-US / en-GB
     if (voiceLang === 'en-in') {
       score += 1000;
-    } else if (voiceName.includes('india') || voiceName.includes('indian') || voiceName.includes('heera') || voiceName.includes('neerja') || voiceName.includes('prabhat') || voiceName.includes('rishi') || voiceName.includes('veena') || voiceName.includes('isha')) {
+    } else if (voiceName.includes('india') || voiceName.includes('indian') || voiceName.includes('heera') || voiceName.includes('neerja') || voiceName.includes('prabhat')) {
       score += 800;
     } else if (voiceLang.startsWith('en-gb') || voiceLang === 'en-gb') {
       score += 150;
     } else if (voiceLang.startsWith('en-us') || voiceLang === 'en-us') {
       score += 100;
-    } else if (voiceLang.startsWith('en')) {
-      score += 80;
     } else {
       return -100;
     }
   } else if (lang === 'hi') {
-    // HINDI: Strictly prefer hi-IN
     if (voiceLang === 'hi-in' || voiceLang === 'hi') {
       score += 1000;
-    } else if (voiceName.includes('hindi') || voiceName.includes('हिन्दी') || voiceName.includes('hemant') || voiceName.includes('kalpana') || voiceName.includes('swara') || voiceName.includes('madhur') || voiceName.includes('lekha') || voiceName.includes('neel')) {
+    } else if (voiceName.includes('hindi') || voiceName.includes('हिन्दी') || voiceName.includes('hemant') || voiceName.includes('kalpana')) {
       score += 800;
     } else if (voiceLang.startsWith('hi')) {
       score += 500;
-    } else if (voiceLang === 'mr-in' || voiceLang.startsWith('mr')) {
-      score += 200;
-    } else if (voiceLang === 'en-in') {
-      score += 50;
     } else {
       score += 10;
     }
   } else if (lang === 'mr') {
-    // MARATHI: Strictly prefer mr-IN, fallback gracefully to hi-IN
     if (voiceLang === 'mr-in' || voiceLang === 'mr') {
       score += 1000;
-    } else if (voiceName.includes('marathi') || voiceName.includes('मराठी') || voiceName.includes('aarohi') || voiceName.includes('manohar')) {
+    } else if (voiceName.includes('marathi') || voiceName.includes('मराठी') || voiceName.includes('aarohi')) {
       score += 800;
-    } else if (voiceLang.startsWith('mr')) {
-      score += 500;
     } else if (voiceLang === 'hi-in' || voiceLang === 'hi' || voiceName.includes('hindi') || voiceName.includes('हिन्दी')) {
       score += 350;
-    } else if (voiceLang === 'en-in') {
-      score += 50;
     } else {
       score += 10;
     }
-  } else {
-    const meta = LANGUAGE_LOCALE_MAP[lang];
-    const primary = meta?.primary.toLowerCase();
-    const aliases = (meta?.aliases || []).map(a => a.toLowerCase());
-
-    if (primary && voiceLang === primary) {
-      score += 1000;
-    } else if (aliases.includes(voiceLang)) {
-      score += 600;
-    } else if (voiceName.includes(meta?.nameEn.toLowerCase() || '')) {
-      score += 500;
-    } else if (primary && voiceLang.startsWith(primary.split('-')[0])) {
-      score += 300;
-    } else if (voiceLang.endsWith('-in')) {
-      score += 50;
-    } else {
-      score += 10;
-    }
-  }
-
-  if (voiceName.includes('natural') || voiceName.includes('online') || voiceName.includes('neural') || voiceName.includes('google')) {
-    score += 40;
-  }
-
-  if (voice.default) {
-    score += 10;
   }
 
   return score;
 }
 
-/**
- * Get the best matching available browser voice for a given language code.
- */
+export interface TTSVoiceInfo {
+  voice?: SpeechSynthesisVoice;
+  isExactLocale?: boolean;
+  displayName: string;
+  languageLabel: string;
+  isFallback?: boolean;
+  hasNativeVoice?: boolean;
+  statusNotice?: string;
+}
+
 export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
-  if (!isSpeechSynthesisSupported()) return null;
-
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices || voices.length === 0) return null;
-
-  const langMeta = LANGUAGE_LOCALE_MAP[lang] || LANGUAGE_LOCALE_MAP.en;
-
-  // Rank all available voices
-  const rankedVoices = voices
-    .map(v => ({ voice: v, score: scoreVoiceForLanguage(v, lang) }))
-    .sort((a, b) => b.score - a.score);
-
-  const best = rankedVoices[0]?.voice || voices[0];
-  const bestScore = rankedVoices[0]?.score || 0;
-
-  const voiceLang = (best.lang || '').replace('_', '-').toLowerCase();
-  const primaryLocale = langMeta.primary.toLowerCase();
-
-  // Check if a native voice actually exists for this specific language
-  const hasNative = rankedVoices.some(rv => {
-    const l = (rv.voice.lang || '').replace('_', '-').toLowerCase();
-    return l === primaryLocale || (lang === 'en' && l === 'en-in') || (lang === 'hi' && l.startsWith('hi')) || (lang === 'mr' && l.startsWith('mr'));
-  });
-
-  const isExact = voiceLang === primaryLocale || (lang === 'en' && voiceLang === 'en-in') || (lang === 'hi' && voiceLang.startsWith('hi')) || (lang === 'mr' && voiceLang.startsWith('mr'));
-  const isFallback = !isExact;
-
-  let languageLabel = `${langMeta.nameNative} (${langMeta.primary})`;
-  let statusNotice: string | undefined = undefined;
-
-  if (lang === 'en') {
-    languageLabel = isExact ? 'English (India) — en-IN' : 'English (System Fallback)';
-    if (isFallback) {
-      statusNotice = 'Native en-IN voice not installed on device — using system voice.';
-    }
-  } else if (lang === 'hi') {
-    languageLabel = isExact ? 'हिन्दी — hi-IN' : 'हिन्दी (सहायक आवाज)';
-    if (isFallback) {
-      statusNotice = 'Native hi-IN voice not installed on device — using fallback.';
-    }
-  } else if (lang === 'mr') {
-    languageLabel = isExact ? 'मराठी — mr-IN' : 'मराठी (हिन्दी/System Fallback)';
-    if (isFallback) {
-      statusNotice = 'Native Marathi (mr-IN) voice not on device — using Hindi/System fallback.';
-    }
-  }
-
+  const opt = CLOUD_TTS_LANGUAGES.find(l => l.code === lang) || CLOUD_TTS_LANGUAGES[0];
   return {
-    voice: best,
-    isExactLocale: isExact,
-    displayName: `${best.name} (${best.lang || 'default'})`,
-    languageLabel,
-    isFallback,
-    hasNativeVoice: hasNative,
-    statusNotice
+    displayName: opt.cloudVoiceName,
+    languageLabel: opt.nativeLabel,
+    hasNativeVoice: true
   };
 }
 
 /**
- * Controller for Web Speech Synthesis
+ * Controller for Native HTML5 Cloud Audio Playback
  */
-export class TextToSpeechController {
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
-  private onStateChangeCallback: ((state: { isPlaying: boolean; isPaused: boolean }) => void) | null = null;
+export class CloudAudioPlayerController {
+  private audioElement: HTMLAudioElement | null = null;
+  private currentSpeed: number = 0.95;
+  private onStateChange: ((state: { isPlaying: boolean; isPaused: boolean; isLoading: boolean; error: string | null }) => void) | null = null;
 
-  constructor(onStateChange?: (state: { isPlaying: boolean; isPaused: boolean }) => void) {
-    this.onStateChangeCallback = onStateChange || null;
+  constructor(onStateChange?: (state: { isPlaying: boolean; isPaused: boolean; isLoading: boolean; error: string | null }) => void) {
+    this.onStateChange = onStateChange || null;
   }
 
-  public speak(params: {
+  public async playCloudSpeech(params: {
     text: string;
-    language: Language;
-    rate?: number;
+    languageCode: 'en-IN' | 'hi-IN' | 'mr-IN' | string;
+    speed?: number;
     onStart?: () => void;
     onEnd?: () => void;
-    onError?: (err: any) => void;
-  }): boolean {
-    if (!isSpeechSynthesisSupported()) return false;
-
-    // Cancel any previous speech
+    onError?: (errorMsg: string) => void;
+  }): Promise<void> {
     this.stop();
 
-    const cleanedText = cleanTextForSpeech(params.text);
-    if (!cleanedText) return false;
-
-    const utterance = new SpeechSynthesisUtterance(cleanedText);
-    const voiceInfo = getBestVoiceForLanguage(params.language);
-
-    if (voiceInfo?.voice) {
-      utterance.voice = voiceInfo.voice;
-      utterance.lang = voiceInfo.voice.lang;
-    } else {
-      const meta = LANGUAGE_LOCALE_MAP[params.language] || LANGUAGE_LOCALE_MAP.en;
-      utterance.lang = meta.primary;
+    if (params.speed) {
+      this.currentSpeed = params.speed;
     }
 
-    utterance.rate = params.rate || 0.95;
-    utterance.pitch = 1.0;
+    this.notifyState({ isPlaying: false, isPaused: false, isLoading: true, error: null });
 
-    utterance.onstart = () => {
-      this.notifyState(true, false);
-      if (params.onStart) params.onStart();
-    };
+    try {
+      const audioDataUri = await fetchCloudTTSAudio({
+        text: params.text,
+        languageCode: params.languageCode
+      });
 
-    utterance.onpause = () => {
-      this.notifyState(false, true);
-    };
+      const audio = new Audio(audioDataUri);
+      this.audioElement = audio;
+      audio.playbackRate = this.currentSpeed;
 
-    utterance.onresume = () => {
-      this.notifyState(true, false);
-    };
+      audio.onplay = () => {
+        this.notifyState({ isPlaying: true, isPaused: false, isLoading: false, error: null });
+        if (params.onStart) params.onStart();
+      };
 
-    utterance.onend = () => {
-      this.notifyState(false, false);
-      this.currentUtterance = null;
-      if (params.onEnd) params.onEnd();
-    };
+      audio.onpause = () => {
+        if (!audio.ended && audio.currentTime > 0) {
+          this.notifyState({ isPlaying: false, isPaused: true, isLoading: false, error: null });
+        }
+      };
 
-    utterance.onerror = (e) => {
-      if (e.error !== 'interrupted' && e.error !== 'canceled') {
-        console.warn('SpeechSynthesis error:', e);
-      }
-      this.notifyState(false, false);
-      this.currentUtterance = null;
-      if (params.onError) params.onError(e);
-    };
+      audio.onended = () => {
+        this.notifyState({ isPlaying: false, isPaused: false, isLoading: false, error: null });
+        if (params.onEnd) params.onEnd();
+      };
 
-    this.currentUtterance = utterance;
-    window.speechSynthesis.speak(utterance);
-    return true;
+      audio.onerror = (e) => {
+        console.error('Audio element playback error:', e);
+        const errMsg = 'Cloud voice playback encountered an issue.';
+        this.notifyState({ isPlaying: false, isPaused: false, isLoading: false, error: errMsg });
+        if (params.onError) params.onError(errMsg);
+      };
+
+      await audio.play();
+    } catch (err: any) {
+      console.error('Cloud TTS generation failed:', err);
+      const userFacingError = 'Cloud voice is temporarily unavailable. Please try again.';
+      this.notifyState({ isPlaying: false, isPaused: false, isLoading: false, error: userFacingError });
+      if (params.onError) params.onError(userFacingError);
+    }
   }
 
   public pause(): void {
-    if (isSpeechSynthesisSupported() && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-      window.speechSynthesis.pause();
-      this.notifyState(false, true);
+    if (this.audioElement && !this.audioElement.paused) {
+      this.audioElement.pause();
+      this.notifyState({ isPlaying: false, isPaused: true, isLoading: false, error: null });
     }
   }
 
   public resume(): void {
-    if (isSpeechSynthesisSupported() && window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-      this.notifyState(true, false);
+    if (this.audioElement && this.audioElement.paused) {
+      this.audioElement.play().then(() => {
+        this.notifyState({ isPlaying: true, isPaused: false, isLoading: false, error: null });
+      }).catch(e => {
+        console.warn('Audio resume error:', e);
+      });
     }
   }
 
   public stop(): void {
-    if (isSpeechSynthesisSupported()) {
-      window.speechSynthesis.cancel();
-      this.currentUtterance = null;
-      this.notifyState(false, false);
+    if (this.audioElement) {
+      try {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+        this.audioElement = null;
+      } catch (e) {
+        // ignore
+      }
+      this.notifyState({ isPlaying: false, isPaused: false, isLoading: false, error: null });
     }
   }
 
-  private notifyState(isPlaying: boolean, isPaused: boolean) {
-    if (this.onStateChangeCallback) {
-      this.onStateChangeCallback({ isPlaying, isPaused });
+  public setSpeed(speed: number): void {
+    this.currentSpeed = speed;
+    if (this.audioElement) {
+      this.audioElement.playbackRate = speed;
+    }
+  }
+
+  private notifyState(state: { isPlaying: boolean; isPaused: boolean; isLoading: boolean; error: string | null }) {
+    if (this.onStateChange) {
+      this.onStateChange(state);
     }
   }
 }
+
+export class TextToSpeechController extends CloudAudioPlayerController {}

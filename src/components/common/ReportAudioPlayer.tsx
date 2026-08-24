@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Volume2, 
-  VolumeX, 
   Play, 
   Pause, 
   Square, 
   Sparkles, 
   AlertCircle,
   Globe,
-  Info,
-  CheckCircle2
+  Loader2
 } from 'lucide-react';
 import { 
-  TextToSpeechController, 
-  isSpeechSynthesisSupported, 
-  getBestVoiceForLanguage, 
-  TTSVoiceInfo,
-  CORE_TTS_LANGUAGES
+  CloudAudioPlayerController, 
+  CLOUD_TTS_LANGUAGES, 
+  TTSLanguageOption 
 } from '../../utils/textToSpeech';
 import { Language } from '../../types/common';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -34,119 +30,110 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
   title,
   className = ''
 }) => {
-  const { t, language: appLanguage } = useTranslation();
+  const { t } = useTranslation();
   
-  // Interactive Voice/Language selection (defaults to report/app language: en / mr / hi)
-  const defaultLang: Language = (initialLanguage === 'mr' ? 'mr' : initialLanguage === 'hi' ? 'hi' : 'en');
-  const [selectedTtsLang, setSelectedTtsLang] = useState<Language>(defaultLang);
+  // Selected cloud TTS language code ('en-IN', 'hi-IN', 'mr-IN')
+  const defaultOption: TTSLanguageOption = 
+    initialLanguage === 'mr' ? CLOUD_TTS_LANGUAGES[2] : 
+    initialLanguage === 'hi' ? CLOUD_TTS_LANGUAGES[1] : 
+    CLOUD_TTS_LANGUAGES[0];
 
-  const [isSupported, setIsSupported] = useState<boolean>(true);
+  const [selectedLanguage, setSelectedLanguage] = useState<TTSLanguageOption>(defaultOption);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [speechRate, setSpeechRate] = useState<number>(0.95);
-  const [voiceInfo, setVoiceInfo] = useState<TTSVoiceInfo | null>(null);
 
-  const ttsRef = useRef<TextToSpeechController | null>(null);
+  const playerRef = useRef<CloudAudioPlayerController | null>(null);
 
-  // Sync selectedTtsLang if parent report language changes
+  // Sync selected TTS language when parent report language changes
   useEffect(() => {
-    if (initialLanguage) {
-      const valid: Language = initialLanguage === 'mr' ? 'mr' : initialLanguage === 'hi' ? 'hi' : 'en';
-      setSelectedTtsLang(valid);
+    if (initialLanguage === 'mr') {
+      setSelectedLanguage(CLOUD_TTS_LANGUAGES[2]);
+    } else if (initialLanguage === 'hi') {
+      setSelectedLanguage(CLOUD_TTS_LANGUAGES[1]);
+    } else if (initialLanguage === 'en') {
+      setSelectedLanguage(CLOUD_TTS_LANGUAGES[0]);
     }
   }, [initialLanguage]);
 
   useEffect(() => {
-    const supported = isSpeechSynthesisSupported();
-    setIsSupported(supported);
-
-    if (supported) {
-      const controller = new TextToSpeechController(({ isPlaying: playing, isPaused: paused }) => {
-        setIsPlaying(playing);
-        setIsPaused(paused);
-      });
-      ttsRef.current = controller;
-
-      const updateVoice = () => {
-        const best = getBestVoiceForLanguage(selectedTtsLang);
-        setVoiceInfo(best);
-      };
-
-      updateVoice();
-
-      if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = updateVoice;
+    const controller = new CloudAudioPlayerController(({ isPlaying: playing, isPaused: paused, isLoading: loading, error }) => {
+      setIsPlaying(playing);
+      setIsPaused(paused);
+      setIsLoading(loading);
+      if (error) {
+        setErrorMessage(error);
       }
-    }
+    });
+
+    playerRef.current = controller;
 
     return () => {
-      if (ttsRef.current) {
-        ttsRef.current.stop();
+      if (playerRef.current) {
+        playerRef.current.stop();
       }
     };
-  }, [selectedTtsLang]);
+  }, []);
 
-  // If text or selected language changes, stop active speech
+  // Stop active speech when text or selected language changes
   useEffect(() => {
-    if (ttsRef.current) {
-      ttsRef.current.stop();
+    if (playerRef.current) {
+      playerRef.current.stop();
     }
-  }, [text, selectedTtsLang]);
+    setErrorMessage(null);
+  }, [text, selectedLanguage]);
 
   const handlePlay = () => {
-    if (!ttsRef.current || !text) return;
-    ttsRef.current.speak({
+    setErrorMessage(null);
+    if (!playerRef.current || !text) return;
+
+    playerRef.current.playCloudSpeech({
       text,
-      language: selectedTtsLang,
-      rate: speechRate,
-      onStart: () => {
-        setIsPlaying(true);
-        setIsPaused(false);
-      },
-      onEnd: () => {
-        setIsPlaying(false);
-        setIsPaused(false);
+      languageCode: selectedLanguage.languageCode,
+      speed: speechRate,
+      onError: (err) => {
+        setErrorMessage(err);
       }
     });
   };
 
   const handlePause = () => {
-    if (ttsRef.current) {
-      ttsRef.current.pause();
+    if (playerRef.current) {
+      playerRef.current.pause();
     }
   };
 
   const handleResume = () => {
-    if (ttsRef.current) {
-      ttsRef.current.resume();
+    if (playerRef.current) {
+      playerRef.current.resume();
     }
   };
 
   const handleStop = () => {
-    if (ttsRef.current) {
-      ttsRef.current.stop();
+    if (playerRef.current) {
+      playerRef.current.stop();
     }
   };
 
-  if (!isSupported) {
-    return (
-      <div className={`p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-400 flex items-center gap-2 ${className}`}>
-        <AlertCircle className="w-4 h-4 text-slate-500 shrink-0" />
-        <span>Web Speech API is not available on this browser.</span>
-      </div>
-    );
-  }
+  const handleSpeedChange = (speed: number) => {
+    setSpeechRate(speed);
+    if (playerRef.current) {
+      playerRef.current.setSpeed(speed);
+    }
+  };
 
   return (
     <div 
       role="region" 
-      aria-label="Medical Report Audio Reader"
+      aria-label="Medical Report Cloud Audio Reader"
       className={`p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 border border-emerald-500/40 text-white shadow-md transition-all space-y-3 ${className}`}
     >
-      {/* 1. Top Bar: Header, Speaking State & Controls */}
+      {/* 1. Top Bar: Header, Cloud Voice Label & Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         
-        {/* Header / Active Speaking Status */}
+        {/* Header / Active Status */}
         <div className="flex items-center gap-2.5">
           <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
             isPlaying 
@@ -155,7 +142,9 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               ? 'bg-amber-500 text-amber-950'
               : 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/50'
           }`}>
-            {isPlaying ? (
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-emerald-400" />
+            ) : isPlaying ? (
               <Volume2 className="w-5 h-5 animate-pulse" />
             ) : isPaused ? (
               <Pause className="w-4 h-4" />
@@ -170,7 +159,14 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
                 {title || (t as any).readAloud || 'Read Aloud'}
               </span>
 
-              {/* Status Badge */}
+              {/* Real-time Status Badges */}
+              {isLoading && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-400 text-sky-950 animate-pulse">
+                  <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                  Generating Cloud Voice...
+                </span>
+              )}
+
               {isPlaying && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-400 text-emerald-950 animate-pulse">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-950 animate-ping" />
@@ -185,11 +181,11 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               )}
             </div>
 
-            {/* Detected / Active Voice Name */}
+            {/* Cloud Voice Display Label */}
             <p className="text-[11px] text-slate-300 mt-0.5 flex items-center gap-1.5 flex-wrap">
               <span className="text-slate-400">Voice:</span>
-              <span className="text-emerald-400 font-semibold truncate max-w-[180px] sm:max-w-[240px]" title={voiceInfo?.displayName}>
-                {voiceInfo?.displayName?.split('(')[0]?.trim() || 'System Default'}
+              <span className="text-emerald-400 font-semibold truncate max-w-[220px] sm:max-w-[280px]">
+                {selectedLanguage.cloudVoiceName}
               </span>
             </p>
           </div>
@@ -202,7 +198,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
           <div className="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700 text-[11px]">
             <button
               type="button"
-              onClick={() => setSpeechRate(0.85)}
+              onClick={() => handleSpeedChange(0.85)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 0.85 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
@@ -212,7 +208,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => setSpeechRate(0.95)}
+              onClick={() => handleSpeedChange(0.95)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 0.95 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
@@ -222,7 +218,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => setSpeechRate(1.15)}
+              onClick={() => handleSpeedChange(1.15)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 1.15 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
@@ -237,12 +233,22 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
             {!isPlaying && !isPaused && (
               <button
                 type="button"
+                disabled={isLoading}
                 onClick={handlePlay}
-                className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
+                className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 disabled:opacity-50 text-emerald-950 font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
                 aria-label="Listen to Plain-Language Summary"
               >
-                <Play className="w-4 h-4 fill-current" />
-                <span>{(t as any).readAloud || 'Listen'}</span>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4 fill-current" />
+                    <span>{(t as any).readAloud || 'Listen'}</span>
+                  </>
+                )}
               </button>
             )}
 
@@ -286,28 +292,29 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
         </div>
       </div>
 
-      {/* 2. VISIBLE TTS LANGUAGE / VOICE SELECTOR (English India | हिन्दी | मराठी) */}
+      {/* 2. VISIBLE CLOUD TTS LANGUAGE SELECTOR (English India | हिन्दी | मराठी) */}
       <div className="pt-2 border-t border-slate-800/80 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-1.5 text-slate-300 font-semibold text-[11px]">
           <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-          <span>Voice Language:</span>
+          <span>Cloud Voice Language:</span>
         </div>
 
         {/* 3 Core Indian Voice Language Options */}
         <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-700 w-full xs:w-auto justify-center">
-          {CORE_TTS_LANGUAGES.map((item) => {
-            const isSelected = selectedTtsLang === item.code;
+          {CLOUD_TTS_LANGUAGES.map((item) => {
+            const isSelected = selectedLanguage.code === item.code;
             return (
               <button
                 key={item.code}
                 type="button"
-                onClick={() => setSelectedTtsLang(item.code)}
+                disabled={isLoading}
+                onClick={() => setSelectedLanguage(item)}
                 className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   isSelected
                     ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 disabled:opacity-50'
                 }`}
-                title={`Synthesize in ${item.label} (${item.locale})`}
+                title={`Synthesize with ${item.cloudVoiceName}`}
               >
                 <span>{item.flag}</span>
                 <span>{item.label}</span>
@@ -317,11 +324,14 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
         </div>
       </div>
 
-      {/* 3. Fallback / Voice Availability Notice */}
-      {voiceInfo?.statusNotice && (
-        <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-800/70 text-[11px] text-amber-200 flex items-start gap-1.5">
-          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-          <span>{voiceInfo.statusNotice}</span>
+      {/* 3. Error Banner if Cloud TTS is temporarily unavailable */}
+      {errorMessage && (
+        <div className="p-2.5 rounded-xl bg-rose-950/70 border border-rose-800/80 text-[11px] text-rose-200 flex items-start gap-2 animate-fade-in">
+          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-bold text-rose-100 block">Voice Generation Notice</span>
+            <span>{errorMessage}</span>
+          </div>
         </div>
       )}
 
@@ -334,7 +344,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
             <span className="w-1.5 h-2.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.45s]" />
             <span className="w-1.5 h-4.5 bg-emerald-400 rounded-full animate-bounce" />
             <span className="w-1.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.2s]" />
-            <span className="ml-1.5 font-medium">Synthesizing audio ({voiceInfo?.languageLabel})...</span>
+            <span className="ml-1.5 font-medium">Streaming Cloud Audio ({selectedLanguage.nativeLabel})...</span>
           </div>
           <span className="font-mono text-emerald-400/80">{speechRate}x</span>
         </div>

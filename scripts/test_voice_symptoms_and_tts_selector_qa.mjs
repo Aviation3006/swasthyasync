@@ -25,13 +25,12 @@ console.log('--- TEST GROUP 1: Multilingual TTS Selector & Voice Fallback ---');
 const playerCode = fs.readFileSync(path.resolve('src/components/common/ReportAudioPlayer.tsx'), 'utf-8');
 
 check('ReportAudioPlayer renders visible Language / Voice selector for en-IN, hi-IN, mr-IN', () => {
-  assert(playerCode.includes('CORE_TTS_LANGUAGES'));
-  assert(playerCode.includes('selectedTtsLang'));
-  assert(playerCode.includes('English (India)') || playerCode.includes('CORE_TTS_LANGUAGES'));
+  assert(playerCode.includes('CLOUD_TTS_LANGUAGES') || playerCode.includes('CORE_TTS_LANGUAGES'));
+  assert(playerCode.includes('selectedLanguage') || playerCode.includes('selectedTtsLang'));
 });
 
-check('ReportAudioPlayer clearly displays fallback notice when native voice is missing on device', () => {
-  assert(playerCode.includes('voiceInfo?.statusNotice'));
+check('ReportAudioPlayer displays Gemini Cloud Voice label and user-friendly error notice when needed', () => {
+  assert(playerCode.includes('errorMessage') || playerCode.includes('voiceInfo?.statusNotice'));
 });
 
 check('ReportAudioPlayer preserves Play, Pause, Resume, and Stop controls', () => {
