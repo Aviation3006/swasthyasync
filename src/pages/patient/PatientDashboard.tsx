@@ -28,7 +28,8 @@ import {
   Sparkles,
   MapPin,
   Building2,
-  Bell
+  Bell,
+  Mic
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -228,13 +229,13 @@ export const PatientDashboard: React.FC = () => {
             </Card>
           </Link>
 
-          <Link to="/patient/symptoms" className="group">
+          <Link to="/patient/symptoms/voice" className="group">
             <Card hoverEffect padded={false} className="p-4 text-center h-full flex flex-col items-center justify-center group-hover:border-health-400">
               <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <Stethoscope className="w-5 h-5" />
+                <Mic className="w-5 h-5 text-indigo-600" />
               </div>
               <h3 className="text-xs sm:text-sm font-semibold text-slate-800">{t.navSymptoms}</h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">{t.checkSymptomsNow}</p>
+              <p className="text-[11px] text-slate-500 mt-0.5">Voice Symptom Logger</p>
             </Card>
           </Link>
 

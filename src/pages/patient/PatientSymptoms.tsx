@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { symptomService } from '../../services/symptomService';
 import { patientService } from '../../services/patientService';
 import { aiService } from '../../services/aiService';
@@ -195,6 +196,18 @@ export const PatientSymptoms: React.FC = () => {
           { label: t.portalPatient, path: '/patient' },
           { label: t.navSymptoms }
         ]}
+        actions={
+          <Link to="/patient/symptoms/voice">
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={<Sparkles className="w-4 h-4 text-emerald-300" />}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-sm"
+            >
+              Voice Symptom Logger Dashboard →
+            </Button>
+          </Link>
+        }
       />
 
       {/* Strict Non-Diagnostic Medical Disclaimer */}

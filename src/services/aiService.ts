@@ -1,4 +1,4 @@
-import { SimplifiedReportOutput, SymptomAnalysisOutput } from '../types/ai';
+import { SimplifiedReportOutput, SymptomAnalysisOutput, VoiceSymptomAnalysisOutput } from '../types/ai';
 
 export const aiService = {
   /**
@@ -97,6 +97,62 @@ export const aiService = {
   /**
    * Request non-diagnostic symptom insights
    */
+
+  /**
+   * Request structured Gemini analysis for raw voice/spoken symptom transcript
+   */
+  async analyzeVoiceTranscript(params: {
+    transcript: string;
+    language?: string;
+  }): Promise<VoiceSymptomAnalysisOutput> {
+    try {
+      const response = await fetch('/api/symptom-analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server responded with ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error: any) {
+      console.warn('Voice symptom analysis endpoint error, returning fallback', error);
+      const clean = (params.transcript || '').trim();
+      return {
+        clinicalOverview: `Reported symptoms from user description: "${clean}". No automated diagnosis is rendered.`,
+        symptoms: [
+          {
+            name: clean.split(' ').slice(0, 3).join(' ') || 'Reported Symptom',
+            description: clean,
+            duration: 'Not mentioned',
+            severity: 'Not mentioned',
+            onset: 'Not mentioned',
+            associatedSymptoms: []
+          }
+        ],
+        relevantContext: [
+          'User recorded a natural spoken description for clinical preparation.'
+        ],
+        suggestedQuestions: [
+          'What could be contributing to these symptoms?',
+          'Should I monitor any specific warning signs or progression?',
+          'Are there any tests or clinical evaluations that may be appropriate?'
+        ],
+        missingInformation: [
+          'Exact duration / timeline of symptom onset',
+          'Severity level on a scale from mild to severe',
+          'Known triggers, aggravating factors, or relieving postures'
+        ],
+        urgencyLevel: /chest pain|breathless|unconscious|severe bleed|stroke/i.test(clean) ? 'Emergency 108' : 'Routine',
+        disclaimer: 'AI-generated summaries are for informational purposes and are not a medical diagnosis. Consult a qualified healthcare professional for medical advice.',
+        isRealAiResponse: false
+      };
+    }
+  },
+
   async analyzeSymptom(data: {
     bodyArea: string;
     symptomName: string;

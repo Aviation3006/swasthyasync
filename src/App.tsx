@@ -23,6 +23,7 @@ import { PatientProfile } from './pages/patient/PatientProfile';
 import { PatientRecords } from './pages/patient/PatientRecords';
 import { PatientAppointments } from './pages/patient/PatientAppointments';
 import { PatientSymptoms } from './pages/patient/PatientSymptoms';
+import { VoiceSymptomDashboard } from './pages/patient/VoiceSymptomDashboard';
 import { PatientReports } from './pages/patient/PatientReports';
 import { PatientHealthQR } from './pages/patient/PatientHealthQR';
 import { PatientNotifications } from './pages/patient/PatientNotifications';
@@ -123,6 +124,8 @@ export const App: React.FC = () => {
                 <Route path="records" element={<PatientRecords />} />
                 <Route path="appointments" element={<PatientAppointments />} />
                 <Route path="symptoms" element={<PatientSymptoms />} />
+                <Route path="symptoms/voice" element={<VoiceSymptomDashboard />} />
+                <Route path="voice-symptoms" element={<VoiceSymptomDashboard />} />
                 <Route path="reports" element={<PatientReports />} />
                 <Route path="health-qr" element={<PatientHealthQR />} />
                 <Route path="caresetu" element={<PatientHealthQR />} />
