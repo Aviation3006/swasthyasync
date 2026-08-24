@@ -592,6 +592,10 @@ export const PatientReports: React.FC = () => {
 
                   {/* Accessible Multilingual Text-to-Speech Player */}
                   <ReportAudioPlayer
+                    report={activeReport}
+                    englishText={activeReport.overallSummary}
+                    hindiText={activeReport.overallSummaryHindi || activeReport.overallSummary}
+                    marathiText={activeReport.overallSummaryMarathi}
                     text={reportLang === 'mr' ? activeReport.overallSummaryMarathi : activeReport.overallSummary}
                     language={reportLang}
                     title={reportLang === 'mr' ? "सोप्या भाषेतील सारांश ऐका" : (t.audioExplanation || "Listen to Report Summary")}

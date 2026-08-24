@@ -25,6 +25,7 @@ export const reportService = {
     let title = 'Complete Blood Count (CBC) & Metabolic Profile';
     let testCategory = 'Pathology / Biochemistry';
     let overallSummary = 'The uploaded lab document has been processed. Vitals and biological indices are within manageable ranges. Blood sugar indices show mild elevation, whereas renal, liver, and hematological markers are normal.';
+    let overallSummaryHindi = 'अपलोड की गई लैब रिपोर्ट का विश्लेषण पूरा हो गया है। अधिकांश पैरामीटर सामान्य सीमा में हैं, और ब्लड शुगर में हल्की वृद्धि देखी गई है।';
     let overallSummaryMarathi = 'अपलोड केलेल्या लॅब अहवालाचे विश्लेषण पूर्ण झाले आहे. बहुतांश घटक सामान्य मर्यादेत आहेत, रक्तातील साखरेचे प्रमाण थोडे वाढलेले आहे.';
     let biomarkers: BiomarkerResult[] = [];
 
@@ -65,6 +66,7 @@ export const reportService = {
       testCategory,
       reportDate: new Date().toISOString().split('T')[0],
       overallSummary,
+      overallSummaryHindi,
       overallSummaryMarathi,
       keyFindings: [
         {

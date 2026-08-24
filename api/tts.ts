@@ -32,7 +32,7 @@ export default async function handler(req: any, res: any) {
     const result = await generateCloudTTS({ text, languageCode });
     res.status(200).json(result);
   } catch (error: any) {
-    console.error('Vercel API /api/tts error:', error);
+    console.error('Vercel API /api/tts error:', error.message || error);
     res.status(500).json({ error: error.message || 'Internal Cloud TTS Error' });
   }
 }

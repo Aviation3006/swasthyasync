@@ -8,6 +8,7 @@ export const mockSimplifiedReports: SimplifiedReport[] = [
     testCategory: 'Pathology / Biochemistry',
     reportDate: '2026-08-20',
     overallSummary: 'Your test shows reasonably steady blood sugar control and normal kidney function. Your HbA1c is 6.7%, which aligns well with your diabetes management target. Your triglycerides are slightly high (172 mg/dL), which indicates that limiting oily foods and sweets will help protect your heart.',
+    overallSummaryHindi: 'आपकी जांच रिपोर्ट में ब्लड शुगर नियंत्रण में है और किडनी का कार्य सामान्य है। आपका HbA1c ६.७% है, जो मधुमेह नियंत्रण के लिए अच्छा है। ट्राइग्लिसराइड्स (१७२ mg/dL) थोड़े बढ़े हुए हैं, इसलिए तैलीय और मीठे खाद्य पदार्थों को कम करना आपके दिल की सुरक्षा के लिए फायदेमंद रहेगा।',
     overallSummaryMarathi: 'तुमच्या चाचणीत रक्तातील साखर नियंत्रणात आणि किडनीचे कार्य निरोगी असल्याचे दिसून येत आहे. HbA1c ६.७% आहे, जे मधुमेहाच्या दृष्टीने चांगले आहे. ट्रायग्लिसराइड्स (१७२ mg/dL) थोडे वाढलेले आहेत, त्यामुळे तेलकट आणि गोड पदार्थ कमी करणे फायदेशीर ठरेल.',
     keyFindings: [
       {
@@ -95,6 +96,7 @@ export const mockSimplifiedReports: SimplifiedReport[] = [
     testCategory: 'Hematology',
     reportDate: '2026-06-10',
     overallSummary: 'Your hemoglobin and red blood cells are normal. White blood cell count is within normal range with no active acute bacterial infection indicated. Platelet count is 245,000 /µL, which is healthy.',
+    overallSummaryHindi: 'आपका हीमोग्लोबिन और लाल रक्त कोशिकाएं सामान्य हैं। सफेद रक्त कोशिकाओं की संख्या सामान्य सीमा में है और कोई गंभीर संक्रमण नहीं है। प्लेटलेट्स २,४५,००० /µL हैं, जो पूरी तरह से स्वस्थ हैं।',
     overallSummaryMarathi: 'तुमचे हिमोग्लोबिन आणि पांढऱ्या पेशींचे प्रमाण सामान्य आहे. प्लेटलेट्स २४५,००० /µL असून उत्तम स्थितीत आहेत.',
     keyFindings: [
       {

@@ -58,6 +58,7 @@ export interface SimplifiedReport {
   testCategory: string;
   reportDate: string;
   overallSummary: string;
+  overallSummaryHindi?: string;
   overallSummaryMarathi: string;
   keyFindings: {
     title: string;

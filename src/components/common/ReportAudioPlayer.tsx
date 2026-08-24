@@ -15,10 +15,15 @@ import {
   TTSLanguageOption 
 } from '../../utils/textToSpeech';
 import { Language } from '../../types/common';
+import { SimplifiedReport } from '../../types/records';
 import { useTranslation } from '../../i18n/useTranslation';
 
 interface ReportAudioPlayerProps {
-  text: string;
+  text?: string;
+  report?: SimplifiedReport | null;
+  englishText?: string;
+  hindiText?: string;
+  marathiText?: string;
   language?: Language;
   title?: string;
   className?: string;
@@ -26,6 +31,10 @@ interface ReportAudioPlayerProps {
 
 export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
   text,
+  report,
+  englishText,
+  hindiText,
+  marathiText,
   language: initialLanguage,
   title,
   className = ''
@@ -46,6 +55,17 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
   const [speechRate, setSpeechRate] = useState<number>(0.95);
 
   const playerRef = useRef<CloudAudioPlayerController | null>(null);
+
+  // Derive the active text to speak based on the selected language code
+  const getActiveTextToSpeak = (langCode: 'en-IN' | 'hi-IN' | 'mr-IN'): string => {
+    if (langCode === 'mr-IN') {
+      return marathiText || report?.overallSummaryMarathi || text || '';
+    }
+    if (langCode === 'hi-IN') {
+      return hindiText || report?.overallSummaryHindi || text || '';
+    }
+    return englishText || report?.overallSummary || text || '';
+  };
 
   // Sync selected TTS language when parent report language changes
   useEffect(() => {
@@ -83,14 +103,20 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
       playerRef.current.stop();
     }
     setErrorMessage(null);
-  }, [text, selectedLanguage]);
+  }, [text, selectedLanguage, report]);
 
   const handlePlay = () => {
     setErrorMessage(null);
-    if (!playerRef.current || !text) return;
+    if (!playerRef.current) return;
+
+    const textToSpeak = getActiveTextToSpeak(selectedLanguage.languageCode);
+    if (!textToSpeak.trim()) {
+      setErrorMessage('No report text available to read aloud.');
+      return;
+    }
 
     playerRef.current.playCloudSpeech({
-      text,
+      text: textToSpeak,
       languageCode: selectedLanguage.languageCode,
       speed: speechRate,
       onError: (err) => {
