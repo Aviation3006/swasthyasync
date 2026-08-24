@@ -3,36 +3,38 @@ import { Language } from '../types/common';
 /**
  * Standard BCP-47 Locale mapping for India's 22 official languages + English
  */
-export const LANGUAGE_LOCALE_MAP: Record<Language, string[]> = {
-  en: ['en-IN', 'en-GB', 'en-US', 'en'],
-  hi: ['hi-IN', 'hi', 'hi_IN'],
-  mr: ['mr-IN', 'mr', 'hi-IN', 'hi'],
-  bn: ['bn-IN', 'bn-BD', 'bn'],
-  te: ['te-IN', 'te'],
-  ta: ['ta-IN', 'ta-LK', 'ta-SG', 'ta'],
-  gu: ['gu-IN', 'gu'],
-  ur: ['ur-IN', 'ur-PK', 'ur'],
-  kn: ['kn-IN', 'kn'],
-  or: ['or-IN', 'or', 'od-IN'],
-  ml: ['ml-IN', 'ml'],
-  pa: ['pa-IN', 'pa-PK', 'pa'],
-  as: ['as-IN', 'as', 'bn-IN'],
-  mai: ['mai-IN', 'hi-IN', 'hi'],
-  sa: ['sa-IN', 'sa', 'hi-IN'],
-  kok: ['kok-IN', 'kok', 'mr-IN', 'hi-IN'],
-  ne: ['ne-NP', 'ne-IN', 'ne'],
-  sd: ['sd-IN', 'sd', 'hi-IN'],
-  ks: ['ks-IN', 'ks', 'ur-IN'],
-  doi: ['doi-IN', 'hi-IN', 'hi'],
-  mni: ['mni-IN', 'as-IN', 'bn-IN'],
-  brx: ['brx-IN', 'as-IN'],
-  sat: ['sat-IN', 'or-IN', 'hi-IN']
+export const LANGUAGE_LOCALE_MAP: Record<Language, { primary: string; aliases: string[]; nameEn: string; nameNative: string }> = {
+  en: { primary: 'en-IN', aliases: ['en_IN', 'en-GB', 'en-US', 'en'], nameEn: 'Indian English', nameNative: 'English (India)' },
+  hi: { primary: 'hi-IN', aliases: ['hi_IN', 'hi'], nameEn: 'Hindi', nameNative: 'हिन्दी' },
+  mr: { primary: 'mr-IN', aliases: ['mr_IN', 'mr', 'hi-IN', 'hi_IN', 'hi'], nameEn: 'Marathi', nameNative: 'मराठी' },
+  bn: { primary: 'bn-IN', aliases: ['bn_IN', 'bn-BD', 'bn'], nameEn: 'Bengali', nameNative: 'বাংলা' },
+  te: { primary: 'te-IN', aliases: ['te_IN', 'te'], nameEn: 'Telugu', nameNative: 'తెలుగు' },
+  ta: { primary: 'ta-IN', aliases: ['ta_IN', 'ta-LK', 'ta-SG', 'ta'], nameEn: 'Tamil', nameNative: 'தமிழ்' },
+  gu: { primary: 'gu-IN', aliases: ['gu_IN', 'gu'], nameEn: 'Gujarati', nameNative: 'ગુજરાતી' },
+  ur: { primary: 'ur-IN', aliases: ['ur_IN', 'ur-PK', 'ur'], nameEn: 'Urdu', nameNative: 'اُردُو' },
+  kn: { primary: 'kn-IN', aliases: ['kn_IN', 'kn'], nameEn: 'Kannada', nameNative: 'ಕನ್ನಡ' },
+  or: { primary: 'or-IN', aliases: ['or_IN', 'od-IN', 'or'], nameEn: 'Odia', nameNative: 'ଓଡ଼ିଆ' },
+  ml: { primary: 'ml-IN', aliases: ['ml_IN', 'ml'], nameEn: 'Malayalam', nameNative: 'മലയാളം' },
+  pa: { primary: 'pa-IN', aliases: ['pa_IN', 'pa-PK', 'pa'], nameEn: 'Punjabi', nameNative: 'ਪੰਜਾਬੀ' },
+  as: { primary: 'as-IN', aliases: ['as_IN', 'as', 'bn-IN'], nameEn: 'Assamese', nameNative: 'অসমীয়া' },
+  mai: { primary: 'mai-IN', aliases: ['mai_IN', 'hi-IN', 'hi'], nameEn: 'Maithili', nameNative: 'मैथिली' },
+  sa: { primary: 'sa-IN', aliases: ['sa_IN', 'sa', 'hi-IN'], nameEn: 'Sanskrit', nameNative: 'संस्कृतम्' },
+  kok: { primary: 'kok-IN', aliases: ['kok_IN', 'kok', 'mr-IN', 'hi-IN'], nameEn: 'Konkani', nameNative: 'कोंकणी' },
+  ne: { primary: 'ne-NP', aliases: ['ne-IN', 'ne_NP', 'ne'], nameEn: 'Nepali', nameNative: 'नेपाली' },
+  sd: { primary: 'sd-IN', aliases: ['sd_IN', 'sd', 'hi-IN'], nameEn: 'Sindhi', nameNative: 'सिन्धी' },
+  ks: { primary: 'ks-IN', aliases: ['ks_IN', 'ks', 'ur-IN'], nameEn: 'Kashmiri', nameNative: 'कॉशुर' },
+  doi: { primary: 'doi-IN', aliases: ['doi_IN', 'hi-IN'], nameEn: 'Dogri', nameNative: 'डोगरी' },
+  mni: { primary: 'mni-IN', aliases: ['mni_IN', 'as-IN', 'bn-IN'], nameEn: 'Manipuri', nameNative: 'মৈতৈলোন্' },
+  brx: { primary: 'brx-IN', aliases: ['brx_IN', 'as-IN'], nameEn: 'Bodo', nameNative: 'बड़ो' },
+  sat: { primary: 'sat-IN', aliases: ['sat_IN', 'or-IN', 'hi-IN'], nameEn: 'Santali', nameNative: 'ᱥᱟᱱᱛᱟᱲᱤ' }
 };
 
 export interface TTSVoiceInfo {
   voice: SpeechSynthesisVoice;
   isExactLocale: boolean;
   displayName: string;
+  languageLabel: string;
+  isFallback: boolean;
 }
 
 /**
@@ -62,7 +64,98 @@ export function isSpeechSynthesisSupported(): boolean {
 }
 
 /**
- * Get the best matching available browser voice for a given language code
+ * Calculate match ranking score for a browser voice against a target language.
+ * Higher score = better voice match.
+ */
+export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Language): number {
+  const voiceLang = (voice.lang || '').replace('_', '-').toLowerCase();
+  const voiceName = (voice.name || '').toLowerCase();
+  let score = 0;
+
+  if (lang === 'en') {
+    // ENGLISH: Strictly prefer en-IN over en-US / en-GB
+    if (voiceLang === 'en-in') {
+      score += 1000;
+    } else if (voiceName.includes('india') || voiceName.includes('indian') || voiceName.includes('heera') || voiceName.includes('neerja') || voiceName.includes('prabhat') || voiceName.includes('rishi') || voiceName.includes('veena') || voiceName.includes('isha')) {
+      score += 800;
+    } else if (voiceLang.startsWith('en-gb') || voiceLang === 'en-gb') {
+      score += 150;
+    } else if (voiceLang.startsWith('en-us') || voiceLang === 'en-us') {
+      score += 100;
+    } else if (voiceLang.startsWith('en')) {
+      score += 80;
+    } else {
+      return -100; // Not an English voice
+    }
+  } else if (lang === 'hi') {
+    // HINDI: Strictly prefer hi-IN
+    if (voiceLang === 'hi-in' || voiceLang === 'hi') {
+      score += 1000;
+    } else if (voiceName.includes('hindi') || voiceName.includes('हिन्दी') || voiceName.includes('hemant') || voiceName.includes('kalpana') || voiceName.includes('swara') || voiceName.includes('madhur') || voiceName.includes('lekha') || voiceName.includes('neel')) {
+      score += 800;
+    } else if (voiceLang.startsWith('hi')) {
+      score += 500;
+    } else if (voiceLang === 'mr-in' || voiceLang.startsWith('mr')) {
+      // Devanagari sibling fallback
+      score += 200;
+    } else if (voiceLang === 'en-in') {
+      // Indian English voice fallback (accent familiarity)
+      score += 50;
+    } else {
+      score += 10;
+    }
+  } else if (lang === 'mr') {
+    // MARATHI: Strictly prefer mr-IN, fallback gracefully to hi-IN (Devanagari script parity)
+    if (voiceLang === 'mr-in' || voiceLang === 'mr') {
+      score += 1000;
+    } else if (voiceName.includes('marathi') || voiceName.includes('मराठी') || voiceName.includes('aarohi') || voiceName.includes('manohar')) {
+      score += 800;
+    } else if (voiceLang.startsWith('mr')) {
+      score += 500;
+    } else if (voiceLang === 'hi-in' || voiceLang === 'hi' || voiceName.includes('hindi') || voiceName.includes('हिन्दी')) {
+      // Hindi voice speaks Devanagari Marathi text fluently without failing
+      score += 350;
+    } else if (voiceLang === 'en-in') {
+      score += 50;
+    } else {
+      score += 10;
+    }
+  } else {
+    // OTHER 20 LANGUAGES (Tamil, Telugu, Bengali, Gujarati, Urdu, Kannada, etc.)
+    const meta = LANGUAGE_LOCALE_MAP[lang];
+    const primary = meta?.primary.toLowerCase();
+    const aliases = (meta?.aliases || []).map(a => a.toLowerCase());
+
+    if (primary && voiceLang === primary) {
+      score += 1000;
+    } else if (aliases.includes(voiceLang)) {
+      score += 600;
+    } else if (voiceName.includes(meta?.nameEn.toLowerCase() || '')) {
+      score += 500;
+    } else if (primary && voiceLang.startsWith(primary.split('-')[0])) {
+      score += 300;
+    } else if (voiceLang.endsWith('-in')) {
+      score += 50; // Sibling Indian voice
+    } else {
+      score += 10;
+    }
+  }
+
+  // Bonus for High-Quality / Neural / Natural voice models
+  if (voiceName.includes('natural') || voiceName.includes('online') || voiceName.includes('neural') || voiceName.includes('google')) {
+    score += 40;
+  }
+
+  if (voice.default) {
+    score += 10;
+  }
+
+  return score;
+}
+
+/**
+ * Get the best matching available browser voice for a given language code.
+ * Implements intelligent Indian English, Hindi, Marathi, and regional voice prioritization.
  */
 export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
   if (!isSpeechSynthesisSupported()) return null;
@@ -70,41 +163,39 @@ export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
-  const candidateLocales = LANGUAGE_LOCALE_MAP[lang] || ['en-IN', 'en-US', 'en'];
+  const langMeta = LANGUAGE_LOCALE_MAP[lang] || LANGUAGE_LOCALE_MAP.en;
 
-  // 1. Try exact matching from candidate list
-  for (const locale of candidateLocales) {
-    const exactVoice = voices.find(
-      (v) => v.lang.toLowerCase() === locale.toLowerCase() || v.lang.replace('_', '-').toLowerCase() === locale.toLowerCase()
-    );
-    if (exactVoice) {
-      return {
-        voice: exactVoice,
-        isExactLocale: true,
-        displayName: `${exactVoice.name} (${exactVoice.lang})`
-      };
-    }
+  // Rank all available voices
+  const rankedVoices = voices
+    .map(v => ({ voice: v, score: scoreVoiceForLanguage(v, lang) }))
+    .sort((a, b) => b.score - a.score);
+
+  const best = rankedVoices[0]?.voice || voices[0];
+  const bestScore = rankedVoices[0]?.score || 0;
+
+  const voiceLang = (best.lang || '').replace('_', '-').toLowerCase();
+  const primaryLocale = langMeta.primary.toLowerCase();
+
+  const isExact = voiceLang === primaryLocale || (lang === 'en' && voiceLang === 'en-in') || (lang === 'hi' && voiceLang.startsWith('hi')) || (lang === 'mr' && voiceLang.startsWith('mr'));
+  const isFallback = !isExact;
+
+  let languageLabel = `${langMeta.nameNative} (${langMeta.primary})`;
+  if (lang === 'en') {
+    languageLabel = isExact ? '🇮🇳 Indian English (en-IN)' : 'English (System)';
+  } else if (lang === 'hi') {
+    languageLabel = isExact ? '🇮🇳 हिन्दी (hi-IN)' : '🇮🇳 हिन्दी (सहायक आवाज)';
+  } else if (lang === 'mr') {
+    languageLabel = isExact ? '🇮🇳 मराठी (mr-IN)' : '🇮🇳 मराठी (हिन्दी आवाज)';
+  } else {
+    languageLabel = `🇮🇳 ${langMeta.nameNative} (${langMeta.primary})`;
   }
 
-  // 2. Try prefix matching (e.g. 'hi' matches 'hi-IN' or 'hi_IN')
-  for (const locale of candidateLocales) {
-    const prefix = locale.split(/[-_]/)[0].toLowerCase();
-    const prefixVoice = voices.find((v) => v.lang.toLowerCase().startsWith(prefix));
-    if (prefixVoice) {
-      return {
-        voice: prefixVoice,
-        isExactLocale: true,
-        displayName: `${prefixVoice.name} (${prefixVoice.lang})`
-      };
-    }
-  }
-
-  // 3. Fallback to default system voice or first available voice
-  const defaultVoice = voices.find((v) => v.default) || voices[0];
   return {
-    voice: defaultVoice,
-    isExactLocale: false,
-    displayName: `${defaultVoice.name} (Default)`
+    voice: best,
+    isExactLocale: isExact,
+    displayName: `${best.name} (${best.lang || 'default'})`,
+    languageLabel,
+    isFallback
   };
 }
 
@@ -142,7 +233,8 @@ export class TextToSpeechController {
       utterance.voice = voiceInfo.voice;
       utterance.lang = voiceInfo.voice.lang;
     } else {
-      utterance.lang = LANGUAGE_LOCALE_MAP[params.language]?.[0] || 'en-IN';
+      const meta = LANGUAGE_LOCALE_MAP[params.language] || LANGUAGE_LOCALE_MAP.en;
+      utterance.lang = meta.primary;
     }
 
     utterance.rate = params.rate || 0.95; // Slightly slower for crisp healthcare clarity

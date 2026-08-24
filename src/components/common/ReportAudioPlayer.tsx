@@ -5,11 +5,7 @@ import {
   Play, 
   Pause, 
   Square, 
-  RotateCcw, 
   Sparkles, 
-  Radio,
-  Gauge,
-  CheckCircle2,
   AlertCircle
 } from 'lucide-react';
 import { 
@@ -173,13 +169,14 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               )}
             </div>
 
-            {/* Voice information & locale notice */}
-            <p className="text-[11px] text-slate-300 mt-0.5 flex items-center gap-1 flex-wrap">
-              <span className="text-emerald-400 font-semibold">
-                {voiceInfo?.displayName || 'System Voice'}
+            {/* Voice information & preferred Indian locale indicator */}
+            <p className="text-[11px] text-slate-300 mt-0.5 flex items-center gap-1.5 flex-wrap">
+              <span className="inline-flex items-center gap-1 font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-700/50 text-[10px]">
+                {voiceInfo?.languageLabel || '🇮🇳 Indian English (en-IN)'}
               </span>
-              <span>•</span>
-              <span className="text-slate-400">Native SpeechSynthesis</span>
+              <span className="text-[10px] text-slate-400 truncate max-w-[150px] sm:max-w-[200px]" title={voiceInfo?.displayName}>
+                {voiceInfo?.displayName?.split('(')[0]?.trim() || 'System Voice'}
+              </span>
             </p>
           </div>
         </div>
