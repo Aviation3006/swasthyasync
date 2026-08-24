@@ -6,13 +6,17 @@ import {
   Pause, 
   Square, 
   Sparkles, 
-  AlertCircle
+  AlertCircle,
+  Globe,
+  Info,
+  CheckCircle2
 } from 'lucide-react';
 import { 
   TextToSpeechController, 
   isSpeechSynthesisSupported, 
   getBestVoiceForLanguage, 
-  TTSVoiceInfo 
+  TTSVoiceInfo,
+  CORE_TTS_LANGUAGES
 } from '../../utils/textToSpeech';
 import { Language } from '../../types/common';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -26,12 +30,15 @@ interface ReportAudioPlayerProps {
 
 export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
   text,
-  language,
+  language: initialLanguage,
   title,
   className = ''
 }) => {
   const { t, language: appLanguage } = useTranslation();
-  const activeLang: Language = language || appLanguage || 'en';
+  
+  // Interactive Voice/Language selection (defaults to report/app language: en / mr / hi)
+  const defaultLang: Language = (initialLanguage === 'mr' ? 'mr' : initialLanguage === 'hi' ? 'hi' : 'en');
+  const [selectedTtsLang, setSelectedTtsLang] = useState<Language>(defaultLang);
 
   const [isSupported, setIsSupported] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -40,6 +47,14 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
   const [voiceInfo, setVoiceInfo] = useState<TTSVoiceInfo | null>(null);
 
   const ttsRef = useRef<TextToSpeechController | null>(null);
+
+  // Sync selectedTtsLang if parent report language changes
+  useEffect(() => {
+    if (initialLanguage) {
+      const valid: Language = initialLanguage === 'mr' ? 'mr' : initialLanguage === 'hi' ? 'hi' : 'en';
+      setSelectedTtsLang(valid);
+    }
+  }, [initialLanguage]);
 
   useEffect(() => {
     const supported = isSpeechSynthesisSupported();
@@ -53,7 +68,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
       ttsRef.current = controller;
 
       const updateVoice = () => {
-        const best = getBestVoiceForLanguage(activeLang);
+        const best = getBestVoiceForLanguage(selectedTtsLang);
         setVoiceInfo(best);
       };
 
@@ -69,20 +84,20 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
         ttsRef.current.stop();
       }
     };
-  }, [activeLang]);
+  }, [selectedTtsLang]);
 
-  // If text changes (e.g. user toggles English/Marathi or uploads new report), stop active speech
+  // If text or selected language changes, stop active speech
   useEffect(() => {
     if (ttsRef.current) {
       ttsRef.current.stop();
     }
-  }, [text, activeLang]);
+  }, [text, selectedTtsLang]);
 
   const handlePlay = () => {
     if (!ttsRef.current || !text) return;
     ttsRef.current.speak({
       text,
-      language: activeLang,
+      language: selectedTtsLang,
       rate: speechRate,
       onStart: () => {
         setIsPlaying(true);
@@ -126,8 +141,9 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
     <div 
       role="region" 
       aria-label="Medical Report Audio Reader"
-      className={`p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 border border-emerald-500/40 text-white shadow-md transition-all ${className}`}
+      className={`p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 border border-emerald-500/40 text-white shadow-md transition-all space-y-3 ${className}`}
     >
+      {/* 1. Top Bar: Header, Speaking State & Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         
         {/* Header / Active Speaking Status */}
@@ -169,13 +185,11 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               )}
             </div>
 
-            {/* Voice information & preferred Indian locale indicator */}
+            {/* Detected / Active Voice Name */}
             <p className="text-[11px] text-slate-300 mt-0.5 flex items-center gap-1.5 flex-wrap">
-              <span className="inline-flex items-center gap-1 font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-700/50 text-[10px]">
-                {voiceInfo?.languageLabel || '🇮🇳 Indian English (en-IN)'}
-              </span>
-              <span className="text-[10px] text-slate-400 truncate max-w-[150px] sm:max-w-[200px]" title={voiceInfo?.displayName}>
-                {voiceInfo?.displayName?.split('(')[0]?.trim() || 'System Voice'}
+              <span className="text-slate-400">Voice:</span>
+              <span className="text-emerald-400 font-semibold truncate max-w-[180px] sm:max-w-[240px]" title={voiceInfo?.displayName}>
+                {voiceInfo?.displayName?.split('(')[0]?.trim() || 'System Default'}
               </span>
             </p>
           </div>
@@ -187,6 +201,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
           {/* Speed Selector */}
           <div className="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700 text-[11px]">
             <button
+              type="button"
               onClick={() => setSpeechRate(0.85)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 0.85 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
@@ -196,6 +211,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               0.85x
             </button>
             <button
+              type="button"
               onClick={() => setSpeechRate(0.95)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 0.95 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
@@ -205,6 +221,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
               1.0x
             </button>
             <button
+              type="button"
               onClick={() => setSpeechRate(1.15)}
               className={`px-2 py-1 rounded-md font-bold transition-colors ${
                 speechRate === 1.15 ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
@@ -219,6 +236,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
           <div className="flex items-center gap-1.5">
             {!isPlaying && !isPaused && (
               <button
+                type="button"
                 onClick={handlePlay}
                 className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
                 aria-label="Listen to Plain-Language Summary"
@@ -230,6 +248,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
 
             {isPlaying && (
               <button
+                type="button"
                 onClick={handlePause}
                 className="flex items-center justify-center gap-1.5 px-3 py-2.5 min-h-[44px] rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-amber-950 font-bold text-xs shadow-sm transition-colors cursor-pointer"
                 aria-label="Pause Speech"
@@ -241,6 +260,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
 
             {isPaused && (
               <button
+                type="button"
                 onClick={handleResume}
                 className="flex items-center justify-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 font-bold text-xs shadow-sm transition-colors cursor-pointer"
                 aria-label="Resume Speech"
@@ -252,6 +272,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
 
             {(isPlaying || isPaused) && (
               <button
+                type="button"
                 onClick={handleStop}
                 className="flex items-center justify-center gap-1.5 px-3 py-2.5 min-h-[44px] rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
                 aria-label="Stop Speech"
@@ -265,18 +286,57 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
         </div>
       </div>
 
+      {/* 2. VISIBLE TTS LANGUAGE / VOICE SELECTOR (English India | हिन्दी | मराठी) */}
+      <div className="pt-2 border-t border-slate-800/80 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-1.5 text-slate-300 font-semibold text-[11px]">
+          <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span>Voice Language:</span>
+        </div>
+
+        {/* 3 Core Indian Voice Language Options */}
+        <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-700 w-full xs:w-auto justify-center">
+          {CORE_TTS_LANGUAGES.map((item) => {
+            const isSelected = selectedTtsLang === item.code;
+            return (
+              <button
+                key={item.code}
+                type="button"
+                onClick={() => setSelectedTtsLang(item.code)}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  isSelected
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+                title={`Synthesize in ${item.label} (${item.locale})`}
+              >
+                <span>{item.flag}</span>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. Fallback / Voice Availability Notice */}
+      {voiceInfo?.statusNotice && (
+        <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-800/70 text-[11px] text-amber-200 flex items-start gap-1.5">
+          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+          <span>{voiceInfo.statusNotice}</span>
+        </div>
+      )}
+
       {/* Audio Wave Visualizer while playing */}
       {isPlaying && (
-        <div className="mt-3 pt-2 border-t border-emerald-900/60 flex items-center justify-between text-[10px] text-emerald-300">
+        <div className="pt-2 border-t border-emerald-900/60 flex items-center justify-between text-[10px] text-emerald-300">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-3.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
             <span className="w-1.5 h-5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
             <span className="w-1.5 h-2.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.45s]" />
             <span className="w-1.5 h-4.5 bg-emerald-400 rounded-full animate-bounce" />
             <span className="w-1.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.2s]" />
-            <span className="ml-1.5 font-medium">Synthesizing clinical audio...</span>
+            <span className="ml-1.5 font-medium">Synthesizing audio ({voiceInfo?.languageLabel})...</span>
           </div>
-          <span className="font-mono text-emerald-400/80">Rate: {speechRate}x</span>
+          <span className="font-mono text-emerald-400/80">{speechRate}x</span>
         </div>
       )}
     </div>

@@ -32,6 +32,7 @@ import { Select } from '../../components/forms/Select';
 import { Modal } from '../../components/common/Modal';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useAuth } from '../../context/AuthContext';
+import { VoiceSymptomLogger } from '../../components/symptoms/VoiceSymptomLogger';
 
 export const PatientSymptoms: React.FC = () => {
   const { user } = useAuth();
@@ -74,6 +75,29 @@ export const PatientSymptoms: React.FC = () => {
     { name: 'Skin & Allergies', label: t.skinAllergies, icon: '🩹', desc: 'Rashes, itching, swelling, hives' },
     { name: 'General & Whole Body', label: t.generalWholeBody, icon: '🌡️', desc: 'Fever, fatigue, weakness, chills' }
   ];
+
+  const handleVoiceTranscription = (transcript: string) => {
+    if (!transcript) return;
+    setSymptomName(transcript);
+
+    // Contextual body area helper based on keywords
+    const lower = transcript.toLowerCase();
+    if (lower.includes('head') || lower.includes('dizzy') || lower.includes('throat') || lower.includes('neck') || lower.includes('eye') || lower.includes('डोके') || lower.includes('चक्कर') || lower.includes('सिर')) {
+      setSelectedBodyArea('Head & Neck');
+    } else if (lower.includes('cough') || lower.includes('chest') || lower.includes('breath') || lower.includes('खोकला') || lower.includes('छाती') || lower.includes('खांसी')) {
+      setSelectedBodyArea('Chest & Respiratory');
+    } else if (lower.includes('stomach') || lower.includes('vomit') || lower.includes('acid') || lower.includes('पोट') || lower.includes('उलटी') || lower.includes('पेट')) {
+      setSelectedBodyArea('Abdomen & Digestion');
+    } else if (lower.includes('joint') || lower.includes('knee') || lower.includes('back') || lower.includes('muscle') || lower.includes('सांधे') || lower.includes('पाठ') || lower.includes('जोड़ों')) {
+      setSelectedBodyArea('Muscles & Joints');
+    } else if (lower.includes('skin') || lower.includes('rash') || lower.includes('itch') || lower.includes('खाज') || lower.includes('त्वचा') || lower.includes('खुजली')) {
+      setSelectedBodyArea('Skin & Allergies');
+    } else if (lower.includes('fever') || lower.includes('weak') || lower.includes('tired') || lower.includes('ताप') || lower.includes('थकवा') || lower.includes('बुखार')) {
+      setSelectedBodyArea('General & Whole Body');
+    }
+
+    showSuccess('Voice Transcribed', 'Spoken symptom captured. Review, edit or add details below.');
+  };
 
   const handleAddAssociated = () => {
     if (!associatedTag.trim()) return;
@@ -185,8 +209,14 @@ export const PatientSymptoms: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Form (2 spans) */}
+        {/* Left Column: Voice Logger + Form (2 spans) */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Interactive Voice Symptom Logger */}
+          <VoiceSymptomLogger
+            onConfirmTranscription={handleVoiceTranscription}
+            defaultLanguage={language}
+          />
+
           <Card>
             <CardHeader
               title={t.symptomLogTitle}

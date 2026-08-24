@@ -29,12 +29,20 @@ export const LANGUAGE_LOCALE_MAP: Record<Language, { primary: string; aliases: s
   sat: { primary: 'sat-IN', aliases: ['sat_IN', 'or-IN', 'hi-IN'], nameEn: 'Santali', nameNative: 'ᱥᱟᱱᱛᱟᱲᱤ' }
 };
 
+export const CORE_TTS_LANGUAGES: { code: Language; label: string; locale: string; flag: string }[] = [
+  { code: 'en', label: 'English (India)', locale: 'en-IN', flag: '🇮🇳' },
+  { code: 'hi', label: 'हिन्दी', locale: 'hi-IN', flag: '🇮🇳' },
+  { code: 'mr', label: 'मराठी', locale: 'mr-IN', flag: '🇮🇳' }
+];
+
 export interface TTSVoiceInfo {
   voice: SpeechSynthesisVoice;
   isExactLocale: boolean;
   displayName: string;
   languageLabel: string;
   isFallback: boolean;
+  hasNativeVoice: boolean;
+  statusNotice?: string;
 }
 
 /**
@@ -65,7 +73,6 @@ export function isSpeechSynthesisSupported(): boolean {
 
 /**
  * Calculate match ranking score for a browser voice against a target language.
- * Higher score = better voice match.
  */
 export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Language): number {
   const voiceLang = (voice.lang || '').replace('_', '-').toLowerCase();
@@ -85,7 +92,7 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
     } else if (voiceLang.startsWith('en')) {
       score += 80;
     } else {
-      return -100; // Not an English voice
+      return -100;
     }
   } else if (lang === 'hi') {
     // HINDI: Strictly prefer hi-IN
@@ -96,16 +103,14 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
     } else if (voiceLang.startsWith('hi')) {
       score += 500;
     } else if (voiceLang === 'mr-in' || voiceLang.startsWith('mr')) {
-      // Devanagari sibling fallback
       score += 200;
     } else if (voiceLang === 'en-in') {
-      // Indian English voice fallback (accent familiarity)
       score += 50;
     } else {
       score += 10;
     }
   } else if (lang === 'mr') {
-    // MARATHI: Strictly prefer mr-IN, fallback gracefully to hi-IN (Devanagari script parity)
+    // MARATHI: Strictly prefer mr-IN, fallback gracefully to hi-IN
     if (voiceLang === 'mr-in' || voiceLang === 'mr') {
       score += 1000;
     } else if (voiceName.includes('marathi') || voiceName.includes('मराठी') || voiceName.includes('aarohi') || voiceName.includes('manohar')) {
@@ -113,7 +118,6 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
     } else if (voiceLang.startsWith('mr')) {
       score += 500;
     } else if (voiceLang === 'hi-in' || voiceLang === 'hi' || voiceName.includes('hindi') || voiceName.includes('हिन्दी')) {
-      // Hindi voice speaks Devanagari Marathi text fluently without failing
       score += 350;
     } else if (voiceLang === 'en-in') {
       score += 50;
@@ -121,7 +125,6 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
       score += 10;
     }
   } else {
-    // OTHER 20 LANGUAGES (Tamil, Telugu, Bengali, Gujarati, Urdu, Kannada, etc.)
     const meta = LANGUAGE_LOCALE_MAP[lang];
     const primary = meta?.primary.toLowerCase();
     const aliases = (meta?.aliases || []).map(a => a.toLowerCase());
@@ -135,13 +138,12 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
     } else if (primary && voiceLang.startsWith(primary.split('-')[0])) {
       score += 300;
     } else if (voiceLang.endsWith('-in')) {
-      score += 50; // Sibling Indian voice
+      score += 50;
     } else {
       score += 10;
     }
   }
 
-  // Bonus for High-Quality / Neural / Natural voice models
   if (voiceName.includes('natural') || voiceName.includes('online') || voiceName.includes('neural') || voiceName.includes('google')) {
     score += 40;
   }
@@ -155,7 +157,6 @@ export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Languag
 
 /**
  * Get the best matching available browser voice for a given language code.
- * Implements intelligent Indian English, Hindi, Marathi, and regional voice prioritization.
  */
 export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
   if (!isSpeechSynthesisSupported()) return null;
@@ -176,18 +177,33 @@ export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
   const voiceLang = (best.lang || '').replace('_', '-').toLowerCase();
   const primaryLocale = langMeta.primary.toLowerCase();
 
+  // Check if a native voice actually exists for this specific language
+  const hasNative = rankedVoices.some(rv => {
+    const l = (rv.voice.lang || '').replace('_', '-').toLowerCase();
+    return l === primaryLocale || (lang === 'en' && l === 'en-in') || (lang === 'hi' && l.startsWith('hi')) || (lang === 'mr' && l.startsWith('mr'));
+  });
+
   const isExact = voiceLang === primaryLocale || (lang === 'en' && voiceLang === 'en-in') || (lang === 'hi' && voiceLang.startsWith('hi')) || (lang === 'mr' && voiceLang.startsWith('mr'));
   const isFallback = !isExact;
 
   let languageLabel = `${langMeta.nameNative} (${langMeta.primary})`;
+  let statusNotice: string | undefined = undefined;
+
   if (lang === 'en') {
-    languageLabel = isExact ? '🇮🇳 Indian English (en-IN)' : 'English (System)';
+    languageLabel = isExact ? 'English (India) — en-IN' : 'English (System Fallback)';
+    if (isFallback) {
+      statusNotice = 'Native en-IN voice not installed on device — using system voice.';
+    }
   } else if (lang === 'hi') {
-    languageLabel = isExact ? '🇮🇳 हिन्दी (hi-IN)' : '🇮🇳 हिन्दी (सहायक आवाज)';
+    languageLabel = isExact ? 'हिन्दी — hi-IN' : 'हिन्दी (सहायक आवाज)';
+    if (isFallback) {
+      statusNotice = 'Native hi-IN voice not installed on device — using fallback.';
+    }
   } else if (lang === 'mr') {
-    languageLabel = isExact ? '🇮🇳 मराठी (mr-IN)' : '🇮🇳 मराठी (हिन्दी आवाज)';
-  } else {
-    languageLabel = `🇮🇳 ${langMeta.nameNative} (${langMeta.primary})`;
+    languageLabel = isExact ? 'मराठी — mr-IN' : 'मराठी (हिन्दी/System Fallback)';
+    if (isFallback) {
+      statusNotice = 'Native Marathi (mr-IN) voice not on device — using Hindi/System fallback.';
+    }
   }
 
   return {
@@ -195,7 +211,9 @@ export function getBestVoiceForLanguage(lang: Language): TTSVoiceInfo | null {
     isExactLocale: isExact,
     displayName: `${best.name} (${best.lang || 'default'})`,
     languageLabel,
-    isFallback
+    isFallback,
+    hasNativeVoice: hasNative,
+    statusNotice
   };
 }
 
@@ -237,7 +255,7 @@ export class TextToSpeechController {
       utterance.lang = meta.primary;
     }
 
-    utterance.rate = params.rate || 0.95; // Slightly slower for crisp healthcare clarity
+    utterance.rate = params.rate || 0.95;
     utterance.pitch = 1.0;
 
     utterance.onstart = () => {
@@ -260,7 +278,6 @@ export class TextToSpeechController {
     };
 
     utterance.onerror = (e) => {
-      // 'interrupted' is normal when user clicks Stop or switches report
       if (e.error !== 'interrupted' && e.error !== 'canceled') {
         console.warn('SpeechSynthesis error:', e);
       }
