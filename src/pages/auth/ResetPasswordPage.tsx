@@ -69,7 +69,7 @@ export const ResetPasswordPage: React.FC = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
-              className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-health-600 focus:ring-2 focus:ring-health-200"
+              className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-theme-primary focus:ring-2 focus:ring-theme-primary-light"
             />
           </div>
 
@@ -93,7 +93,7 @@ export const ResetPasswordPage: React.FC = () => {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               }
-              className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-health-600 focus:ring-2 focus:ring-health-200"
+              className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-theme-primary focus:ring-2 focus:ring-theme-primary-light"
             />
           </div>
 

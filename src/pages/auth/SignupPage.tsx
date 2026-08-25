@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -21,7 +21,8 @@ import {
   Activity,
   Droplet,
   PhoneCall,
-  Info
+  Info,
+  Sparkles
 } from 'lucide-react';
 
 export const SignupPage: React.FC = () => {
@@ -29,6 +30,13 @@ export const SignupPage: React.FC = () => {
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Ensure patient theme is active on Signup page
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', 'patient');
+    }
+  }, []);
 
   // ---------------------------------------------------------------------------
   // 1. Account Information (Required)
@@ -79,49 +87,50 @@ export const SignupPage: React.FC = () => {
     const birthDate = new Date(dobString);
     const difference = Date.now() - birthDate.getTime();
     const ageDate = new Date(difference);
-    return Math.abs(ageDate.getUTCFullYear() - 1970) || 0;
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Required Field Validations
-    if (!fullName.trim() || !email.trim() || !password.trim()) {
-      showError('Missing Fields', 'Please provide your full name, email, and password.');
+    if (!fullName.trim()) {
+      showError('Required Field Missing', 'Please enter your full legal name.');
       return;
     }
 
-    if (password.length < 6) {
+    if (!email.trim() || !email.includes('@')) {
+      showError('Invalid Email Address', 'Please provide a valid email address.');
+      return;
+    }
+
+    if (!phone.trim() || phone.replace(/\D/g, '').length < 10) {
+      showError('Invalid Mobile Number', 'Please provide a valid 10-digit Indian mobile number.');
+      return;
+    }
+
+    if (!password || password.length < 6) {
       showError('Weak Password', 'Password must be at least 6 characters long.');
       return;
     }
 
     if (password !== confirmPassword) {
-      showError('Password Mismatch', 'The passwords entered do not match. Please re-enter.');
-      return;
-    }
-
-    if (!phone.trim()) {
-      showError('Phone Number Required', 'Please enter your mobile contact number.');
-      return;
-    }
-
-    if (!state || !district) {
-      showError('Location Required', 'Please select your State and District.');
+      showError('Password Mismatch', 'The password confirmation does not match.');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Parse optional list fields
-      const allergiesList = allergiesText
+      const allergiesList = allergiesText.trim() 
         ? allergiesText.split(',').map((s) => s.trim()).filter(Boolean)
         : [];
-      const chronicConditionsList = chronicConditionsText
+
+      const chronicConditionsList = chronicConditionsText.trim()
         ? chronicConditionsText.split(',').map((s) => s.trim()).filter(Boolean)
         : [];
-      const medicationsList = currentMedicationsText
+
+      const medicationsList = currentMedicationsText.trim()
         ? currentMedicationsText.split(',').map((s) => s.trim()).filter(Boolean)
         : [];
 
@@ -174,35 +183,37 @@ export const SignupPage: React.FC = () => {
       navigate('/patient');
     } catch (err: any) {
       setIsLoading(false);
-      showError('Registration Error', err?.message || 'An unexpected error occurred during signup.');
+      showError('Registration Error', err.message || 'An unexpected error occurred.');
     }
   };
 
+  const districtsForSelectedState = getDistrictsForState(state);
+
   return (
-    <div className="w-full max-w-2xl mx-auto my-4">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 sm:p-8 md:p-10 space-y-6 sm:space-y-8 animate-fade-in">
+    <div className="w-full max-w-2xl mx-auto my-4 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl border border-pink-100 p-4 sm:p-8 md:p-10 space-y-6 sm:space-y-8">
         
         {/* Header & Registration Advisory */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold mb-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Citizen / Patient Registration</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-50 text-pink-800 border border-pink-200 text-xs font-bold mb-1 shadow-2xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#DB2777]" />
+            <span>PATIENT / CITIZEN REGISTRATION</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Create Your Health Account
+            Create Patient Account
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
-            Register for your universal CareSetu smart health identity and connected clinical records.
+            Register for your universal CareSetu smart health identity and connected longitudinal records.
           </p>
         </div>
 
         {/* Public Citizen Notice */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 flex items-start gap-3">
-          <Info className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+        <div className="bg-pink-50/50 border border-pink-200/80 rounded-2xl p-4 text-xs text-slate-700 flex items-start gap-3">
+          <Info className="w-4 h-4 text-[#DB2777] shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold text-slate-900">Citizen / Patient Registration Portal</p>
+            <p className="font-bold text-slate-900">Citizen & Patient Health Locker</p>
             <p className="text-slate-600 mt-0.5 leading-relaxed">
-              Public registration is available exclusively for citizens and patients. Healthcare professionals and district administrators are provisioned separately through authorized institutional channels.
+              Public registration is available exclusively for citizens and patients. Healthcare professionals and district health administrators are securely provisioned via authorized institutional credentials.
             </p>
           </div>
         </div>
@@ -213,84 +224,43 @@ export const SignupPage: React.FC = () => {
           {/* SECTION A: ACCOUNT INFORMATION (REQUIRED) */}
           {/* ================================================================= */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <User className="w-4 h-4 text-emerald-600" />
+            <div className="flex items-center gap-2 pb-2 border-b border-pink-100">
+              <User className="w-4 h-4 text-[#DB2777]" />
               <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
                 1. Account Information <span className="text-rose-500 text-xs font-normal">(Required)</span>
               </h3>
             </div>
 
-            <FormField label="Full Name" required>
-              <Input
-                placeholder="e.g. Rameshwar Baburao Jadhav"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </FormField>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Email Address" required>
+              <FormField label="Full Legal Name" required>
                 <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
                   required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="e.g. Rameshwar B. Jadhav"
                 />
               </FormField>
 
-              <FormField label="Mobile Phone Number" required>
+              <FormField label="Mobile Number" required helperText="10-digit Indian Mobile Number">
                 <Input
                   type="tel"
-                  placeholder="+91 98224 51902"
+                  required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
-              </FormField>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Password" required>
-                <Input
-                  type="password"
-                  placeholder="Min. 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  placeholder="9822451902"
+                  leftIcon={<Phone className="w-4 h-4 text-slate-400" />}
                 />
               </FormField>
 
-              <FormField label="Confirm Password" required>
+              <FormField label="Email Address" required helperText="Used for notifications and login">
                 <Input
-                  type="password"
-                  placeholder="Re-enter password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="email"
                   required
-                />
-              </FormField>
-            </div>
-          </div>
-
-          {/* ================================================================= */}
-          {/* SECTION B: BASIC DEMOGRAPHICS */}
-          {/* ================================================================= */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <MapPin className="w-4 h-4 text-sky-600" />
-              <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
-                2. Basic Demographics & Residential Location
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Date of Birth">
-                <Input
-                  type="date"
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="patient@example.com"
+                  leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
                 />
               </FormField>
 
@@ -301,10 +271,44 @@ export const SignupPage: React.FC = () => {
                   options={[
                     { value: 'Male', label: 'Male' },
                     { value: 'Female', label: 'Female' },
-                    { value: 'Other', label: 'Other / Non-binary' }
+                    { value: 'Other', label: 'Other / Prefer not to say' }
                   ]}
                 />
               </FormField>
+
+              <FormField label="Password" required helperText="Minimum 6 characters">
+                <Input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+                />
+              </FormField>
+
+              <FormField label="Confirm Password" required>
+                <Input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+                />
+              </FormField>
+            </div>
+          </div>
+
+          {/* ================================================================= */}
+          {/* SECTION B: DEMOGRAPHIC & DOMICILE INFORMATION */}
+          {/* ================================================================= */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-pink-100">
+              <MapPin className="w-4 h-4 text-[#DB2777]" />
+              <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+                2. Domicile & Location Details
+              </h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -320,57 +324,58 @@ export const SignupPage: React.FC = () => {
                 <Select
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  options={getDistrictsForState(state).map((d) => ({ value: d, label: d }))}
+                  options={districtsForSelectedState.map((d) => ({ value: d, label: d }))}
                 />
               </FormField>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="City / Town / Village">
+              <FormField label="City / Taluka / Block">
                 <Input
-                  placeholder="e.g. Pune"
+                  type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g. Pune City"
+                />
+              </FormField>
+
+              <FormField label="Village / Locality / Sector">
+                <Input
+                  type="text"
+                  value={locality}
+                  onChange={(e) => setLocality(e.target.value)}
+                  placeholder="e.g. Aundh"
                 />
               </FormField>
 
               <FormField label="Postal PIN Code">
                 <Input
-                  placeholder="e.g. 411027"
+                  type="text"
+                  maxLength={6}
                   value={pinCode}
-                  onChange={(e) => setPinCode(e.target.value)}
+                  onChange={(e) => setPinCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="411027"
+                />
+              </FormField>
+
+              <FormField label="Date of Birth" helperText="Used for clinical age determination">
+                <Input
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
                 />
               </FormField>
             </div>
-
-            <FormField label="Locality / Residential Address">
-              <Input
-                placeholder="e.g. Chikhalwadi, Near Aundh Bus Stop"
-                value={locality}
-                onChange={(e) => setLocality(e.target.value)}
-              />
-            </FormField>
           </div>
 
           {/* ================================================================= */}
-          {/* SECTION C: BASIC HEALTH INFORMATION (OPTIONAL) */}
+          {/* SECTION C: CLINICAL & EMERGENCY CONTACT (OPTIONAL) */}
           {/* ================================================================= */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <Heart className="w-4 h-4 text-rose-600" />
-                <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
-                  3. Basic Health Information (Optional)
-                </h3>
-              </div>
-              <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-                Optional
-              </span>
+            <div className="flex items-center gap-2 pb-2 border-b border-pink-100">
+              <Heart className="w-4 h-4 text-[#DB2777]" />
+              <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+                3. Clinical Profile & Emergency Access <span className="text-xs text-slate-400 font-normal">(Optional)</span>
+              </h3>
             </div>
-
-            <p className="text-xs text-slate-500">
-              This information helps populate your CareSetu health profile. You can leave any or all of these blank and fill them later.
-            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <FormField label="Blood Group">
@@ -394,116 +399,103 @@ export const SignupPage: React.FC = () => {
               <FormField label="Height (cm)">
                 <Input
                   type="number"
-                  placeholder="e.g. 172"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
-                  min={50}
-                  max={250}
+                  placeholder="e.g. 172"
                 />
               </FormField>
 
               <FormField label="Weight (kg)">
                 <Input
                   type="number"
-                  placeholder="e.g. 68"
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
-                  min={10}
-                  max={300}
+                  placeholder="e.g. 68"
                 />
               </FormField>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Known Drug/Food Allergies">
+              <FormField label="Known Drug / Food Allergies" helperText="Separate multiple allergies with commas">
                 <Input
-                  placeholder="e.g. Penicillin, Peanuts, Sulfa"
+                  type="text"
                   value={allergiesText}
                   onChange={(e) => setAllergiesText(e.target.value)}
+                  placeholder="e.g. Penicillin, Peanuts"
                 />
               </FormField>
 
-              <FormField label="Existing Medical Conditions">
+              <FormField label="Chronic Conditions" helperText="e.g. Type 2 Diabetes, Hypertension">
                 <Input
-                  placeholder="e.g. Type 2 Diabetes, Hypertension"
+                  type="text"
                   value={chronicConditionsText}
                   onChange={(e) => setChronicConditionsText(e.target.value)}
+                  placeholder="e.g. Hypertension, Asthma"
                 />
               </FormField>
             </div>
 
-            <FormField label="Current Daily Medications">
-              <Input
-                placeholder="e.g. Metformin 500mg, Telmisartan 40mg"
-                value={currentMedicationsText}
-                onChange={(e) => setCurrentMedicationsText(e.target.value)}
-              />
-            </FormField>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <FormField label="Emergency Contact Name">
+                <Input
+                  type="text"
+                  value={emergencyContactName}
+                  onChange={(e) => setEmergencyContactName(e.target.value)}
+                  placeholder="e.g. Sunita Jadhav"
+                />
+              </FormField>
 
-            {/* Emergency Contact */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-              <span className="text-xs font-extrabold text-slate-800 block flex items-center gap-1.5">
-                <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
-                Emergency Contact Details (Optional)
-              </span>
+              <FormField label="Emergency Contact Phone">
+                <Input
+                  type="tel"
+                  value={emergencyContactPhone}
+                  onChange={(e) => setEmergencyContactPhone(e.target.value)}
+                  placeholder="9822000000"
+                />
+              </FormField>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <FormField label="Contact Person Name">
-                  <Input
-                    placeholder="e.g. Sunita Jadhav"
-                    value={emergencyContactName}
-                    onChange={(e) => setEmergencyContactName(e.target.value)}
-                  />
-                </FormField>
-
-                <FormField label="Relationship">
-                  <Select
-                    value={emergencyContactRelation}
-                    onChange={(e) => setEmergencyContactRelation(e.target.value)}
-                    options={[
-                      { value: 'Spouse', label: 'Spouse' },
-                      { value: 'Parent', label: 'Parent' },
-                      { value: 'Child', label: 'Child' },
-                      { value: 'Sibling', label: 'Sibling' },
-                      { value: 'Guardian', label: 'Guardian' },
-                      { value: 'Friend', label: 'Friend / Other' }
-                    ]}
-                  />
-                </FormField>
-
-                <FormField label="Emergency Contact Number">
-                  <Input
-                    type="tel"
-                    placeholder="+91 98224 51903"
-                    value={emergencyContactPhone}
-                    onChange={(e) => setEmergencyContactPhone(e.target.value)}
-                  />
-                </FormField>
-              </div>
+              <FormField label="Relationship">
+                <Select
+                  value={emergencyContactRelation}
+                  onChange={(e) => setEmergencyContactRelation(e.target.value)}
+                  options={[
+                    { value: 'Spouse', label: 'Spouse' },
+                    { value: 'Parent', label: 'Parent' },
+                    { value: 'Child', label: 'Child' },
+                    { value: 'Sibling', label: 'Sibling' },
+                    { value: 'Guardian', label: 'Guardian' },
+                    { value: 'Other', label: 'Other' }
+                  ]}
+                />
+              </FormField>
             </div>
           </div>
 
           {/* Submit Action */}
-          <div className="pt-4 border-t border-slate-100 space-y-4">
+          <div className="pt-4 space-y-4">
             <Button
               type="submit"
               variant="primary"
               size="lg"
-              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-black shadow-lg py-3 rounded-2xl text-sm tracking-wide"
+              fullWidth
               isLoading={isLoading}
+              className="bg-[#DB2777] hover:bg-[#BE185D] text-white shadow-lg text-sm font-bold tracking-wide focus:ring-[#F472B6]"
             >
-              {isLoading ? 'Creating Citizen Account...' : 'Create Citizen Health Account'}
+              {isLoading ? "Creating Patient Account..." : "Create Patient Account & Generate CareSetu ID →"}
             </Button>
 
-            <p className="text-center text-xs text-slate-500">
-              Already registered on SwasthyaSync?{' '}
-              <Link to="/login" className="font-bold text-emerald-700 hover:underline">
-                Sign In to Account
-              </Link>
-            </p>
+            <div className="text-center">
+              <p className="text-xs text-slate-500">
+                Already registered with SwasthyaSync?{' '}
+                <Link to="/login" className="text-[#DB2777] hover:text-[#9D174D] font-bold underline">
+                  Sign In to Your Account
+                </Link>
+              </p>
+            </div>
           </div>
 
         </form>
+
       </div>
     </div>
   );

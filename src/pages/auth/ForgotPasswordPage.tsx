@@ -41,7 +41,7 @@ export const ForgotPasswordPage: React.FC = () => {
     <div className="w-full max-w-md mx-auto py-6 animate-fade-in text-white">
       <div className="bg-slate-800/90 border border-slate-700 p-6 sm:p-8 rounded-2xl shadow-elevated">
         <div className="text-center mb-6 space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-health-700/50 text-health-300 flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-xl bg-theme-primary-subtle text-theme-primary border border-theme-primary-border flex items-center justify-center mx-auto shadow-sm">
             <KeyRound className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-bold text-white">Reset Account Password</h1>
@@ -85,7 +85,7 @@ export const ForgotPasswordPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
-                className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-health-600 focus:ring-2 focus:ring-health-200"
+                className="bg-white text-slate-900 placeholder:text-slate-400 font-medium border-slate-300 focus:border-theme-primary focus:ring-2 focus:ring-theme-primary-light"
               />
             </div>
 

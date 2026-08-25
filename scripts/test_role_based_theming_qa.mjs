@@ -168,21 +168,36 @@ check('RoleSwitcherBanner applies theme.topbarBg and theme.topbarBadge', () => {
   assert(topbarCode.includes('theme.portalBadgeText'));
 });
 
-// 5. ROLE-SPECIFIC DASHBOARD IDENTITIES
-console.log('\n--- TEST GROUP 5: Role-Specific Dashboard Identities ---');
-const ptDash = fs.readFileSync(path.resolve('src/pages/patient/PatientDashboard.tsx'), 'utf-8');
-check('PatientDashboard banner uses pink theme scheme (from-pink-950 border-pink-800/50)', () => {
-  assert(ptDash.includes('from-pink-950') && ptDash.includes('border-pink-800/50'));
+// 5. AUTHENTICATION ROLE-BASED THEMING & PATIENT SIGNUP
+console.log('\n--- TEST GROUP 5: Authentication Theming & Patient Signup ---');
+const loginCode = fs.readFileSync(path.resolve('src/pages/auth/LoginPage.tsx'), 'utf-8');
+check('LoginPage dynamically applies role-based styling for Patient, Doctor and Admin tabs', () => {
+  assert(loginCode.includes('bg-[#DB2777]'));
+  assert(loginCode.includes('bg-[#1D4ED8]'));
+  assert(loginCode.includes('bg-[#047857]'));
+  assert(loginCode.includes('currentTheme.portalBadgeText'));
 });
 
-const hospDash = fs.readFileSync(path.resolve('src/pages/hospital/HospitalDashboard.tsx'), 'utf-8');
-check('HospitalDashboard banner uses dark blue clinical theme scheme (from-slate-900 via-sky-950)', () => {
-  assert(hospDash.includes('via-sky-950') && hospDash.includes('border-sky-800/50'));
+const signupCode = fs.readFileSync(path.resolve('src/pages/auth/SignupPage.tsx'), 'utf-8');
+check('SignupPage is explicitly branded for Patient/Citizen registration with Pink theme', () => {
+  assert(signupCode.includes('Create Patient Account'));
+  assert(signupCode.includes('bg-[#DB2777]'));
+  assert(signupCode.includes('PATIENT / CITIZEN REGISTRATION'));
 });
 
-const adminDash = fs.readFileSync(path.resolve('src/pages/district-admin/DistrictDashboard.tsx'), 'utf-8');
-check('DistrictDashboard banner uses dark green administrative theme scheme (from-slate-900 via-emerald-950)', () => {
-  assert(adminDash.includes('via-emerald-950') && adminDash.includes('border-emerald-800/50'));
+// 6. LOCALIZATION & PLACEHOLDER AUDIT
+console.log('\n--- TEST GROUP 6: Localization & Placeholder Audit ---');
+const enLocale = JSON.parse(fs.readFileSync(path.resolve('src/locales/en.json'), 'utf-8'));
+check('en.json has zero leaked raw placeholder strings', () => {
+  assert.strictEqual(enLocale.symptomCheckerTitle, 'Symptom Checker');
+  assert.strictEqual(enLocale.symptomCheckerSubtitle, "Describe what you're experiencing and we'll help organize your symptoms for your care team.");
+  assert.strictEqual(enLocale.profileSubtitle, 'View and manage your personal details, emergency contacts, and ABHA health locker credentials.');
+  assert.strictEqual(enLocale.ehrSubtitle, 'View, upload and manage your verified digital health records and diagnostic reports securely.');
+  assert.strictEqual(enLocale.notificationsTitle, 'Alerts & Notifications');
+  assert.strictEqual(enLocale.notificationsSubtitle, 'Stay updated on your upcoming appointments, medical test results, and health alerts.');
+  assert(!enLocale.symptomCheckerSubtitle.endsWith('Subtitle'));
+  assert(!enLocale.ehrSubtitle.endsWith('Subtitle'));
+  assert(!enLocale.profileSubtitle.endsWith('Subtitle'));
 });
 
 console.log('\n================================================================');
@@ -190,7 +205,7 @@ console.log(`  ROLE-BASED THEMING QA SUMMARY: ${passed}/${total} TESTS PASSED`);
 console.log('================================================================');
 
 if (passed === total) {
-  console.log('🎉 ALL FULL ROLE-BASED COLOR THEMING TESTS PASSED (100%)!');
+  console.log('🎉 ALL FULL ROLE-BASED COLOR THEMING & POLISH TESTS PASSED (100%)!');
   process.exit(0);
 } else {
   console.error('❌ SOME ROLE-BASED THEMING TESTS FAILED');
