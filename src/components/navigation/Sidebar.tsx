@@ -105,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                   isActive
-                    ? 'bg-health-700 text-white shadow-sm font-semibold'
+                    ? 'bg-theme-primary text-white shadow-sm font-semibold'
                     : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 } ${isCollapsed ? 'justify-center px-2' : ''}`
               }

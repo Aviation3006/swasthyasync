@@ -7,6 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        theme: {
+          primary: 'var(--theme-primary)',
+          'primary-hover': 'var(--theme-primary-hover)',
+          'primary-light': 'var(--theme-primary-light)',
+          'primary-subtle': 'var(--theme-primary-subtle)',
+          'primary-border': 'var(--theme-primary-border)',
+          'text-accent': 'var(--theme-text-accent)',
+          ring: 'var(--theme-ring)',
+        },
         health: {
           50: '#F0F7FF',
           100: '#E0EFFE',

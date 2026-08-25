@@ -96,7 +96,7 @@ export const PatientDashboard: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Patient Health Summary Top Banner */}
-      <div className="bg-gradient-to-r from-health-800 via-health-900 to-navy-950 rounded-2xl p-5 sm:p-7 text-white shadow-elevated border border-health-700/50">
+      <div className="bg-gradient-to-r from-pink-950 via-slate-900 to-navy-950 rounded-2xl p-5 sm:p-7 text-white shadow-elevated border border-pink-800/50">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2.5 flex-wrap">

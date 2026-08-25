@@ -97,11 +97,11 @@ export const HospitalDashboard: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Hospital Clinical Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-navy-950 to-slate-900 rounded-2xl p-5 sm:p-7 text-white shadow-elevated border border-slate-800">
+      <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 rounded-2xl p-5 sm:p-7 text-white shadow-elevated border border-sky-800/50">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-health-500/20 text-health-300 border border-health-500/30">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">
                 {facility?.facilityType || hospital.facilityType} • {location.district ? `${location.district} District, ${location.state}` : `${hospital.taluka} District`}
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">

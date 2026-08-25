@@ -8,7 +8,8 @@ export type BadgeVariant =
   | 'neutral' 
   | 'urgent' 
   | 'purple'
-  | 'teal';
+  | 'teal'
+  | 'theme';
 
 interface StatusBadgeProps {
   children: React.ReactNode;
@@ -33,7 +34,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     info: 'bg-sky-50 text-sky-700 border-sky-200',
     neutral: 'bg-slate-100 text-slate-700 border-slate-200',
     purple: 'bg-purple-50 text-purple-700 border-purple-200',
-    teal: 'bg-teal-50 text-teal-700 border-teal-200'
+    teal: 'bg-teal-50 text-teal-700 border-teal-200',
+    theme: 'bg-theme-primary-subtle text-theme-text-accent border-theme-primary-border'
   };
 
   const dotStyles = {
@@ -44,7 +46,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     info: 'bg-sky-500',
     neutral: 'bg-slate-400',
     purple: 'bg-purple-500',
-    teal: 'bg-teal-500'
+    teal: 'bg-teal-500',
+    theme: 'bg-theme-primary'
   };
 
   const sizeStyles = {

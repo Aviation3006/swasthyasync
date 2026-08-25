@@ -61,7 +61,7 @@ export const MobileNav: React.FC = () => {
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1.5 px-1 min-h-[48px] rounded-xl text-[10px] font-semibold transition-all select-none ${
                   isActive
-                    ? 'text-emerald-800 font-extrabold bg-emerald-50/80 shadow-xs'
+                    ? 'text-theme-primary font-extrabold bg-theme-primary-light shadow-xs border-b-2 border-theme-primary'
                     : 'text-slate-500 hover:text-slate-900 active:bg-slate-100'
                 }`
               }

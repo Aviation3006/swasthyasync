@@ -37,7 +37,7 @@ export const CardHeader: React.FC<{
     <div className={`flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 min-w-0 ${className}`}>
       <div className="flex items-center gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="w-10 h-10 rounded-lg bg-health-50 text-health-700 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-theme-primary-subtle text-theme-primary flex items-center justify-center flex-shrink-0">
             {icon}
           </div>
         )}

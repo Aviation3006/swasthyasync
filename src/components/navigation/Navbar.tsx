@@ -121,13 +121,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               to={role === 'patient' ? '/patient' : role === 'hospital' ? '/hospital' : '/district-admin'}
               className="flex items-center gap-2 sm:gap-2.5 group min-w-0 shrink"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-health-700 to-health-900 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-theme-primary to-theme-primary-hover flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform shrink-0">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
               </div>
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="font-bold text-base sm:text-xl text-slate-900 tracking-tight shrink-0">
-                    Swasthya<span className="text-health-700">Sync</span>
+                    Swasthya<span className="text-theme-primary">Sync</span>
                   </span>
                   <span className="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-200 hidden md:inline-block shrink-0">
                     DIGITAL HEALTH
@@ -316,7 +316,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                 className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 rounded-xl hover:bg-slate-100 transition-colors shrink-0"
                 aria-label="User account menu"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-health-800 text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-theme-primary text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block shrink-0" />
@@ -327,7 +327,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                   <div className="px-3.5 py-2 border-b border-slate-100">
                     <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Citizen'}</p>
                     <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                    <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-theme-primary-subtle text-theme-text-accent border border-theme-primary-border">
                       {user?.roleTitle || 'Citizen Patient'}
                     </span>
                   </div>

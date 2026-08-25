@@ -33,7 +33,7 @@ export const Tabs: React.FC<TabsProps> = ({
               onClick={() => onChange(tab.id)}
               className={`flex items-center gap-2 px-3.5 py-1.5 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-all focus:outline-none ${
                 isActive
-                  ? 'bg-white text-health-800 shadow-sm font-semibold'
+                  ? 'bg-white text-theme-primary shadow-sm font-semibold border-b-2 border-theme-primary'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
@@ -43,7 +43,7 @@ export const Tabs: React.FC<TabsProps> = ({
                 <span
                   className={`px-1.5 py-0.5 text-xs rounded-full ${
                     isActive
-                      ? 'bg-health-100 text-health-800 font-bold'
+                      ? 'bg-theme-primary-light text-theme-text-accent font-bold'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -68,7 +68,7 @@ export const Tabs: React.FC<TabsProps> = ({
               onClick={() => onChange(tab.id)}
               className={`flex items-center gap-2 py-3 px-1 border-b-2 text-sm font-medium transition-colors focus:outline-none whitespace-nowrap ${
                 isActive
-                  ? 'border-health-600 text-health-700 font-semibold'
+                  ? 'border-theme-primary text-theme-primary font-semibold'
                   : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
               }`}
             >
@@ -78,7 +78,7 @@ export const Tabs: React.FC<TabsProps> = ({
                 <span
                   className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                     isActive
-                      ? 'bg-health-100 text-health-800'
+                      ? 'bg-theme-primary-light text-theme-text-accent font-bold'
                       : 'bg-slate-100 text-slate-600'
                   }`}
                 >

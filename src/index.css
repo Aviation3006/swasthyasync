@@ -1,4 +1,40 @@
+
 @import 'leaflet/dist/leaflet.css';
+
+/* ==========================================================================
+   ROLE-BASED THEME VARIABLES (Patient: Pink, Hospital: Dark Blue, Admin: Dark Green)
+   ========================================================================== */
+:root,
+[data-theme='patient'] {
+  --theme-primary: #D9467A;
+  --theme-primary-hover: #BE185D;
+  --theme-primary-light: #FCE7F3;
+  --theme-primary-subtle: #FDF2F8;
+  --theme-primary-border: #FBCFE8;
+  --theme-text-accent: #9D174D;
+  --theme-ring: #F472B6;
+}
+
+[data-theme='hospital'] {
+  --theme-primary: #155E9A;
+  --theme-primary-hover: #0C4A6E;
+  --theme-primary-light: #E0F2FE;
+  --theme-primary-subtle: #F0F9FF;
+  --theme-primary-border: #BAE6FD;
+  --theme-text-accent: #075985;
+  --theme-ring: #38BDF8;
+}
+
+[data-theme='district_admin'] {
+  --theme-primary: #047857;
+  --theme-primary-hover: #065F46;
+  --theme-primary-light: #D1FAE5;
+  --theme-primary-subtle: #ECFDF5;
+  --theme-primary-border: #A7F3D0;
+  --theme-text-accent: #065F46;
+  --theme-ring: #34D399;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
