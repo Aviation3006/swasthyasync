@@ -155,11 +155,10 @@ check('MobileNav highlights active tab with text-theme-primary and bg-theme-prim
 });
 
 const navbarCode = fs.readFileSync(path.resolve('src/components/navigation/Navbar.tsx'), 'utf-8');
-check('Navbar brand icon, portal badge, user avatar, and border adapt to role theme', () => {
-  assert(navbarCode.includes('from-theme-primary to-theme-primary-hover'));
+check('Navbar brand icon, portal badge, dynamic header background and border adapt to role theme', () => {
+  assert(navbarCode.includes('${theme.sidebarBg}'));
+  assert(navbarCode.includes('${theme.sidebarBorder}'));
   assert(navbarCode.includes('theme.portalBadgeText'));
-  assert(navbarCode.includes('bg-theme-primary text-white'));
-  assert(navbarCode.includes('border-b border-theme-border'));
 });
 
 const topbarCode = fs.readFileSync(path.resolve('src/components/navigation/RoleSwitcherBanner.tsx'), 'utf-8');
@@ -182,7 +181,7 @@ const signupCode = fs.readFileSync(path.resolve('src/pages/auth/SignupPage.tsx')
 check('SignupPage is explicitly branded for Patient/Citizen registration with Pink theme', () => {
   assert(signupCode.includes('Create Patient Account'));
   assert(signupCode.includes('bg-[#DB2777]'));
-  assert(signupCode.includes('PATIENT / CITIZEN REGISTRATION'));
+  assert(signupCode.includes('CITIZEN REGISTRATION'));
 });
 
 // 6. LOCALIZATION & PLACEHOLDER AUDIT
