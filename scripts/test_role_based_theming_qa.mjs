@@ -55,9 +55,11 @@ check('District Admin Theme specifies Primary #047857, Light Accent #D1FAE5, and
 });
 
 const themeContext = fs.readFileSync(path.resolve('src/context/ThemeContext.tsx'), 'utf-8');
-check('ThemeContext provides ThemeProvider and useTheme() hook bound to AuthContext role', () => {
+check('ThemeContext provides ThemeProvider and useTheme() with setThemeRole and URL detection', () => {
   assert(themeContext.includes('export const ThemeProvider: React.FC'));
   assert(themeContext.includes('export const useTheme = ()'));
+  assert(themeContext.includes('setThemeRole'));
+  assert(themeContext.includes('getInitialRole'));
   assert(themeContext.includes('root.setAttribute(\'data-theme\', currentRole)'));
   assert(themeContext.includes('root.style.setProperty(\'--theme-primary\', theme.primary)'));
   assert(themeContext.includes('root.style.setProperty(\'--theme-background\', theme.pageBackground)'));
@@ -174,7 +176,8 @@ check('LoginPage dynamically applies role-based styling for Patient, Doctor and 
   assert(loginCode.includes('bg-[#DB2777]'));
   assert(loginCode.includes('bg-[#1D4ED8]'));
   assert(loginCode.includes('bg-[#047857]'));
-  assert(loginCode.includes('currentTheme.portalBadgeText'));
+  assert(loginCode.includes('setThemeRole(role)'));
+  assert(loginCode.includes('portalBadge'));
 });
 
 const signupCode = fs.readFileSync(path.resolve('src/pages/auth/SignupPage.tsx'), 'utf-8');

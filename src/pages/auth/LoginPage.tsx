@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/forms/Input';
 import { UserRole } from '../../types/common';
-import { ROLE_THEMES } from '../../types/theme';
 import { 
   Building2, 
   User, 
@@ -26,13 +26,21 @@ import {
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { signInWithEmail, isConfigured, isLoading } = useAuth();
+  const { signInWithEmail, isLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
+  const { theme, role: currentThemeRole, setThemeRole } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Selected Role: 'patient' | 'hospital' | 'district_admin'
-  const [selectedRole, setSelectedRole] = useState<UserRole>('patient');
+  // Selected Role derived from ThemeContext or URL
+  const [selectedRole, setSelectedRole] = useState<UserRole>(() => {
+    const search = new URLSearchParams(location.search);
+    const r = search.get('role');
+    if (r === 'hospital' || r === 'district_admin' || r === 'patient') return r as UserRole;
+    return currentThemeRole || 'patient';
+  });
+
   const [selectedDemoRegion, setSelectedDemoRegion] = useState<'Maharashtra' | 'Delhi' | 'Karnataka'>('Delhi');
 
   // Form Fields
@@ -43,27 +51,20 @@ export const LoginPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const currentTheme = ROLE_THEMES[selectedRole] || ROLE_THEMES.patient;
-
-  // Dynamically synchronize theme on document element when role tab changes
+  // Sync initial role credentials and theme on mount
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      root.setAttribute('data-theme', selectedRole);
-      root.style.setProperty('--theme-primary', currentTheme.primary);
-      root.style.setProperty('--theme-primary-hover', currentTheme.primaryHover);
-      root.style.setProperty('--theme-primary-light', currentTheme.primaryLight);
-      root.style.setProperty('--theme-primary-subtle', currentTheme.primarySubtle);
-      root.style.setProperty('--theme-primary-border', currentTheme.primaryBorder);
-      root.style.setProperty('--theme-text-accent', currentTheme.textAccent);
-      root.style.setProperty('--theme-ring', currentTheme.ringColor);
-      root.style.setProperty('--theme-background', currentTheme.pageBackground);
-    }
-  }, [selectedRole, currentTheme]);
+    const search = new URLSearchParams(location.search);
+    const r = search.get('role');
+    const targetRole = (r === 'hospital' || r === 'district_admin' || r === 'patient') ? (r as UserRole) : selectedRole;
+    setSelectedRole(targetRole);
+    setThemeRole(targetRole);
+    updateCredentialsForRoleAndRegion(targetRole, selectedDemoRegion);
+  }, []);
 
   // Handle Role Tab Switching
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
+    setThemeRole(role);
     setErrorMessage(null);
     updateCredentialsForRoleAndRegion(role, selectedDemoRegion);
   };
@@ -136,7 +137,7 @@ export const LoginPage: React.FC = () => {
       if (user) {
         showSuccess(
           'Authentication Verified',
-          `Welcome back, ${user.name || user.email}! (${user.roleTitle || currentTheme.portalBadgeText})`
+          `Welcome back, ${user.name || user.email}! (${user.roleTitle || theme.portalBadgeText})`
         );
 
         if (user.role === 'hospital') {

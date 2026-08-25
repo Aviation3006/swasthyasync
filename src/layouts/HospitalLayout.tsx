@@ -5,9 +5,16 @@ import { Sidebar } from '../components/navigation/Sidebar';
 import { MobileNav } from '../components/navigation/MobileNav';
 import { RoleSwitcherBanner } from '../components/navigation/RoleSwitcherBanner';
 
+import { useTheme } from '../context/ThemeContext';
+
 export const HospitalLayout: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { setThemeRole } = useTheme();
+
+  React.useEffect(() => {
+    setThemeRole('hospital');
+  }, [setThemeRole]);
 
   return (
     <div className="min-h-screen bg-theme-background flex flex-col transition-colors duration-200">
@@ -37,7 +44,7 @@ export const HospitalLayout: React.FC = () => {
               className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <div className="relative z-10 w-72 max-w-[80vw] h-full bg-slate-900 shadow-2xl">
+            <div className="relative z-10 w-72 max-w-[80vw] h-full overflow-hidden shadow-2xl">
               <Sidebar onNavigate={() => setIsMobileMenuOpen(false)} />
             </div>
           </div>

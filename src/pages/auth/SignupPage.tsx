@@ -24,18 +24,19 @@ import {
   Info
 } from 'lucide-react';
 
+import { useTheme } from '../../context/ThemeContext';
+
 export const SignupPage: React.FC = () => {
   const { signUpWithEmail } = useAuth();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
+  const { setThemeRole } = useTheme();
   const navigate = useNavigate();
 
   // Ensure patient theme is active on Signup page
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', 'patient');
-    }
-  }, []);
+    setThemeRole('patient');
+  }, [setThemeRole]);
 
   // ---------------------------------------------------------------------------
   // 1. Account Information (Required)

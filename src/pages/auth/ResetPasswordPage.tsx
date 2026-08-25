@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
+import { useTheme } from '../../context/ThemeContext';
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { FormField } from '../../components/forms/FormField';
@@ -9,7 +10,12 @@ import { useToast } from '../../context/ToastContext';
 
 export const ResetPasswordPage: React.FC = () => {
   const { showSuccess, showError } = useToast();
+  const { setThemeRole } = useTheme();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setThemeRole('patient');
+  }, [setThemeRole]);
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

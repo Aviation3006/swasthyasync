@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Mail, ArrowLeft, CheckCircle2, AlertCircle, KeyRound } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { FormField } from '../../components/forms/FormField';
@@ -10,6 +11,11 @@ import { useToast } from '../../context/ToastContext';
 export const ForgotPasswordPage: React.FC = () => {
   const { resetPassword } = useAuth();
   const { showSuccess, showError } = useToast();
+  const { setThemeRole } = useTheme();
+
+  useEffect(() => {
+    setThemeRole('patient');
+  }, [setThemeRole]);
 
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
