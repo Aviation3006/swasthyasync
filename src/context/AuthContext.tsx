@@ -272,6 +272,7 @@ interface AuthContextType {
     password: string;
     fullName: string;
     role?: UserRole;
+    abhaNumber?: string;
     phone: string;
     dob?: string;
     age?: number;
@@ -476,6 +477,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string;
     fullName: string;
     role?: UserRole;
+    abhaNumber?: string;
     phone: string;
     dob?: string;
     age?: number;
@@ -513,6 +515,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: sessionUser.email,
         role: sessionUser.role,
         roleTitle: 'Citizen / Patient (Registered)',
+        abhaNumber: sessionUser.abhaNumber,
         district: sessionUser.district,
         state: sessionUser.state,
         phone: sessionUser.phone || '+91 98000 00000',

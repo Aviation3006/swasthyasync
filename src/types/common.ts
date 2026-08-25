@@ -70,6 +70,7 @@ export interface User {
   district?: string;
   state?: string;
   avatarUrl?: string;
+  abhaNumber?: string;
   phone: string;
   location?: LocationInfo;
   professionalProfile?: HealthcareProfessionalProfile;

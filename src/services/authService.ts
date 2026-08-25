@@ -7,6 +7,7 @@ export interface AuthSessionUser {
   email: string;
   fullName: string;
   role: UserRole;
+  abhaNumber?: string;
   phone?: string;
   dob?: string;
   age?: number;
@@ -44,7 +45,8 @@ export const authService = {
     email: string;
     password: string;
     fullName: string;
-    role?: UserRole; // Ignored / Overridden to 'patient' at authorization boundary
+    role?: UserRole;
+    abhaNumber?: string; // Ignored / Overridden to 'patient' at authorization boundary
     phone?: string;
     dob?: string;
     age?: number;
@@ -92,6 +94,7 @@ export const authService = {
         email: params.email.trim(),
         fullName: params.fullName.trim(),
         role: enforcedRole,
+        abhaNumber: params.abhaNumber?.trim(),
         phone: params.phone?.trim() || '+91 98000 00000',
         dob: params.dob,
         age: params.age,
@@ -168,6 +171,7 @@ export const authService = {
         email: data.user.email || params.email.trim(),
         fullName: params.fullName.trim(),
         role: enforcedRole,
+        abhaNumber: params.abhaNumber?.trim(),
         phone: params.phone?.trim(),
         dob: params.dob,
         age: params.age,
