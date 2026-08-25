@@ -1,28 +1,35 @@
-
 @import 'leaflet/dist/leaflet.css';
 
 /* ==========================================================================
-   ROLE-BASED THEME VARIABLES (Patient: Pink, Hospital: Dark Blue, Admin: Dark Green)
+   ROLE-BASED FULL THEME VARIABLES (Patient: Pink, Doctor: Dark Blue, Admin: Dark Green)
    ========================================================================== */
 :root,
 [data-theme='patient'] {
-  --theme-primary: #D9467A;
+  --theme-primary: #DB2777;
   --theme-primary-hover: #BE185D;
   --theme-primary-light: #FCE7F3;
   --theme-primary-subtle: #FDF2F8;
   --theme-primary-border: #FBCFE8;
   --theme-text-accent: #9D174D;
   --theme-ring: #F472B6;
+  --theme-background: #FFF5F8;
+  --theme-surface: #FFFFFF;
+  --theme-border: #FCE7F3;
+  --theme-sidebar-active: #DB2777;
 }
 
 [data-theme='hospital'] {
-  --theme-primary: #155E9A;
-  --theme-primary-hover: #0C4A6E;
-  --theme-primary-light: #E0F2FE;
+  --theme-primary: #1D4ED8;
+  --theme-primary-hover: #1E40AF;
+  --theme-primary-light: #EFF6FF;
   --theme-primary-subtle: #F0F9FF;
   --theme-primary-border: #BAE6FD;
-  --theme-text-accent: #075985;
+  --theme-text-accent: #1E40AF;
   --theme-ring: #38BDF8;
+  --theme-background: #F4F8FC;
+  --theme-surface: #FFFFFF;
+  --theme-border: #E0F2FE;
+  --theme-sidebar-active: #1D4ED8;
 }
 
 [data-theme='district_admin'] {
@@ -33,6 +40,10 @@
   --theme-primary-border: #A7F3D0;
   --theme-text-accent: #065F46;
   --theme-ring: #34D399;
+  --theme-background: #F2F9F5;
+  --theme-surface: #FFFFFF;
+  --theme-border: #D1FAE5;
+  --theme-sidebar-active: #047857;
 }
 
 @tailwind base;

@@ -3,8 +3,8 @@ import path from 'path';
 import assert from 'assert';
 
 console.log('================================================================');
-console.log('  RUNNING SWASTHYASYNC ROLE-BASED COLOR THEMING QA SUITE');
-console.log('  Testing Role Themes: Patient (Pink) | Hospital (Dark Blue) | Admin (Dark Green)');
+console.log('  RUNNING SWASTHYASYNC FULL ROLE-BASED COLOR THEMING QA SUITE');
+console.log('  Testing Role Themes: Patient (Pink) | Doctor (Dark Blue) | Admin (Dark Green)');
 console.log('================================================================\n');
 
 let passed = 0;
@@ -29,24 +29,29 @@ check('src/types/theme.ts defines RoleThemeConfig and ROLE_THEMES map', () => {
   assert(themeTypes.includes('export const ROLE_THEMES: Record<UserRole, RoleThemeConfig>'));
 });
 
-check('Patient Theme specifies Primary #D9467A and Light Accent #FCE7F3', () => {
-  assert(themeTypes.includes('#D9467A'));
+check('Patient Theme specifies Primary #DB2777, Light Accent #FCE7F3, and Background #FFF5F8', () => {
+  assert(themeTypes.includes('#DB2777'));
   assert(themeTypes.includes('#FCE7F3'));
   assert(themeTypes.includes('#BE185D'));
   assert(themeTypes.includes('#9D174D'));
+  assert(themeTypes.includes('#FFF5F8'));
+  assert(themeTypes.includes('PATIENT PORTAL'));
 });
 
-check('Hospital Theme specifies Primary #155E9A and Light Accent #E0F2FE', () => {
-  assert(themeTypes.includes('#155E9A'));
-  assert(themeTypes.includes('#E0F2FE'));
-  assert(themeTypes.includes('#0C4A6E'));
-  assert(themeTypes.includes('#075985'));
+check('Doctor/Hospital Theme specifies Primary #1D4ED8, Light Accent #EFF6FF, and Background #F4F8FC', () => {
+  assert(themeTypes.includes('#1D4ED8'));
+  assert(themeTypes.includes('#EFF6FF'));
+  assert(themeTypes.includes('#1E40AF'));
+  assert(themeTypes.includes('#F4F8FC'));
+  assert(themeTypes.includes('DOCTOR PORTAL'));
 });
 
-check('District Admin Theme specifies Primary #047857 and Light Accent #D1FAE5', () => {
+check('District Admin Theme specifies Primary #047857, Light Accent #D1FAE5, and Background #F2F9F5', () => {
   assert(themeTypes.includes('#047857'));
   assert(themeTypes.includes('#D1FAE5'));
   assert(themeTypes.includes('#065F46'));
+  assert(themeTypes.includes('#F2F9F5'));
+  assert(themeTypes.includes('ADMIN PORTAL'));
 });
 
 const themeContext = fs.readFileSync(path.resolve('src/context/ThemeContext.tsx'), 'utf-8');
@@ -55,6 +60,7 @@ check('ThemeContext provides ThemeProvider and useTheme() hook bound to AuthCont
   assert(themeContext.includes('export const useTheme = ()'));
   assert(themeContext.includes('root.setAttribute(\'data-theme\', currentRole)'));
   assert(themeContext.includes('root.style.setProperty(\'--theme-primary\', theme.primary)'));
+  assert(themeContext.includes('root.style.setProperty(\'--theme-background\', theme.pageBackground)'));
 });
 
 const appCode = fs.readFileSync(path.resolve('src/App.tsx'), 'utf-8');
@@ -63,23 +69,36 @@ check('App.tsx wraps application routes in ThemeProvider', () => {
   assert(appCode.includes('</ThemeProvider>'));
 });
 
-// 2. CSS VARIABLES & TAILWIND CONFIGURATION
-console.log('\n--- TEST GROUP 2: CSS Variables & Tailwind Theme Token Mapping ---');
+// 2. CSS VARIABLES, TAILWIND CONFIGURATION & FULL PAGE BACKGROUNDS
+console.log('\n--- TEST GROUP 2: CSS Variables, Tailwind Config & Page Layout Backgrounds ---');
 const indexCss = fs.readFileSync(path.resolve('src/index.css'), 'utf-8');
 check('index.css contains CSS variables for :root and [data-theme] selectors', () => {
   assert(indexCss.includes('[data-theme=\'patient\']'));
   assert(indexCss.includes('[data-theme=\'hospital\']'));
   assert(indexCss.includes('[data-theme=\'district_admin\']'));
-  assert(indexCss.includes('--theme-primary: #D9467A'));
-  assert(indexCss.includes('--theme-primary: #155E9A'));
+  assert(indexCss.includes('--theme-primary: #DB2777'));
+  assert(indexCss.includes('--theme-primary: #1D4ED8'));
   assert(indexCss.includes('--theme-primary: #047857'));
+  assert(indexCss.includes('--theme-background: #FFF5F8'));
+  assert(indexCss.includes('--theme-background: #F4F8FC'));
+  assert(indexCss.includes('--theme-background: #F2F9F5'));
 });
 
 const twConfig = fs.readFileSync(path.resolve('tailwind.config.js'), 'utf-8');
 check('tailwind.config.js maps theme color tokens to CSS variables', () => {
   assert(twConfig.includes('primary: \'var(--theme-primary)\''));
   assert(twConfig.includes('\'primary-light\': \'var(--theme-primary-light)\''));
-  assert(twConfig.includes('ring: \'var(--theme-ring)\''));
+  assert(twConfig.includes('background: \'var(--theme-background)\''));
+  assert(twConfig.includes('border: \'var(--theme-border)\''));
+});
+
+const ptLayout = fs.readFileSync(path.resolve('src/layouts/PatientLayout.tsx'), 'utf-8');
+const hospLayout = fs.readFileSync(path.resolve('src/layouts/HospitalLayout.tsx'), 'utf-8');
+const adminLayout = fs.readFileSync(path.resolve('src/layouts/DistrictAdminLayout.tsx'), 'utf-8');
+check('Layouts apply bg-theme-background for full-page role theme tint', () => {
+  assert(ptLayout.includes('bg-theme-background'));
+  assert(hospLayout.includes('bg-theme-background'));
+  assert(adminLayout.includes('bg-theme-background'));
 });
 
 // 3. CORE UI COMPONENTS THEME APPLICATION
@@ -98,7 +117,8 @@ check('Tabs component highlights active tab with theme-primary and theme-primary
 });
 
 const cardCode = fs.readFileSync(path.resolve('src/components/common/Card.tsx'), 'utf-8');
-check('CardHeader icon container uses bg-theme-primary-subtle and text-theme-primary', () => {
+check('Card uses border-theme-border and icon container uses bg-theme-primary-subtle', () => {
+  assert(cardCode.includes('border border-theme-border'));
   assert(cardCode.includes('bg-theme-primary-subtle text-theme-primary'));
 });
 
@@ -119,11 +139,14 @@ check('Form inputs and switches adapt focus ring and active state to role theme'
   assert(toggleCode.includes('bg-theme-primary'));
 });
 
-// 4. NAVIGATION & HEADER THEME INTEGRATION
-console.log('\n--- TEST GROUP 4: Navigation & Global Header Integration ---');
+// 4. NAVIGATION, SIDEBAR & GLOBAL HEADER THEME INTEGRATION
+console.log('\n--- TEST GROUP 4: Navigation, Distinct Sidebar & Header Integration ---');
 const sidebarCode = fs.readFileSync(path.resolve('src/components/navigation/Sidebar.tsx'), 'utf-8');
-check('Sidebar marks active navigation links with bg-theme-primary', () => {
-  assert(sidebarCode.includes('bg-theme-primary text-white shadow-sm font-semibold'));
+check('Sidebar uses distinct role gradient background (theme.sidebarBg) and active styling', () => {
+  assert(sidebarCode.includes('${theme.sidebarBg}'));
+  assert(sidebarCode.includes('${theme.sidebarBorder}'));
+  assert(sidebarCode.includes('theme.portalBadgeText'));
+  assert(sidebarCode.includes('theme.sidebarActive'));
 });
 
 const mobileNavCode = fs.readFileSync(path.resolve('src/components/navigation/MobileNav.tsx'), 'utf-8');
@@ -132,13 +155,20 @@ check('MobileNav highlights active tab with text-theme-primary and bg-theme-prim
 });
 
 const navbarCode = fs.readFileSync(path.resolve('src/components/navigation/Navbar.tsx'), 'utf-8');
-check('Navbar brand icon, user avatar, and role badge adapt to active role theme', () => {
+check('Navbar brand icon, portal badge, user avatar, and border adapt to role theme', () => {
   assert(navbarCode.includes('from-theme-primary to-theme-primary-hover'));
+  assert(navbarCode.includes('theme.portalBadgeText'));
   assert(navbarCode.includes('bg-theme-primary text-white'));
-  assert(navbarCode.includes('bg-theme-primary-subtle text-theme-text-accent'));
+  assert(navbarCode.includes('border-b border-theme-border'));
 });
 
-// 5. ROLE-SPECIFIC DASHBOARD BANNERS
+const topbarCode = fs.readFileSync(path.resolve('src/components/navigation/RoleSwitcherBanner.tsx'), 'utf-8');
+check('RoleSwitcherBanner applies theme.topbarBg and theme.topbarBadge', () => {
+  assert(topbarCode.includes('${theme.topbarBg}'));
+  assert(topbarCode.includes('theme.portalBadgeText'));
+});
+
+// 5. ROLE-SPECIFIC DASHBOARD IDENTITIES
 console.log('\n--- TEST GROUP 5: Role-Specific Dashboard Identities ---');
 const ptDash = fs.readFileSync(path.resolve('src/pages/patient/PatientDashboard.tsx'), 'utf-8');
 check('PatientDashboard banner uses pink theme scheme (from-pink-950 border-pink-800/50)', () => {
@@ -160,7 +190,7 @@ console.log(`  ROLE-BASED THEMING QA SUMMARY: ${passed}/${total} TESTS PASSED`);
 console.log('================================================================');
 
 if (passed === total) {
-  console.log('🎉 ALL ROLE-BASED COLOR THEMING TESTS PASSED (100%)!');
+  console.log('🎉 ALL FULL ROLE-BASED COLOR THEMING TESTS PASSED (100%)!');
   process.exit(0);
 } else {
   console.error('❌ SOME ROLE-BASED THEMING TESTS FAILED');

@@ -16,8 +16,8 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-xl border border-slate-200 shadow-card transition-all max-w-full min-w-0 ${
-        hoverEffect ? 'hover:shadow-elevated hover:border-slate-300' : ''
+      className={`bg-white rounded-xl border border-theme-border shadow-card transition-all max-w-full min-w-0 ${
+        hoverEffect ? 'hover:shadow-elevated hover:border-theme-primary/40' : ''
       } ${padded ? 'p-3.5 sm:p-5 sm:p-6' : ''} ${className}`}
       {...props}
     >
@@ -37,7 +37,7 @@ export const CardHeader: React.FC<{
     <div className={`flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-slate-100 min-w-0 ${className}`}>
       <div className="flex items-center gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="w-10 h-10 rounded-lg bg-theme-primary-subtle text-theme-primary flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-theme-primary-subtle text-theme-primary flex items-center justify-center flex-shrink-0 border border-theme-primary-border/60">
             {icon}
           </div>
         )}

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useTheme } from '../../context/ThemeContext';
 import { 
   LayoutDashboard, 
   User, 
@@ -22,7 +23,8 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
-  HeartPulse
+  HeartPulse,
+  ShieldCheck
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -40,6 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { role } = useAuth();
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   const patientNavItems = [
     { label: t.navDashboard, path: '/patient', icon: LayoutDashboard, exact: true },
@@ -80,17 +83,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`h-full flex flex-col bg-slate-900 text-slate-200 border-r border-slate-800 transition-all duration-300 ${
+      className={`h-full flex flex-col ${theme.sidebarBg} text-slate-100 border-r ${theme.sidebarBorder} transition-all duration-300 shadow-xl ${
         isCollapsed ? 'w-18' : 'w-64'
       } ${className}`}
     >
       {/* Navigation Section */}
       <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
-          {!isCollapsed && (
-            <span>
-              {role === 'patient' ? t.portalPatient : role === 'hospital' ? t.portalHospital : t.portalAdmin}
-            </span>
+        {/* Role Portal Header Indicator */}
+        <div className="px-3 pb-3 mb-2 border-b border-white/10 flex items-center justify-between">
+          {!isCollapsed ? (
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase bg-white/20 text-white border border-white/30 shadow-xs">
+                {theme.portalBadgeText}
+              </span>
+            </div>
+          ) : (
+            <div className="w-full flex justify-center">
+              <span className="w-2.5 h-2.5 rounded-full bg-white/80 animate-pulse" />
+            </div>
           )}
         </div>
 
@@ -105,13 +115,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                   isActive
-                    ? 'bg-theme-primary text-white shadow-sm font-semibold'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? theme.sidebarActive
+                    : `text-white/80 ${theme.sidebarHover}`
                 } ${isCollapsed ? 'justify-center px-2' : ''}`
               }
               title={isCollapsed ? item.label : undefined}
             >
-              <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isCollapsed ? '' : ''}`} />
+              <Icon className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
               {!isCollapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           );
@@ -120,12 +130,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Emergency & Support Card (if not collapsed) */}
       {!isCollapsed && (
-        <div className="p-3 mx-3 mb-4 rounded-xl bg-slate-800/80 border border-slate-700/80 text-xs">
-          <div className="flex items-center gap-2 text-rose-400 font-semibold mb-1">
-            <HeartPulse className="w-4 h-4" />
+        <div className="p-3 mx-3 mb-4 rounded-xl bg-black/25 border border-white/10 text-xs backdrop-blur-xs">
+          <div className="flex items-center gap-2 text-rose-300 font-semibold mb-1">
+            <HeartPulse className="w-4 h-4 text-rose-400" />
             <span>Emergency 24x7</span>
           </div>
-          <p className="text-slate-400 text-[11px] leading-relaxed">
+          <p className="text-white/80 text-[11px] leading-relaxed">
             National Ambulance: <strong className="text-white">108</strong><br />
             Health Info Line: <strong className="text-white">104</strong>
           </p>
@@ -134,10 +144,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Collapse Toggle Footer */}
       {onToggleCollapse && (
-        <div className="p-3 border-t border-slate-800 flex items-center justify-end">
+        <div className="p-3 border-t border-white/10 flex items-center justify-end">
           <button
             onClick={onToggleCollapse}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none"
+            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

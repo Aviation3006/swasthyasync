@@ -33,6 +33,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       root.style.setProperty('--theme-primary-border', theme.primaryBorder);
       root.style.setProperty('--theme-text-accent', theme.textAccent);
       root.style.setProperty('--theme-ring', theme.ringColor);
+      root.style.setProperty('--theme-background', theme.pageBackground);
+      root.style.setProperty('--theme-border', theme.primaryLight);
+      root.style.setProperty('--theme-sidebar-active', theme.primary);
     }
   }, [currentRole, theme]);
 
@@ -54,7 +57,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
-    // Graceful fallback for unauthenticated / isolated components
     return {
       theme: ROLE_THEMES.patient,
       role: 'patient',

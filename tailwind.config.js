@@ -15,6 +15,10 @@ export default {
           'primary-border': 'var(--theme-primary-border)',
           'text-accent': 'var(--theme-text-accent)',
           ring: 'var(--theme-ring)',
+          background: 'var(--theme-background)',
+          surface: 'var(--theme-surface)',
+          border: 'var(--theme-border)',
+          'sidebar-active': 'var(--theme-sidebar-active)',
         },
         health: {
           50: '#F0F7FF',

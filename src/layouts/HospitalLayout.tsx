@@ -10,7 +10,7 @@ export const HospitalLayout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-theme-background flex flex-col transition-colors duration-200">
       {/* Top Demo Banner */}
       <RoleSwitcherBanner />
 
