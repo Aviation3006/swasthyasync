@@ -208,11 +208,11 @@ export const LoginPage: React.FC = () => {
           </div>
 
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-            {"Sign In to SwasthyaSync"}
+            {t.loginTitle || "Sign In to SwasthyaSync"}
           </h2>
 
           <p className="text-xs text-white/85 max-w-md mx-auto leading-relaxed font-medium">
-            {roleCardConfig.tagline}
+            {selectedRole === "patient" ? (t.loginSubtitle || roleCardConfig.tagline) : roleCardConfig.tagline}
           </p>
         </div>
 
@@ -223,10 +223,10 @@ export const LoginPage: React.FC = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block">
-                Select Portal Role
+                {t.selectRole || "Select Portal Role"}
               </label>
               <span className={`text-[10px] font-black uppercase tracking-wider ${roleCardConfig.accentColor}`}>
-                Active: {roleCardConfig.portalBadge}
+                {t.activeRole || "Active:"} {roleCardConfig.portalBadge}
               </span>
             </div>
 
@@ -303,7 +303,7 @@ export const LoginPage: React.FC = () => {
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-700 flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-amber-600" />
-                <span>Test Region Persona:</span>
+                <span>{t.testRegionPersona || "Test Region Persona:"}</span>
               </span>
               <span className="font-mono text-amber-800 font-bold bg-amber-100 px-2 py-0.5 rounded border border-amber-300 text-[11px]">
                 {selectedDemoRegion}
@@ -328,8 +328,8 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <div className="text-[10px] text-slate-500 flex items-center justify-between pt-1">
-              <span>Account ID: <strong className="text-slate-900 font-mono">{identifier}</strong></span>
-              <span className="text-emerald-700 font-bold">Auto-filled</span>
+              <span>{t.accountId || "Account ID:"} <strong className="text-slate-900 font-mono">{identifier}</strong></span>
+              <span className="text-emerald-700 font-bold">{t.autoFilled || "Auto-filled"}</span>
             </div>
           </div>
 
@@ -406,7 +406,7 @@ export const LoginPage: React.FC = () => {
                 <span>{t.rememberDevice}</span>
               </label>
               <span className="text-[10px] text-slate-400 font-mono">
-                256-Bit SSL Secured
+                {t.sslSecured || "256-Bit SSL Secured"}
               </span>
             </div>
 
@@ -420,7 +420,7 @@ export const LoginPage: React.FC = () => {
                 isLoading={isSubmitting || isLoading}
                 className={`${roleCardConfig.btnClass} shadow-md text-sm font-black tracking-wide py-3`}
               >
-                {isSubmitting ? (t.loading || "Verifying Credentials...") : roleCardConfig.submitLabel}
+                {isSubmitting ? (t.loading || "Verifying Credentials...") : (selectedRole === "patient" ? (t.signInToPatientPortal || roleCardConfig.submitLabel) : selectedRole === "hospital" ? (t.signInToDoctorPortal || roleCardConfig.submitLabel) : (t.signInToAdminPortal || roleCardConfig.submitLabel))}
               </Button>
             </div>
           </form>
@@ -428,18 +428,18 @@ export const LoginPage: React.FC = () => {
           {/* 4. Footer & Registration Link for Citizens */}
           <div className="pt-5 border-t border-slate-100 text-center space-y-2">
             <p className="text-xs text-slate-600">
-              {"New citizen or patient without an account?"}{' '}
+              {t.newCitizenPrompt || "New citizen or patient without an account?"}{' '}
               <Link
                 to="/signup"
                 className="text-[#DB2777] hover:text-[#9D174D] font-extrabold underline transition-colors"
               >
-                {"Create Patient Account →"}
+                {t.createAccountLink || "Create Patient Account →"}
               </Link>
             </p>
 
             <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 pt-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Ayushman Bharat Digital Mission (ABDM) Compliant</span>
+              <span>{t.abdmMissionTagline || "Ayushman Bharat Digital Mission (ABDM) Compliant"}</span>
             </div>
           </div>
 

@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import { SUPPORTED_LANGUAGES } from '../types/common';
 
 export const AuthLayout: React.FC = () => {
-  const { language, setLanguage } = useTranslation();
+  const { language, setLanguage, t } = useTranslation();
   const { theme } = useTheme();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [langSearch, setLangSearch] = useState('');
@@ -52,7 +52,7 @@ export const AuthLayout: React.FC = () => {
                 </span>
               </div>
               <p className="text-[11px] text-white/80 hidden md:block truncate">
-                Ayushman Bharat Digital Health Platform • Unified Health Locker
+                {t.appTagline || "Ayushman Bharat Digital Health Platform • Unified Health Locker"}
               </p>
             </div>
           </div>
@@ -62,12 +62,12 @@ export const AuthLayout: React.FC = () => {
             <div className="hidden lg:flex items-center gap-4 text-xs text-white/80">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-white shrink-0" />
-                <span>ABDM Compliant</span>
+                <span>{t.abdmCompliant || "ABDM Compliant"}</span>
               </div>
               <div className="h-4 w-px bg-white/20" />
               <div className="flex items-center gap-1.5">
                 <HeartHandshake className="w-4 h-4 text-white shrink-0" />
-                <span>Empaneled Network</span>
+                <span>{t.empaneledNetwork || "Empaneled Network"}</span>
               </div>
             </div>
 
