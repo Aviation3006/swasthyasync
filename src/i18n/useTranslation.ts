@@ -3,6 +3,43 @@ import { useAuth } from '../context/AuthContext';
 import { translations, Translations, TranslationKey } from './translations';
 import { Language } from '../types/common';
 
+// Dot-notation and semantic aliases mapping to canonical translation keys
+const KEY_ALIASES: Record<string, keyof Translations> = {
+  'symptoms.title': 'symptomCheckerTitle',
+  'symptoms.subtitle': 'symptomCheckerSubtitle',
+  'symptoms.overview': 'clinicalOverview',
+  'symptoms.logged': 'loggedSymptomsHistory',
+  'profile.title': 'profile',
+  'profile.subtitle': 'profileSubtitle',
+  'records.title': 'medicalRecordsTitle',
+  'records.subtitle': 'medicalRecordsSubtitle',
+  'appointments.title': 'appointmentsTitle',
+  'appointments.subtitle': 'appointmentsSubtitle',
+  'dashboard.title': 'citizenPortal',
+  'settings.title': 'settings',
+  'notifications.title': 'notificationsTitle',
+  'notifications.subtitle': 'notificationsSubtitle',
+  'caresetu.title': 'careSetuCard',
+  'caresetu.subtitle': 'careSetuSubtitle',
+  'doctor.performance': 'doctorBreakdownTitle',
+  'admin.audit': 'qualityAuditConsole'
+};
+
+/**
+ * Humanize a raw key into a readable label as a safety fallback
+ * Example: 'symptomCheckerTitle' -> 'Symptom Checker'
+ * Example: 'patient.records.view' -> 'Patient Records View'
+ */
+function humanizeKey(key: string): string {
+  if (!key) return '';
+  const clean = key.includes('.') ? key.split('.').pop()! : key;
+  const words = clean.replace(/([A-Z])/g, ' $1').replace(/[_.-]/g, ' ').trim();
+  // Strip trailing internal markers
+  const stripped = words.replace(/\b(Title|Subtitle|Desc|Label|Btn|Col|Tab|Placeholder)\b/gi, '').trim();
+  const finalStr = stripped || words;
+  return finalStr.charAt(0).toUpperCase() + finalStr.slice(1);
+}
+
 export function useTranslation() {
   const { language, setLanguage } = useAuth();
   const currentLang: Language = language || 'en';
@@ -100,16 +137,23 @@ export function useTranslation() {
   };
 
   /**
-   * Functional translator with parameter interpolation & dot-notation support
+   * Functional translator with parameter interpolation, dot-notation & fallback safety
    */
   const translateFn = (key: TranslationKey | string, params?: Record<string, string | number>): string => {
-    // Check direct key or dot-notation (e.g. appointments.bookAppointment -> bookAppointment)
+    const aliasKey = KEY_ALIASES[key];
     const normalizedKey = key.includes('.') ? key.split('.').pop()! : key;
-    let val = currentDict[normalizedKey as keyof Translations] || 
-              currentDict[key as keyof Translations] || 
-              translations.en[normalizedKey as keyof Translations] || 
-              translations.en[key as keyof Translations] || 
-              key;
+    
+    let val: string | undefined = 
+      (aliasKey && currentDict[aliasKey]) ||
+      currentDict[key as keyof Translations] || 
+      currentDict[normalizedKey as keyof Translations] || 
+      (aliasKey && translations.en[aliasKey]) ||
+      translations.en[key as keyof Translations] || 
+      translations.en[normalizedKey as keyof Translations];
+      
+    if (!val || val === key) {
+      val = humanizeKey(key);
+    }
               
     if (params) {
       val = format(val, params);
@@ -129,9 +173,17 @@ export function useTranslation() {
       if (prop === 'formatDate') return formatDate;
       if (prop === 'status') return translateStatus;
       if (prop in target) return (target as any)[prop];
-      if (prop in currentDict) return currentDict[prop as keyof Translations];
-      if (prop in translations.en) return translations.en[prop as keyof Translations];
-      return prop;
+      if (prop in currentDict && currentDict[prop as keyof Translations]) {
+        return currentDict[prop as keyof Translations];
+      }
+      if (prop in KEY_ALIASES) {
+        const mapped = KEY_ALIASES[prop];
+        return currentDict[mapped] || translations.en[mapped];
+      }
+      if (prop in translations.en && translations.en[prop as keyof Translations]) {
+        return translations.en[prop as keyof Translations];
+      }
+      return humanizeKey(prop);
     }
   }) as unknown as Translations & {
     (key: TranslationKey | string, params?: Record<string, string | number>): string;
