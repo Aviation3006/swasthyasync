@@ -274,7 +274,7 @@ export const PatientHealthQR: React.FC = () => {
                   {t.howCareSetuWorks || "How CareSetu Works"}
                 </span>
               }
-              subtitle="Your proprietary smart health card and encrypted medical identity"
+              subtitle={t.careSetuSubtitle || "Your proprietary smart health card and encrypted medical identity"}
             />
             <CardContent className="space-y-4 text-xs">
               <div className="flex items-start gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
@@ -283,7 +283,7 @@ export const PatientHealthQR: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900">Carry your CareSetu QR</h4>
-                  <p className="text-slate-600 mt-0.5">Keep your physical smart card or digital profile handy on your mobile phone.</p>
+                  <p className="text-slate-600 mt-0.5">{t.scanAtRegistration || "Keep your physical smart card or digital profile handy on your mobile phone."}</p>
                 </div>
               </div>
 

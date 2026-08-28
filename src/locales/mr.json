@@ -598,9 +598,12 @@
   "audioExplanation": "सोप्या भाषेतील सारांश ऐका",
   "voiceLanguage": "आवाज ओळख भाषा",
   "ttsSpeed": "बोलण्याचा वेग",
-  "profileTitle": "नागरिक प्रोफाइल आणि आभा लॉकर",
-  "careSetuTitle": "केअरसेतू (CareSetu)",
-  "bloodBankStock": "रक्तपेढी साठा",
-  "epidemicSurveillance": "रोग आणि साथीचे आजार नियंत्रण",
-  "generateSummary": "एआय सारांश तयार करा"
+  "years": "वर्षे",
+  "comprehensiveHealthPlan": "सर्वसमावेशक आरोग्य सुरक्षा योजना",
+  "voiceSymptomLogger": "व्हॉईस लक्षण नोंदणी",
+  "followUp": "फॉलो-अप (पुन्हा तपासणी)",
+  "careSetuCardSubtitle": "तुमचे डिजिटल आरोग्य लॉकर आणि आपत्कालीन ओळख",
+  "generalMedicine": "जनरल मेडिसिन (सामान्य चिकित्सा)",
+  "pageNotFound": "पृष्ठ आढळले नाही",
+  "pageNotFoundDesc": "विनंती केलेले वैद्यकीय पोर्टल पृष्ठ सापडले नाही किंवा हलवले गेले असावे."
 }

@@ -207,12 +207,12 @@ export const VoiceSymptomDashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-12 min-w-0">
       {/* Page Header */}
       <PageHeader
-        title="Voice Symptom Logger"
-        subtitle="Describe how you're feeling naturally. We'll turn your description into an organized symptom summary."
+        title={t.voiceSymptomLogger || "Voice Symptom Logger"}
+        subtitle={t.symptomCheckerSubtitle || "Describe how you're feeling naturally. We'll turn your description into an organized symptom summary."}
         breadcrumbs={[
           { label: t.portalPatient, path: '/patient' },
           { label: t.navSymptoms, path: '/patient/symptoms' },
-          { label: 'Voice Logger' }
+          { label: t.voiceSymptomLogger || 'Voice Logger' }
         ]}
         actions={
           <Link to="/patient/symptoms">
@@ -221,7 +221,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
               size="sm"
               leftIcon={<ArrowLeft className="w-4 h-4" />}
             >
-              Back to Diary
+              {t.back || "Back to Diary"}
             </Button>
           </Link>
         }
@@ -277,7 +277,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
                     <span className="font-bold text-sm text-emerald-100">Structured AI Analysis Ready</span>
                   </div>
                   <p className="text-xs text-emerald-200/90 mt-0.5">
-                    Verified for non-diagnostic clinical accuracy.
+                    {t.geminiVerified || "Verified for non-diagnostic clinical accuracy."}
                   </p>
                 </div>
 

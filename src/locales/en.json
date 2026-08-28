@@ -573,7 +573,7 @@
   "totalVerifiedReviews": "Total Verified Reviews",
   "totalConsultationsCompleted": "Completed Consultations",
   "clinicalGovernanceNotice": "Internal Governance Notice: These ratings reflect verified patient feedback collected during post-OPD triage audits.",
-  "smartHealthCard": "CareSetu Smart Health Card",
+  "smartHealthCard": "Smart Health Card",
   "careSetuId": "CareSetu ID",
   "careSetuCard": "CareSetu Smart Health Card",
   "careSetuSubtitle": "Your Smart Health Card • Your health information, connected when you need it",
@@ -597,5 +597,13 @@
   "pausedStatus": "Paused",
   "audioExplanation": "Listen to Plain-Language Summary",
   "voiceLanguage": "Speech Recognition Language",
-  "ttsSpeed": "Speech Rate"
+  "ttsSpeed": "Speech Rate",
+  "years": "Years",
+  "comprehensiveHealthPlan": "Comprehensive Health Coverage Plan",
+  "voiceSymptomLogger": "Voice Symptom Logger",
+  "followUp": "Follow-up (Consultation)",
+  "careSetuCardSubtitle": "Your universal digital health locker and emergency identity",
+  "generalMedicine": "General Medicine",
+  "pageNotFound": "Page Not Found",
+  "pageNotFoundDesc": "The requested medical portal route could not be found or may have been moved."
 }

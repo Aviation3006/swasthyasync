@@ -31,7 +31,7 @@ export const RoleSwitcherBanner: React.FC = () => {
             <span>{theme.portalBadgeText}</span>
           </span>
           <span className="text-white/90 text-[10px] sm:text-xs truncate">
-            {t.departmentName} • <strong className="text-white">{roleLabel}</strong>
+            {t.departmentName || "Ayushman Bharat Digital Health Mission"} • <strong className="text-white">{roleLabel}</strong>
           </span>
         </div>
 

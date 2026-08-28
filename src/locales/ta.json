@@ -598,6 +598,12 @@
   "audioExplanation": "எளிய சுருக்கத்தைக் கேளுங்கள்",
   "voiceLanguage": "குரல் மொழி",
   "ttsSpeed": "பேச்சு வேகம்",
-  "profileTitle": "குடிமகன் சுயவிவரம் & ஆபா லாக்கர்",
-  "careSetuTitle": "கேர்சேது (CareSetu)"
+  "years": "वर्ष",
+  "comprehensiveHealthPlan": "व्यापक स्वास्थ्य सुरक्षा योजना",
+  "voiceSymptomLogger": "आवाज लक्षण डायरी",
+  "followUp": "फॉलो-अप (पुनः परामर्श)",
+  "careSetuCardSubtitle": "आपका डिजिटल स्वास्थ्य लॉकर एवं आपातकालीन पहचान",
+  "generalMedicine": "जनरल मेडिसिन (सामान्य चिकित्सा)",
+  "pageNotFound": "पृष्ठ नहीं मिला",
+  "pageNotFoundDesc": "अनुरोधित मेडिकल पोर्टल पृष्ठ नहीं मिला या स्थानांतरित कर दिया गया है।"
 }
