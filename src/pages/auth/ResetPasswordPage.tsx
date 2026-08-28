@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { useTheme } from '../../context/ThemeContext';
+import { useTranslation } from '../../i18n/useTranslation';
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/common/Button';
-import { FormField } from '../../components/forms/FormField';
 import { Input } from '../../components/forms/Input';
 import { useToast } from '../../context/ToastContext';
 
 export const ResetPasswordPage: React.FC = () => {
   const { showSuccess, showError } = useToast();
   const { setThemeRole } = useTheme();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,11 +27,11 @@ export const ResetPasswordPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPassword || newPassword.length < 6) {
-      setErrorMsg('Password must be at least 6 characters.');
+      setErrorMsg(t.passwordsMustMatch);
       return;
     }
     if (newPassword !== confirmPassword) {
-      setErrorMsg('Passwords do not match.');
+      setErrorMsg(t.passwordsMustMatch);
       return;
     }
 
@@ -40,34 +41,34 @@ export const ResetPasswordPage: React.FC = () => {
 
     if (error) {
       setErrorMsg(error.message || 'Failed to update password.');
-      showError('Error', error.message || 'Password update failed.');
+      showError(t.error, error.message || 'Password update failed.');
     } else {
-      showSuccess('Password Updated', 'Your account password has been changed.');
+      showSuccess(t.savedSuccessfully, t.savedSuccessfully);
       navigate('/login');
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto py-6 animate-fade-in text-white">
-      <div className="bg-slate-800/90 border border-slate-700 p-6 sm:p-8 rounded-2xl shadow-elevated">
+    <div className="w-full max-w-md mx-auto py-6 animate-fade-in text-slate-900">
+      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-2xl shadow-elevated">
         <div className="text-center mb-6 space-y-2">
-          <h1 className="text-2xl font-bold text-white">Set New Password</h1>
-          <p className="text-xs text-slate-400">
-            Enter your new secure password below to regain full account access.
+          <h1 className="text-2xl font-bold text-slate-900">{t.setNewPasswordTitle}</h1>
+          <p className="text-xs text-slate-500">
+            {t.setNewPasswordSubtitle}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-400" />
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-600" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <div>
-            <label className="text-xs font-semibold text-slate-200 block mb-1.5">
-              New Password <span className="text-rose-400">*</span>
+            <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+              {t.setNewPasswordTitle} <span className="text-rose-500">*</span>
             </label>
             <Input
               type={showPassword ? 'text' : 'password'}
@@ -80,8 +81,8 @@ export const ResetPasswordPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-200 block mb-1.5">
-              Confirm New Password <span className="text-rose-400">*</span>
+            <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+              {t.confirmNewPassword} <span className="text-rose-500">*</span>
             </label>
             <Input
               type={showPassword ? 'text' : 'password'}
@@ -106,17 +107,17 @@ export const ResetPasswordPage: React.FC = () => {
           <Button
             type="submit"
             variant="primary"
-            size="md"
+            size="lg"
             fullWidth
             isLoading={isLoading}
-            className="mt-2"
+            className="bg-[#DB2777] hover:bg-[#BE185D] text-white shadow-md font-bold py-2.5 mt-2"
           >
-            Update Password & Sign In
+            {isLoading ? t.pleaseWait : t.updatePasswordBtn}
           </Button>
 
-          <div className="text-center pt-3 border-t border-slate-700/80">
-            <Link to="/login" className="text-xs text-slate-400 hover:text-slate-200">
-              Return to Login
+          <div className="text-center pt-2">
+            <Link to="/login" className="text-xs text-slate-600 hover:text-slate-900">
+              {t.backToSignIn}
             </Link>
           </div>
         </form>
