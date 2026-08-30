@@ -1,5 +1,6 @@
 import { useAuth } from '../../context/AuthContext';
 import { useUserLocation } from '../../context/UserLocationContext';
+import { useTranslation } from '../../i18n/useTranslation';
 import React, { useState, useEffect } from 'react';
 import { districtService } from '../../services/districtService';
 import { HealthAlert } from '../../types/district';
@@ -29,6 +30,7 @@ import { Tabs } from '../../components/common/Tabs';
 export const DistrictAlerts: React.FC = () => {
   const { location: userLoc } = useUserLocation();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { showSuccess, showInfo } = useToast();
   const [alerts, setAlerts] = useState<HealthAlert[]>(districtService.getHealthAlerts());
   const [activeTab, setActiveTab] = useState<string>('All');
@@ -91,11 +93,11 @@ export const DistrictAlerts: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="District Health Alerts & Emergency Broadcast Command"
-        subtitle={`Issue real-time epidemiological warnings, capacity alerts, and epidemic directives across ${userLoc?.district || "the district"}`}
+        title={t.districtAlertsTitle || "District Health Alerts & Emergency Broadcast Command"}
+        subtitle={t.districtAlertsSubtitle || "Issue real-time epidemiological warnings, capacity alerts, and epidemic directives across the district."}
         breadcrumbs={[
-          { label: 'District Admin', path: '/district-admin' },
-          { label: 'Emergency Alerts' }
+          { label: t.portalAdmin || 'District Admin', path: '/district-admin' },
+          { label: t.navEmergencyAlerts || 'Emergency Alerts' }
         ]}
         actions={
           <Button
@@ -104,17 +106,17 @@ export const DistrictAlerts: React.FC = () => {
             leftIcon={<Radio className="w-4 h-4" />}
             onClick={() => setIsBroadcastModalOpen(true)}
           >
-            Broadcast New Emergency Advisory
+            {t.broadcastNewAdvisory || "Broadcast New Emergency Advisory"}
           </Button>
         }
       />
 
       <Tabs
         tabs={[
-          { id: 'All', label: 'All Advisories', count: alerts.length },
-          { id: 'Active', label: 'Active Alerts', count: alerts.filter((a) => a.status === 'Active').length },
-          { id: 'Investigation', label: 'Under Investigation', count: alerts.filter((a) => a.status === 'Under Investigation').length },
-          { id: 'Resolved', label: 'Resolved Archives', count: alerts.filter((a) => a.status === 'Resolved').length },
+          { id: 'All', label: `${t.all || "All"} (${alerts.length})`, count: alerts.length },
+          { id: 'Active', label: `${t.active || "Active"} (${alerts.filter((a) => a.status === 'Active').length})`, count: alerts.filter((a) => a.status === 'Active').length },
+          { id: 'Investigation', label: `${t.statusAttention || "Under Investigation"} (${alerts.filter((a) => a.status === 'Under Investigation').length})`, count: alerts.filter((a) => a.status === 'Under Investigation').length },
+          { id: 'Resolved', label: `${t.statusCompleted || "Resolved"} (${alerts.filter((a) => a.status === 'Resolved').length})`, count: alerts.filter((a) => a.status === 'Resolved').length },
         ]}
         activeTab={activeTab}
         onChange={setActiveTab}
@@ -150,178 +152,160 @@ export const DistrictAlerts: React.FC = () => {
                       }
                       size="sm"
                     >
-                      {alert.severity} Severity
+                      {alert.severity}
                     </StatusBadge>
-                    <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
-                      Status: {alert.status}
+                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {new Date(alert.timestamp).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <span className="text-xs text-slate-400 font-medium">
-                    Reported on {alert.reportedDate}
-                  </span>
+                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                    {alert.status === 'Active' && (
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => handleStatusChange(alert.id, 'Under Investigation')}
+                      >
+                        {t.investigate || "Investigate"}
+                      </Button>
+                    )}
+                    {alert.status !== 'Resolved' && (
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        leftIcon={<CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                        onClick={() => handleStatusChange(alert.id, 'Resolved')}
+                      >
+                        {t.statusCompleted || "Resolve"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                    {alert.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                    {alert.description}
-                  </p>
+                  <h3 className="font-bold text-slate-900 text-base">{alert.title}</h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">{alert.description}</p>
                 </div>
 
-                <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-1">
-                  <span className="font-bold text-slate-800 uppercase text-[10px] block">
-                    Action Required by Hospitals / PHCs:
-                  </span>
-                  <p className="text-slate-700 font-medium leading-relaxed">
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1">
+                  <div className="font-bold text-amber-900 flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                    <span>{t.actionRequiredDirective || "Mandatory Action Directive"}</span>
+                  </div>
+                  <p className="text-amber-800 text-[11px] leading-relaxed pl-5">
                     {alert.actionRequired}
                   </p>
-                </div>
-
-                <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                      Talukas: <strong>{alert.affectedTalukas.join(', ')}</strong>
-                    </span>
-                    <span>•</span>
-                    <span>
-                      Broadcast Channel: <strong>{alert.broadcastTo.join(', ')}</strong>
-                    </span>
-                  </div>
-
-                  {/* Status Toggle Actions */}
-                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
-                    {alert.status !== 'Resolved' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleStatusChange(alert.id, 'Resolved')}
-                        leftIcon={<CheckCircle2 className="w-3 h-3 text-emerald-600" />}
-                      >
-                        Mark Resolved
-                      </Button>
-                    )}
-                    {alert.status === 'Active' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleStatusChange(alert.id, 'Under Investigation')}
-                        className="text-amber-700"
-                      >
-                        Investigate
-                      </Button>
-                    )}
-                    {alert.status === 'Resolved' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleStatusChange(alert.id, 'Active')}
-                        className="text-rose-700"
-                      >
-                        Re-open Alert
-                      </Button>
-                    )}
-                  </div>
                 </div>
               </div>
             </Card>
           ))
         ) : (
-          <div className="py-12 text-center text-slate-500 bg-white rounded-xl border border-dashed border-slate-300">
-            <AlertTriangle className="w-10 h-10 mx-auto text-slate-300 mb-2" />
-            <p className="font-semibold text-slate-700">No health alerts in this category</p>
-          </div>
+          <Card>
+            <div className="p-12 text-center text-slate-400 space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
+              <h4 className="font-bold text-slate-700 text-sm">{t.noAlertsInCategory || "No active public health alerts in this category."}</h4>
+              <p className="text-xs text-slate-400">All healthcare facilities operating within normal thresholds.</p>
+            </div>
+          </Card>
         )}
       </div>
 
-      {/* Broadcast Modal */}
-      {isBroadcastModalOpen && (
-        <Modal
-          isOpen={isBroadcastModalOpen}
-          onClose={() => setIsBroadcastModalOpen(false)}
-          title="Broadcast District Public Health Alert"
-          subtitle="Dispatches instantaneous priority notification to all hospital staff & medical officers"
-          maxWidth="lg"
-        >
-          <form onSubmit={handleBroadcastAlert} className="space-y-4 text-xs">
-            <FormField label="Advisory Headline / Title" required>
-              <Input
-                placeholder="e.g. Surge in Dengue NS1 Positivity in Haveli Taluka..."
-                value={alertTitle}
-                onChange={(e) => setAlertTitle(e.target.value)}
+      {/* Broadcast Advisory Modal */}
+      <Modal
+        isOpen={isBroadcastModalOpen}
+        onClose={() => setIsBroadcastModalOpen(false)}
+        title={t.broadcastAdvisory || "Broadcast Public Health Alert"}
+      >
+        <form onSubmit={handleBroadcastAlert} className="space-y-4 text-xs">
+          <FormField label={t.advisoryHeadline || "Advisory Headline / Title"} required>
+            <Input
+              type="text"
+              placeholder={t.advisoryHeadlinePlaceholder || "e.g. Surge in Dengue NS1 Positivity in Haveli Taluka..."}
+              value={alertTitle}
+              onChange={(e) => setAlertTitle(e.target.value)}
+              required
+            />
+          </FormField>
+
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label={t.alertCategory || "Alert Category"} required>
+              <Select
+                value={alertCategory}
+                onChange={(e) => setAlertCategory(e.target.value as any)}
+                options={[
+                  { value: 'Epidemic', label: 'Epidemic / Outbreak' },
+                  { value: 'Capacity', label: 'Bed Capacity Surge' },
+                  { value: 'Supply Shortage', label: 'Blood/Medicine Shortage' },
+                  { value: 'Weather/Disaster', label: 'Heatwave / Flood Warning' },
+                  { value: 'Advisory', label: 'General Clinical Advisory' },
+                ]}
               />
             </FormField>
 
-            <div className="grid grid-cols-2 gap-3">
-              <FormField label="Alert Category">
-                <Select
-                  value={alertCategory}
-                  onChange={(e) => setAlertCategory(e.target.value as any)}
-                  options={[
-                    { value: 'Epidemic', label: 'Epidemic / Disease Outbreak' },
-                    { value: 'Capacity', label: 'Hospital Bed / ICU Saturation' },
-                    { value: 'Supply Shortage', label: 'Medicine / Vaccine Stockout' },
-                    { value: 'Weather/Disaster', label: 'Monsoon / Natural Advisory' },
-                    { value: 'Advisory', label: 'General Administrative Directive' }
-                  ]}
-                />
-              </FormField>
-
-              <FormField label="Severity Level">
-                <Select
-                  value={alertSeverity}
-                  onChange={(e) => setAlertSeverity(e.target.value as any)}
-                  options={[
-                    { value: 'Critical', label: 'Critical (Red Code)' },
-                    { value: 'Warning', label: 'Warning (Amber Code)' },
-                    { value: 'Informational', label: 'Informational Advisory' }
-                  ]}
-                />
-              </FormField>
-            </div>
-
-            <FormField label="Affected Talukas (comma-separated)">
-              <Input
-                value={talukasInput}
-                onChange={(e) => setTalukasInput(e.target.value)}
-                placeholder="e.g. Haveli, Baramati, Junnar..."
+            <FormField label={t.alertSeverity || "Alert Severity"} required>
+              <Select
+                value={alertSeverity}
+                onChange={(e) => setAlertSeverity(e.target.value as any)}
+                options={[
+                  { value: 'Critical', label: 'Critical (Red Flag)' },
+                  { value: 'Warning', label: 'Warning (Amber)' },
+                  { value: 'Informational', label: 'Informational (Blue)' },
+                ]}
               />
             </FormField>
+          </div>
 
-            <FormField label="Situation Overview & Clinical Findings" required>
-              <textarea
-                rows={3}
-                className="w-full rounded-lg border border-slate-300 p-2.5 text-xs text-slate-900 focus:border-health-600 focus:outline-none"
-                placeholder="Detail the exact incident, case count surge, or facility load..."
-                value={alertDesc}
-                onChange={(e) => setAlertDesc(e.target.value)}
-              />
-            </FormField>
+          <FormField label={t.affectedTalukas || "Affected Talukas (comma-separated)"}>
+            <Input
+              type="text"
+              placeholder="e.g. Haveli, Baramati, Shirur"
+              value={talukasInput}
+              onChange={(e) => setTalukasInput(e.target.value)}
+            />
+          </FormField>
 
-            <FormField label="Mandatory Action Directive">
-              <textarea
-                rows={2}
-                className="w-full rounded-lg border border-slate-300 p-2.5 text-xs text-slate-900 focus:border-health-600 focus:outline-none"
-                placeholder="What actions must Chief Medical Officers and PHC doctors take immediately?"
-                value={actionReq}
-                onChange={(e) => setActionReq(e.target.value)}
-              />
-            </FormField>
+          <FormField label={t.detailedIncidentDesc || "Detailed Incident Description"} required>
+            <textarea
+              rows={3}
+              placeholder={t.detailedIncidentPlaceholder || "Detail the exact incident, case count surge, or facility load..."}
+              value={alertDesc}
+              onChange={(e) => setAlertDesc(e.target.value)}
+              required
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none"
+            />
+          </FormField>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsBroadcastModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="danger" size="sm" leftIcon={<Send className="w-3.5 h-3.5" />}>
-                Broadcast Advisory
-              </Button>
-            </div>
-          </form>
-        </Modal>
-      )}
+          <FormField label={t.actionRequiredDirective || "Mandatory Action Directive for Hospitals & PHCs"}>
+            <textarea
+              rows={2}
+              placeholder={t.actionRequiredPlaceholder || "What actions must Chief Medical Officers and PHC doctors take immediately?"}
+              value={actionReq}
+              onChange={(e) => setActionReq(e.target.value)}
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none"
+            />
+          </FormField>
+
+          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsBroadcastModalOpen(false)}
+            >
+              {t.cancel || "Cancel"}
+            </Button>
+            <Button
+              type="submit"
+              variant="danger"
+              size="sm"
+              leftIcon={<Send className="w-3.5 h-3.5" />}
+            >
+              {t.broadcastAdvisory || "Broadcast Public Health Alert"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

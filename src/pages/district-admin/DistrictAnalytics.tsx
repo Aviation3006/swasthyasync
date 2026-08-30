@@ -1,5 +1,6 @@
 import { useAuth } from '../../context/AuthContext';
 import { useUserLocation } from '../../context/UserLocationContext';
+import { useTranslation } from '../../i18n/useTranslation';
 import React, { useState } from 'react';
 import { districtService } from '../../services/districtService';
 import { 
@@ -36,6 +37,7 @@ import { useToast } from '../../context/ToastContext';
 export const DistrictAnalytics: React.FC = () => {
   const { location: userLoc } = useUserLocation();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { showSuccess } = useToast();
   const monthlyData = districtService.getMonthlyTrends();
   const diseaseData = districtService.getDiseaseSurveillance();
@@ -66,11 +68,11 @@ export const DistrictAnalytics: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="District Health Analytics & Epidemiological Intelligence"
-        subtitle={`Aggregated clinical indicators, disease trends, and hospital bed utilization metrics across ${userLoc?.district || "the district"}`}
+        title={t.districtAnalyticsTitle || "District Health Analytics & Epidemiological Intelligence"}
+        subtitle={t.districtAnalyticsSubtitle || "Comparative maternal health, immunization and bed occupancy scores across all talukas."}
         breadcrumbs={[
-          { label: 'District Admin', path: '/district-admin' },
-          { label: 'Analytics' }
+          { label: t.portalAdmin || 'District Admin', path: '/district-admin' },
+          { label: t.navDistrictAnalytics || 'Analytics' }
         ]}
         actions={
           <div className="flex items-center gap-2">
@@ -79,10 +81,10 @@ export const DistrictAnalytics: React.FC = () => {
               onChange={(e) => setTimeRange(e.target.value)}
               className="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-800 shadow-subtle"
             >
-              <option value="1M">Past 30 Days</option>
-              <option value="3M">Past Quarter (3M)</option>
+              <option value="1M">{t.last30Days || "Past 30 Days"}</option>
+              <option value="3M">{t.last90Days || "Past Quarter (3M)"}</option>
               <option value="6M">Past 6 Months</option>
-              <option value="1Y">Past Year (2025-2026)</option>
+              <option value="1Y">{t.allTime || "Past Year"}</option>
             </select>
             <Button
               variant="outline"
@@ -90,7 +92,7 @@ export const DistrictAnalytics: React.FC = () => {
               leftIcon={<Download className="w-4 h-4" />}
               onClick={() => showSuccess('Export Started', 'Aggregated CSV dataset generated.')}
             >
-              Export Data
+              {t.exportData || "Export Data"}
             </Button>
           </div>
         }
@@ -138,8 +140,8 @@ export const DistrictAnalytics: React.FC = () => {
         {/* Disease Surveillance Bar Chart */}
         <Card>
           <CardHeader
-            title="Active Communicable & Chronic Cases"
-            subtitle="Disease surveillance counts under active monitoring"
+            title={t.activeCommunicableCases || "Active Communicable & Chronic Cases"}
+            subtitle={t.diseaseSurveillanceCounts || "Disease surveillance counts under active monitoring"}
             icon={<Activity className="w-5 h-5 text-rose-600" />}
           />
           <CardContent>
@@ -167,8 +169,8 @@ export const DistrictAnalytics: React.FC = () => {
         <div className="lg:col-span-7">
           <Card className="h-full flex flex-col justify-between">
             <CardHeader
-              title="Hospital Bed Occupancy vs Availability"
-              subtitle="Facility-wise distribution of occupied and vacant beds"
+              title={t.bedAvailability || "Hospital Bed Occupancy vs Availability"}
+              subtitle={t.granularConsentSubtitle || "Facility-wise distribution of occupied and vacant beds"}
               icon={<BarChart3 className="w-5 h-5 text-health-600" />}
             />
             <CardContent className="flex-1">
@@ -193,8 +195,8 @@ export const DistrictAnalytics: React.FC = () => {
         <div className="lg:col-span-5">
           <Card className="h-full flex flex-col justify-between">
             <CardHeader
-              title="Departmental Patient Volume %"
-              subtitle="Speciality caseload distribution"
+              title={t.departmentalVolume || "Departmental Patient Volume %"}
+              subtitle={t.department || "Speciality caseload distribution"}
               icon={<PieIcon className="w-5 h-5 text-health-600" />}
             />
             <CardContent className="flex-1">
@@ -230,8 +232,8 @@ export const DistrictAnalytics: React.FC = () => {
       {/* Taluka Performance Scorecard */}
       <Card>
         <CardHeader
-          title="Taluka Public Health Scorecard & Readiness Index"
-          subtitle="Comparative maternal health, immunization and bed occupancy scores across 8 talukas"
+          title={t.talukaScorecard || "Taluka Public Health Scorecard & Readiness Index"}
+          subtitle={t.districtAnalyticsSubtitle || "Comparative maternal health, immunization and bed occupancy scores across 8 talukas"}
           icon={<FileSpreadsheet className="w-5 h-5 text-emerald-600" />}
         />
         <CardContent>
@@ -239,30 +241,30 @@ export const DistrictAnalytics: React.FC = () => {
             <table className="min-w-full divide-y divide-slate-200 text-xs text-left">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>
-                  <th className="p-3">Taluka Name</th>
-                  <th className="p-3">Facilities (Hosp + PHC)</th>
-                  <th className="p-3">Monthly Footfall</th>
-                  <th className="p-3">Bed Occupancy %</th>
-                  <th className="p-3">Child Immunization</th>
-                  <th className="p-3">Maternal Care Score</th>
-                  <th className="p-3">Surveillance Status</th>
+                  <th className="p-3">{t.taluka || "Taluka"}</th>
+                  <th className="p-3">{t.allHospitals || "Facilities"}</th>
+                  <th className="p-3">{t.patientVolume || "Monthly Footfall"}</th>
+                  <th className="p-3">{t.bedOccupancyRate || "Bed Occupancy %"}</th>
+                  <th className="p-3">{t.childImmunization || "Child Immunization"}</th>
+                  <th className="p-3">{t.maternalCareScore || "Maternal Care Score"}</th>
+                  <th className="p-3">{t.status || "Status"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
-                {talukas.map((t, idx) => (
+                {talukas.map((item, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/70">
-                    <td className="p-3 font-bold text-slate-900">{t.taluka}</td>
-                    <td className="p-3 text-slate-600">{t.hospitalsCount} Hosp + {t.phcCount} PHCs</td>
-                    <td className="p-3 font-mono font-bold text-slate-800">{t.patientVolume.toLocaleString('en-IN')}</td>
-                    <td className="p-3 font-semibold">{t.bedOccupancyRate}%</td>
-                    <td className="p-3 font-semibold text-emerald-700">{t.immunizationCoverage}%</td>
-                    <td className="p-3 font-semibold text-health-800">{t.maternalHealthScore}/100</td>
+                    <td className="p-3 font-bold text-slate-900">{item.taluka}</td>
+                    <td className="p-3 text-slate-600">{item.hospitalsCount} Hosp + {item.phcCount} PHCs</td>
+                    <td className="p-3 font-mono font-bold text-slate-800">{item.patientVolume.toLocaleString('en-IN')}</td>
+                    <td className="p-3 font-semibold">{item.bedOccupancyRate}%</td>
+                    <td className="p-3 font-semibold text-emerald-700">{item.immunizationCoverage}%</td>
+                    <td className="p-3 font-semibold text-health-800">{item.maternalHealthScore}/100</td>
                     <td className="p-3">
                       <StatusBadge
-                        variant={t.alertLevel === 'Green' ? 'success' : t.alertLevel === 'Amber' ? 'warning' : 'error'}
+                        variant={item.alertLevel === 'Green' ? 'success' : item.alertLevel === 'Amber' ? 'warning' : 'error'}
                         size="sm"
                       >
-                        {t.alertLevel === 'Green' ? 'Stable' : 'Elevated Load'}
+                        {item.alertLevel === 'Green' ? (t.statusNormal || 'Stable') : (t.statusAttention || 'Elevated Load')}
                       </StatusBadge>
                     </td>
                   </tr>

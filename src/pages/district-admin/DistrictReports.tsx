@@ -1,204 +1,224 @@
 import { useAuth } from '../../context/AuthContext';
 import { useUserLocation } from '../../context/UserLocationContext';
+import { useTranslation } from '../../i18n/useTranslation';
 import React, { useState } from 'react';
 import { 
-  FileSpreadsheet, 
-  Download, 
-  Printer, 
-  Calendar, 
   FileText, 
-  CheckCircle2, 
-  Building2, 
-  Activity, 
+  Download, 
   Eye, 
-  Filter 
+  Calendar, 
+  Building2, 
+  TrendingUp, 
+  CheckCircle2, 
+  Clock, 
+  Activity, 
+  ShieldAlert,
+  FileSpreadsheet
 } from 'lucide-react';
 import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { StatusBadge } from '../../components/common/StatusBadge';
-import { Tabs } from '../../components/common/Tabs';
 import { Modal } from '../../components/common/Modal';
 import { useToast } from '../../context/ToastContext';
 
 interface ReportItem {
   id: string;
   title: string;
-  category: 'Epidemiology' | 'Hospital Performance' | 'Maternal & Child Health' | 'Supply & Inventory';
-  period: 'Weekly' | 'Monthly' | 'Quarterly';
-  generatedDate: string;
-  summary: string;
+  category: 'Epidemic Bulletin' | 'Maternal & Child Health' | 'Bed Utilization' | 'Facility Quality Audit' | 'Immunization Progress';
+  date: string;
   author: string;
+  fileSize: string;
+  status: 'Published' | 'Under Verification' | 'Archived';
+  summary: string;
+  highlights: string[];
 }
 
 export const DistrictReports: React.FC = () => {
   const { location: userLoc } = useUserLocation();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { showSuccess } = useToast();
   const [selectedReport, setSelectedReport] = useState<ReportItem | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('All');
 
-  const reportsList: ReportItem[] = [
+  const reports: ReportItem[] = [
     {
-      id: 'rep-01',
-      title: 'Weekly Epidemiological Surveillance Bulletin - Week 34 (August 2026)',
-      category: 'Epidemiology',
-      period: 'Weekly',
-      generatedDate: '2026-08-22',
-      summary: 'Surveillance of acute vector-borne clusters in Haveli and Khed talukas. Dengue NS1 positivity increased by 8.4%. Water sample bacteriological testing completed across 140 villages.',
-      author: `District Epidemiologist & IDSP Unit, ${userLoc?.district || 'District'}`
+      id: 'REP-2026-W08',
+      title: 'Weekly Epidemiological Surveillance Bulletin (Week 8, 2026)',
+      category: 'Epidemic Bulletin',
+      date: '2026-02-23',
+      author: 'District Surveillance Officer (DSO) Pune',
+      fileSize: '2.4 MB',
+      status: 'Published',
+      summary: 'Aggregated IDSP viral fever and vector-borne surveillance data. Noted a 14% drop in Dengue NS1 positivity across Haveli and Khed.',
+      highlights: [
+        'Total fever cases screened: 14,820 across 28 hospitals and 96 PHCs',
+        'Dengue confirmation rate: 4.2% (Down from 5.8% previous week)',
+        'Zero cholera or acute diarrheal disease clusters detected'
+      ]
     },
     {
-      id: 'rep-02',
-      title: 'Comprehensive Hospital Bed Occupancy & Critical Care Utilization Review',
-      category: 'Hospital Performance',
-      period: 'Monthly',
-      generatedDate: '2026-08-15',
-      summary: 'Detailed operational audit of 28 empaneled hospitals. Average general bed turnover rate is 3.8 days. Sassoon General Hospital reached 93.3% ICU bed occupancy.',
-      author: `District Hospital Cell, ${userLoc?.district || 'District'} Health Administration`
-    },
-    {
-      id: 'rep-03',
-      title: 'Maternal & Child Health (MCH) Scorecard & Janani Suraksha Yojana Audit',
+      id: 'REP-2026-MCH-Q1',
+      title: 'Maternal & Child Health Scorecard & Institutional Delivery Audit',
       category: 'Maternal & Child Health',
-      period: 'Monthly',
-      generatedDate: '2026-08-10',
-      summary: `Institutional delivery rate achieved 99.4% across ${userLoc?.district || 'the'} district. Pregnant women received specialized ANC checkups under PMSMA drives.`,
-      author: 'Child Health & RCH Officer'
+      date: '2026-02-15',
+      author: 'Chief Medical Officer & District RCH Officer',
+      fileSize: '4.1 MB',
+      status: 'Published',
+      summary: 'Quarterly institutional delivery metrics, high-risk pregnancy tracking, and ANC registration audit across 14 talukas.',
+      highlights: [
+        'Institutional delivery rate: 99.2% across government and empaneled private facilities',
+        'High-Risk Pregnancy (HRP) identification rate reached 18.4% of total registrations',
+        '100% IFA supplement distribution completed in all tribal sub-centres'
+      ]
     },
     {
-      id: 'rep-04',
-      title: 'District Essential Medicine Depot & Vaccine Buffer Stock Status',
-      category: 'Supply & Inventory',
-      period: 'Weekly',
-      generatedDate: '2026-08-21',
-      summary: 'Analysis of 180 essential drug formulations. Buffer stock transfer of Anti-Rabies Immunoglobulin (400 vials) dispatched to Baramati depot.',
-      author: 'Central District Pharmacy Depot'
+      id: 'REP-2026-BED-FEB',
+      title: 'District Bed Occupancy & Critical Care Utilization Monthly Review',
+      category: 'Bed Utilization',
+      date: '2026-02-01',
+      author: 'District Health Infrastructure Cell',
+      fileSize: '1.8 MB',
+      status: 'Published',
+      summary: 'Operational review of ICU beds, oxygen availability, and general ward utilization across Aundh DH, Sassoon GH, and 4 SDHs.',
+      highlights: [
+        'Overall district bed occupancy: 78.4%',
+        'Oxygen cylinder and PSA plant reserves at 100% operational capacity',
+        'Average patient length of stay: 3.8 days'
+      ]
+    },
+    {
+      id: 'REP-2026-IMM-JAN',
+      title: 'Universal Immunization Programme (UIP) Monthly Progress Scorecard',
+      category: 'Immunization Progress',
+      date: '2026-01-28',
+      author: 'District Immunization Officer (DIO)',
+      fileSize: '3.2 MB',
+      status: 'Published',
+      summary: 'Comprehensive evaluation of Mission Indradhanush zero-dose child tracking and full immunization coverage (FIC).',
+      highlights: [
+        'Full Immunization Coverage (FIC) reached 94.2% among infants under 1 year',
+        'Measles-Rubella (MR) dose-2 coverage achieved 91.8%',
+        'eVIN cold-chain maintenance maintained zero temperature excursion events'
+      ]
     }
   ];
-
-  const filteredReports = reportsList.filter((r) => {
-    if (activeTab === 'All') return true;
-    return r.category === activeTab;
-  });
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="District Health Governance & Operational Reports"
-        subtitle="Automated epidemiological bulletins, institutional audits, and statutory public health scorecards"
+        title={t.districtGovernanceReports || "District Health Governance & Operational Reports"}
+        subtitle={t.automatedBulletinsSubtitle || "Automated epidemiological bulletins, institutional audits, and statutory public health scorecards."}
         breadcrumbs={[
-          { label: 'District Admin', path: '/district-admin' },
-          { label: 'Reports' }
+          { label: t.portalAdmin || 'District Admin', path: '/district-admin' },
+          { label: t.navReports || 'Reports' }
         ]}
         actions={
           <Button
             variant="primary"
             size="sm"
             leftIcon={<Download className="w-4 h-4" />}
-            onClick={() => showSuccess('Export Generated', 'District health bulletin archive downloaded.')}
+            onClick={() => showSuccess('Download Started', 'Consolidated district health dossier downloading.')}
           >
-            Download Consolidated Bulletin
+            {t.downloadConsolidatedBulletin || "Download Consolidated Bulletin (PDF)"}
           </Button>
         }
       />
 
-      <Tabs
-        tabs={[
-          { id: 'All', label: 'All Reports', count: reportsList.length },
-          { id: 'Epidemiology', label: 'Epidemiology (IDSP)', count: reportsList.filter((r) => r.category === 'Epidemiology').length },
-          { id: 'Hospital Performance', label: 'Hospital Performance', count: reportsList.filter((r) => r.category === 'Hospital Performance').length },
-          { id: 'Maternal & Child Health', label: 'Maternal & Child (RCH)', count: reportsList.filter((r) => r.category === 'Maternal & Child Health').length },
-          { id: 'Supply & Inventory', label: 'Medicine & Stock', count: reportsList.filter((r) => r.category === 'Supply & Inventory').length },
-        ]}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-        variant="underline"
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredReports.map((r) => (
-          <Card
-            key={r.id}
-            hoverEffect
-            className="flex flex-col justify-between cursor-pointer border-slate-200 hover:border-health-400"
-            onClick={() => setSelectedReport(r)}
-          >
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <StatusBadge
-                  variant={
-                    r.category === 'Epidemiology'
-                      ? 'error'
-                      : r.category === 'Hospital Performance'
-                      ? 'info'
-                      : r.category === 'Maternal & Child Health'
-                      ? 'success'
-                      : 'warning'
-                  }
-                  size="sm"
-                >
-                  {r.category}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {reports.map((r) => (
+          <Card key={r.id} hoverEffect className="flex flex-col justify-between">
+            <CardHeader
+              icon={<FileText className="w-5 h-5 text-emerald-600" />}
+              title={r.title}
+              subtitle={`${r.category} • ${r.date}`}
+              action={
+                <StatusBadge variant="success" size="sm">
+                  {r.status}
                 </StatusBadge>
-                <span className="text-xs text-slate-500 font-medium">Generated: {r.generatedDate}</span>
+              }
+            />
+            <CardContent className="space-y-4 pt-2 flex-1 flex flex-col justify-between">
+              <p className="text-xs text-slate-600 leading-relaxed">{r.summary}</p>
+
+              <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1 text-xs">
+                <span className="font-bold text-slate-700 block mb-1">Key Findings:</span>
+                {r.highlights.map((h, i) => (
+                  <div key={i} className="flex items-start gap-1.5 text-slate-600 text-[11px]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                    <span>{h}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="pt-3 space-y-2">
-                <h3 className="text-base font-bold text-slate-900 leading-snug">{r.title}</h3>
-                <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">{r.summary}</p>
-                <div className="text-[11px] text-slate-400 pt-1">
-                  Authoring Body: <strong>{r.author}</strong>
+              <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-[11px] text-slate-400 font-mono">{r.fileSize} • PDF</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    leftIcon={<Eye className="w-3.5 h-3.5" />}
+                    onClick={() => setSelectedReport(r)}
+                  >
+                    {t.view || "View"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="xs"
+                    leftIcon={<Download className="w-3.5 h-3.5 text-emerald-700" />}
+                    onClick={() => showSuccess('Download Dispatched', `Downloading ${r.title}`)}
+                  >
+                    {t.download || "Download"}
+                  </Button>
                 </div>
               </div>
-            </div>
-
-            <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-semibold text-health-700 flex items-center gap-1">
-                <Eye className="w-3.5 h-3.5" /> Read Full Bulletin
-              </span>
-              <span className="text-[11px] text-slate-400 font-medium">{r.period} Digest</span>
-            </div>
+            </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Report Modal */}
       {selectedReport && (
         <Modal
           isOpen={!!selectedReport}
           onClose={() => setSelectedReport(null)}
           title={selectedReport.title}
-          subtitle={`Issued by ${selectedReport.author} on ${selectedReport.generatedDate}`}
-          maxWidth="2xl"
-          footer={
-            <>
+        >
+          <div className="space-y-4 text-xs">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900">
+              <span className="font-bold">{t.authoringBody || "Authoring Body:"} </span>
+              <span>{selectedReport.author} ({selectedReport.date})</span>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-900 mb-1">{t.plainLanguageExplanation || "Executive Overview"}</h4>
+              <p className="text-slate-600 leading-relaxed">{selectedReport.summary}</p>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+              <span className="font-bold text-slate-800">{t.detailedFindings || "Detailed Highlights"}</span>
+              {selectedReport.highlights.map((h, i) => (
+                <div key={i} className="flex items-start gap-2 text-slate-700 text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                  <span>{h}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
               <Button variant="outline" size="sm" onClick={() => setSelectedReport(null)}>
-                Close
+                {t.close || "Close"}
               </Button>
               <Button
                 variant="primary"
                 size="sm"
-                leftIcon={<Printer className="w-4 h-4" />}
-                onClick={() => window.print()}
+                leftIcon={<Download className="w-4 h-4" />}
+                onClick={() => {
+                  showSuccess('Download Complete', `${selectedReport.title} downloaded.`);
+                  setSelectedReport(null);
+                }}
               >
-                Print Report
+                {t.downloadRecord || "Download Full Report"}
               </Button>
-            </>
-          }
-        >
-          <div className="space-y-4 text-xs text-slate-700">
-            <div className="p-3.5 bg-slate-50 border rounded-xl space-y-2">
-              <span className="font-bold text-slate-900 uppercase text-[10px] block">Executive Summary</span>
-              <p className="text-xs leading-relaxed text-slate-800">{selectedReport.summary}</p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="font-bold uppercase text-slate-900 text-[11px]">Key Governance Highlights & Directives:</h4>
-              <ul className="list-disc pl-5 space-y-1.5 leading-relaxed">
-                <li>Active surveillance teams deployed across all 14 Taluka health headquarters.</li>
-                <li>Daily bed occupancy and stock inventories synced with State Integrated Health Management Portal.</li>
-                <li>ASHA and Anganwadi community workers instructed to conduct doorstep screening in high-risk zones.</li>
-              </ul>
             </div>
           </div>
         </Modal>

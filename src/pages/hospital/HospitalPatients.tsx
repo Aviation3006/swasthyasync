@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../../i18n/useTranslation';
 import { patientService } from '../../services/patientService';
 import { recordService } from '../../services/recordService';
 import { prescriptionService } from '../../services/prescriptionService';
@@ -36,6 +37,7 @@ import { useToast } from '../../context/ToastContext';
 
 export const HospitalPatients: React.FC = () => {
   const { showSuccess } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [patients, setPatients] = useState<Patient[]>(patientService.getAllPatients());
@@ -58,7 +60,7 @@ export const HospitalPatients: React.FC = () => {
 
   const columns: Column<Patient>[] = [
     {
-      header: 'Citizen / Patient',
+      header: t.citizenPatientTab || 'Citizen / Patient',
       cell: (p) => (
         <div className="space-y-0.5">
           <div className="font-bold text-slate-900 flex items-center gap-1.5">
@@ -70,15 +72,15 @@ export const HospitalPatients: React.FC = () => {
       )
     },
     {
-      header: 'Age / Gender',
+      header: t.ageGender || 'Age / Gender',
       cell: (p) => (
         <span className="text-xs text-slate-700 font-medium">
-          {p.age} Yrs / {p.gender}
+          {p.age} {t.years || 'Yrs'} / {p.gender}
         </span>
       )
     },
     {
-      header: 'Blood Group',
+      header: t.bloodGroup || 'Blood Group',
       cell: (p) => (
         <span className="inline-flex items-center gap-1 font-bold text-xs text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
           <Droplet className="w-3 h-3 text-rose-600" /> {p.bloodGroup}
@@ -86,7 +88,7 @@ export const HospitalPatients: React.FC = () => {
       )
     },
     {
-      header: 'Location / Taluka',
+      header: t.taluka || 'Location / Taluka',
       cell: (p) => (
         <div className="text-xs text-slate-600">
           <div>{p.address?.district || p.address?.taluka || 'District'}</div>
@@ -95,7 +97,7 @@ export const HospitalPatients: React.FC = () => {
       )
     },
     {
-      header: 'Chronic Care',
+      header: t.chronicCareRegimen || 'Chronic Care',
       cell: (p) => (
         <div className="flex flex-wrap gap-1 max-w-xs">
           {p.chronicConditions && p.chronicConditions.map((c) => (
@@ -108,7 +110,7 @@ export const HospitalPatients: React.FC = () => {
       )
     },
     {
-      header: 'Actions',
+      header: t.action || 'Actions',
       className: 'text-right',
       cell: (p) => (
         <Button
@@ -120,7 +122,7 @@ export const HospitalPatients: React.FC = () => {
           }}
           leftIcon={<Eye className="w-3.5 h-3.5" />}
         >
-          View EHR
+          {t.viewMedicalRecords || "View EHR"}
         </Button>
       )
     }
@@ -129,11 +131,11 @@ export const HospitalPatients: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="Patient 360° EHR Directory"
-        subtitle="Search and review comprehensive electronic longitudinal health records across healthcare facilities"
+        title={t.patientDirectoryTitle || "Patient 360° EHR Directory"}
+        subtitle={t.patientDirectorySubtitle || "Search and review comprehensive electronic longitudinal health records across healthcare facilities."}
         breadcrumbs={[
-          { label: 'Hospital Portal', path: '/hospital' },
-          { label: 'Patient Directory' }
+          { label: t.portalHospital || 'Hospital Portal', path: '/hospital' },
+          { label: t.navPatientDirectory || 'Patient Directory' }
         ]}
       />
 
@@ -142,7 +144,7 @@ export const HospitalPatients: React.FC = () => {
         data={patients}
         columns={columns}
         keyExtractor={(p) => p.id}
-        searchPlaceholder="Search by patient name, ABHA ID, mobile, or taluka..."
+        searchPlaceholder={t.searchPatient || "Search by patient name, ABHA ID, mobile, or taluka..."}
         onRowClick={handleSelectPatient}
       />
 
@@ -151,180 +153,119 @@ export const HospitalPatients: React.FC = () => {
         <Modal
           isOpen={!!selectedPatient}
           onClose={() => setSelectedPatient(null)}
-          title={`EHR 360°: ${selectedPatient.name}`}
-          subtitle={`ABHA ID: ${selectedPatient.abhaId} • ${selectedPatient.age} Yrs (${selectedPatient.gender})`}
-          maxWidth="4xl"
-          footer={
-            <div className="flex items-center justify-between w-full">
-              <span className="text-xs text-slate-500">
-                Scheme: <strong>{selectedPatient.activeScheme}</strong>
-              </span>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => setSelectedPatient(null)}>
-                  Close
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  leftIcon={<Pill className="w-4 h-4" />}
-                  onClick={() => {
-                    setSelectedPatient(null);
-                    navigate('/hospital/prescriptions');
-                  }}
-                >
-                  Write Prescription (Rx)
-                </Button>
-              </div>
-            </div>
-          }
+          title={`${selectedPatient.name} — ${t.careSetuRecordTitle || "Longitudinal EHR"}`}
+          size="lg"
         >
-          <div className="space-y-5">
-            {/* Tabs */}
-            <Tabs
-              tabs={[
-                { id: 'overview', label: 'Clinical Overview & Vitals' },
-                { id: 'records', label: `Medical Records (${patientRecords.length})` },
-                { id: 'prescriptions', label: `Prescriptions (${patientPrescriptions.length})` }
-              ]}
-              activeTab={activeDrawerTab}
-              onChange={(t) => setActiveDrawerTab(t as any)}
-              variant="pills"
-            />
+          <div className="space-y-4 text-xs">
+            <div className="flex gap-2 border-b border-slate-200 pb-2">
+              <button
+                onClick={() => setActiveDrawerTab('overview')}
+                className={`px-3 py-1.5 rounded-lg font-bold ${
+                  activeDrawerTab === 'overview' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {t.clinicalOverview || "Overview"}
+              </button>
+              <button
+                onClick={() => setActiveDrawerTab('records')}
+                className={`px-3 py-1.5 rounded-lg font-bold ${
+                  activeDrawerTab === 'records' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {t.navRecords || "Records"} ({patientRecords.length})
+              </button>
+              <button
+                onClick={() => setActiveDrawerTab('prescriptions')}
+                className={`px-3 py-1.5 rounded-lg font-bold ${
+                  activeDrawerTab === 'prescriptions' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {t.navPrescriptions || "Prescriptions"} ({patientPrescriptions.length})
+              </button>
+            </div>
 
-            {/* TAB 1: Clinical Overview */}
             {activeDrawerTab === 'overview' && (
-              <div className="space-y-4">
-                {/* Allergy Warning Alert */}
-                {selectedPatient.allergies.length > 0 && (
-                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-xs text-rose-900 space-y-1">
-                    <div className="flex items-center gap-1.5 font-bold text-rose-700">
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-400 block">{t.bloodGroup || "Blood Group"}</span>
+                    <span className="font-bold text-rose-700">{selectedPatient.bloodGroup}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-400 block">{t.bloodPressure || "Blood Pressure"}</span>
+                    <span className="font-bold text-slate-800">{selectedPatient.vitals?.bloodPressure || '120/80'}</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-400 block">{t.heartRate || "Heart Rate"}</span>
+                    <span className="font-bold text-slate-800">{selectedPatient.vitals?.heartRate || '74'} bpm</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-400 block">ABHA ID</span>
+                    <span className="font-mono font-bold text-slate-800 text-[10px] truncate block">{selectedPatient.abhaId}</span>
+                  </div>
+                </div>
+
+                {selectedPatient.allergies && selectedPatient.allergies.length > 0 && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl space-y-1">
+                    <div className="font-bold text-rose-900 flex items-center gap-1.5">
                       <AlertCircle className="w-4 h-4 text-rose-600" />
-                      CRITICAL ALLERGY ALERT / CONTRAINDICATION:
+                      <span>{t.criticalAllergyAlert || "CRITICAL ALLERGY ALERT / CONTRAINDICATION:"}</span>
                     </div>
-                    <ul className="list-disc pl-5 text-rose-800 space-y-0.5">
-                      {selectedPatient.allergies.map((a) => (
-                        <li key={a.id}>
-                          <strong>{a.substance}</strong> ({a.severity}) - Reaction: {a.reaction}
-                        </li>
+                    <div className="flex flex-wrap gap-1.5 pl-5">
+                      {selectedPatient.allergies.map((al, idx) => (
+                        <span key={idx} className="font-bold text-rose-800 bg-rose-100/80 px-2 py-0.5 rounded text-[11px]">
+                          {al.substance} ({al.severity})
+                        </span>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
-
-                {/* Vitals Grid */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                    Recorded Clinical Vitals
-                  </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center">
-                      <span className="text-[10px] text-slate-500 uppercase">Blood Pressure</span>
-                      <div className="text-base font-bold text-slate-900 mt-0.5">{selectedPatient.vitals.bloodPressure}</div>
-                    </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center">
-                      <span className="text-[10px] text-slate-500 uppercase">Fasting Sugar</span>
-                      <div className="text-base font-bold text-slate-900 mt-0.5">{selectedPatient.vitals.bloodSugarFasting} mg/dL</div>
-                    </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center">
-                      <span className="text-[10px] text-slate-500 uppercase">Heart Rate</span>
-                      <div className="text-base font-bold text-slate-900 mt-0.5">{selectedPatient.vitals.heartRate} bpm</div>
-                    </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center">
-                      <span className="text-[10px] text-slate-500 uppercase">SpO2 Oxygen</span>
-                      <div className="text-base font-bold text-slate-900 mt-0.5">{selectedPatient.vitals.spO2}%</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Chronic Conditions */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                    Chronic Conditions & Care Plans
-                  </h4>
-                  <div className="space-y-2">
-                    {selectedPatient.chronicConditions.map((c) => (
-                      <div key={c.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 text-xs space-y-1">
-                        <div className="flex items-center justify-between">
-                          <h5 className="font-bold text-slate-900">{c.name}</h5>
-                          <StatusBadge variant="info" size="sm">{c.status}</StatusBadge>
-                        </div>
-                        <p className="text-slate-600">Treating Physician: {c.treatingDoctor} ({c.hospital})</p>
-                        {c.notes && <p className="text-slate-500 italic mt-1">Clinical Notes: {c.notes}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Demographics & Contact */}
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                  <div>
-                    <span className="text-slate-500 block">Mobile Phone:</span>
-                    <span className="font-bold">{selectedPatient.phone}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Emergency Contact:</span>
-                    <span className="font-bold">{selectedPatient.emergencyContact.name} ({selectedPatient.emergencyContact.phone})</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Address:</span>
-                    <span className="font-bold">{selectedPatient.address.village}, {selectedPatient.address.taluka}</span>
-                  </div>
-                </div>
               </div>
             )}
 
-            {/* TAB 2: Medical Records */}
             {activeDrawerTab === 'records' && (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-72 overflow-y-auto">
                 {patientRecords.length > 0 ? (
-                  patientRecords.map((r) => (
-                    <div key={r.id} className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
-                      <div className="flex items-center justify-between">
-                        <StatusBadge variant="teal" size="sm">{r.recordType}</StatusBadge>
-                        <span className="text-xs text-slate-500">{r.date}</span>
+                  patientRecords.map((rec) => (
+                    <div key={rec.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                      <div className="flex justify-between font-bold text-slate-800">
+                        <span>{rec.title}</span>
+                        <span className="text-slate-400 text-[10px]">{rec.date}</span>
                       </div>
-                      <h4 className="text-sm font-bold text-slate-900">{r.title}</h4>
-                      <p className="text-xs text-slate-600">{r.summary}</p>
-                      <div className="text-[11px] text-slate-400">
-                        {r.doctorName} • {r.hospitalName} ({r.department})
-                      </div>
+                      <p className="text-slate-600 text-[11px]">{rec.summary}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="py-8 text-center text-xs text-slate-500">No medical records on file.</div>
+                  <div className="p-6 text-center text-slate-400">{t.noMedicalRecordsOnFile || "No medical records on file."}</div>
                 )}
               </div>
             )}
 
-            {/* TAB 3: Prescriptions */}
             {activeDrawerTab === 'prescriptions' && (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-72 overflow-y-auto">
                 {patientPrescriptions.length > 0 ? (
-                  patientPrescriptions.map((rx) => (
-                    <div key={rx.id} className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-xs text-health-800">{rx.prescriptionNumber}</span>
-                        <StatusBadge variant="success" size="sm">{rx.dispensingStatus}</StatusBadge>
+                  patientPrescriptions.map((px) => (
+                    <div key={px.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                      <div className="flex justify-between font-bold text-slate-800">
+                        <span>{px.diagnosis}</span>
+                        <span className="text-slate-400 text-[10px]">{px.date}</span>
                       </div>
-                      <p className="text-xs text-slate-700"><strong>Diagnosis:</strong> {rx.diagnosis}</p>
-                      <div className="text-xs space-y-1 pt-1 border-t">
-                        {rx.medications.map((m) => (
-                          <div key={m.id} className="flex items-center justify-between text-slate-700">
-                            <span>• {m.medicineName} ({m.dosage})</span>
-                            <span className="text-slate-500 font-mono text-[11px]">{m.frequency} • {m.durationDays}d</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="text-[11px] text-slate-400 pt-1 border-t">
-                        Prescribed by {rx.doctorName} on {rx.date}
+                      <div className="text-[11px] text-slate-600">
+                        {px.medications.map((m) => `${m.name} (${m.dosage})`).join(', ')}
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="py-8 text-center text-xs text-slate-500">No prescriptions recorded.</div>
+                  <div className="p-6 text-center text-slate-400">{t.noPrescriptionsRecorded || "No prescriptions recorded."}</div>
                 )}
               </div>
             )}
+
+            <div className="flex justify-end pt-2 border-t border-slate-100">
+              <Button variant="outline" size="sm" onClick={() => setSelectedPatient(null)}>
+                {t.close || "Close"}
+              </Button>
+            </div>
           </div>
         </Modal>
       )}

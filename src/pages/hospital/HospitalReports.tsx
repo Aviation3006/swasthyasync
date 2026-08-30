@@ -1,193 +1,160 @@
-import React, { useState, useEffect } from 'react';
-import { recordService } from '../../services/recordService';
-import { MedicalRecord } from '../../types/records';
-import { useToast } from '../../context/ToastContext';
-import { 
-  FileCheck2, 
-  Search, 
-  CheckCircle2, 
-  ShieldCheck, 
-  Eye, 
-  Printer, 
-  UserCheck, 
-  Building2, 
-  Calendar,
-  Filter
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { useTranslation } from '../../i18n/useTranslation';
 import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { StatusBadge } from '../../components/common/StatusBadge';
-import { DataTable, Column } from '../../components/tables/DataTable';
 import { Modal } from '../../components/common/Modal';
-import { Tabs } from '../../components/common/Tabs';
+import { FileText, Download, Eye, CheckCircle2, Search, Filter } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 
 export const HospitalReports: React.FC = () => {
+  const { t } = useTranslation();
   const { showSuccess } = useToast();
-  const [records, setRecords] = useState<MedicalRecord[]>(recordService.getAllRecords());
-  const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
-  const [activeTab, setActiveTab] = useState<'All' | 'Lab' | 'Radiology'>('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedReport, setSelectedReport] = useState<any | null>(null);
 
-  useEffect(() => {
-    const unsub = recordService.subscribe((list) => setRecords(list));
-    return unsub;
-  }, []);
-
-  const handleVerifyReport = (recId: string) => {
-    showSuccess('Report Verified & Signed', 'Document has been stamped with your digital signature.');
-    if (selectedRecord && selectedRecord.id === recId) {
-      setSelectedRecord({ ...selectedRecord, isVerified: true });
-    }
-  };
-
-  const filteredRecords = records.filter((r) => {
-    if (activeTab === 'Lab') return r.recordType === 'Lab Report';
-    if (activeTab === 'Radiology') return r.recordType === 'Radiology / Scan';
-    return true;
-  });
-
-  const columns: Column<MedicalRecord>[] = [
+  const sampleReports = [
     {
-      header: 'Report Title / Date',
-      cell: (r) => (
-        <div className="space-y-0.5">
-          <div className="font-bold text-slate-900 leading-snug">{r.title}</div>
-          <div className="text-xs text-slate-500">{r.date} • {r.department}</div>
-        </div>
-      )
+      id: 'REP-CBC-109',
+      title: 'Complete Blood Count (CBC) Diagnostic Panel',
+      patient: 'Rameshwar Patil (ABHA: 91-0492-1192-4412)',
+      date: '2026-02-27',
+      facility: 'Aundh District Hospital Central Laboratory',
+      status: 'ABDM Verified',
+      summary: 'Hemoglobin: 14.2 g/dL (Normal). Platelet count: 240,000 /mcL (Normal). WBC: 7,200 /mcL.',
+      parameters: [
+        { name: 'Hemoglobin', value: '14.2 g/dL', range: '13.0 - 17.0 g/dL', status: 'Normal' },
+        { name: 'Total WBC Count', value: '7,200 /mcL', range: '4,000 - 11,000 /mcL', status: 'Normal' },
+        { name: 'Platelets', value: '240,000 /mcL', range: '150,000 - 450,000 /mcL', status: 'Normal' },
+      ]
     },
     {
-      header: 'Patient ID',
-      cell: (r) => (
-        <span className="font-mono text-xs font-semibold text-slate-700">{r.patientId}</span>
-      )
-    },
-    {
-      header: 'Category',
-      cell: (r) => (
-        <StatusBadge
-          variant={r.recordType === 'Lab Report' ? 'teal' : r.recordType === 'Radiology / Scan' ? 'warning' : 'neutral'}
-          size="sm"
-        >
-          {r.recordType}
-        </StatusBadge>
-      )
-    },
-    {
-      header: 'Verification',
-      cell: (r) => (
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-          <ShieldCheck className="w-3.5 h-3.5" /> ABDM Verified
-        </span>
-      )
-    },
-    {
-      header: 'Action',
-      className: 'text-right',
-      cell: (r) => (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedRecord(r);
-          }}
-          leftIcon={<Eye className="w-3.5 h-3.5" />}
-        >
-          Review
-        </Button>
-      )
+      id: 'REP-LIP-204',
+      title: 'Lipid Profile & Cardiovascular Biomarkers',
+      patient: 'Sunita Sharma (ABHA: 91-8841-3920-5591)',
+      date: '2026-02-25',
+      facility: 'District Hospital Pathology Department',
+      status: 'ABDM Verified',
+      summary: 'Total Cholesterol: 185 mg/dL. HDL: 48 mg/dL. LDL: 110 mg/dL. Triglycerides: 135 mg/dL.',
+      parameters: [
+        { name: 'Total Cholesterol', value: '185 mg/dL', range: '< 200 mg/dL', status: 'Normal' },
+        { name: 'HDL Cholesterol', value: '48 mg/dL', range: '> 40 mg/dL', status: 'Optimal' },
+        { name: 'LDL Cholesterol', value: '110 mg/dL', range: '< 100 mg/dL', status: 'Borderline' },
+      ]
     }
   ];
+
+  const filtered = sampleReports.filter(r => 
+    r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    r.patient.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="Diagnostic & Pathology Reports Repository"
-        subtitle="Review, verify, and digitally authorize clinical laboratory investigations and imaging scans"
+        title={t.diagnosticRepositoryTitle || "Diagnostic & Pathology Reports Repository"}
+        subtitle={t.diagnosticRepositorySubtitle || "Review, verify, and digitally authorize clinical laboratory investigations and imaging scans."}
         breadcrumbs={[
-          { label: 'Hospital Portal', path: '/hospital' },
-          { label: 'Diagnostic Reports' }
+          { label: t.portalHospital || 'Hospital Portal', path: '/hospital' },
+          { label: t.navDiagnosticReports || 'Diagnostic Reports' }
         ]}
       />
 
-      <Tabs
-        tabs={[
-          { id: 'All', label: 'All Diagnostic Reports', count: records.length },
-          { id: 'Lab', label: 'Pathology & Biochemistry', count: records.filter((r) => r.recordType === 'Lab Report').length },
-          { id: 'Radiology', label: 'Radiology & Scans', count: records.filter((r) => r.recordType === 'Radiology / Scan').length }
-        ]}
-        activeTab={activeTab}
-        onChange={(t) => setActiveTab(t as any)}
-        variant="underline"
-      />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex gap-3 items-center justify-between">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder={t.searchRecordsPlaceholder || "Search diagnostic records, tests..."}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+              />
+            </div>
+          </div>
 
-      <DataTable
-        data={filteredRecords}
-        columns={columns}
-        keyExtractor={(r) => r.id}
-        searchPlaceholder="Search reports by title, patient, or department..."
-        onRowClick={(r) => setSelectedRecord(r)}
-      />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filtered.map(r => (
+              <Card key={r.id} hoverEffect className="flex flex-col justify-between">
+                <CardHeader
+                  icon={<FileText className="w-5 h-5 text-sky-600" />}
+                  title={r.title}
+                  subtitle={`${r.patient} • ${r.date}`}
+                  action={<StatusBadge variant="success" size="sm">{t.verifiedAbdm || "ABDM Verified"}</StatusBadge>}
+                />
+                <CardContent className="space-y-3 pt-2">
+                  <p className="text-xs text-slate-600">{r.summary}</p>
+                  <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      leftIcon={<Eye className="w-3.5 h-3.5" />}
+                      onClick={() => setSelectedReport(r)}
+                    >
+                      {t.view || "Review"}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="xs"
+                      leftIcon={<Download className="w-3.5 h-3.5" />}
+                      onClick={() => showSuccess('Report Dispatched', `Downloading ${r.title}`)}
+                    >
+                      {t.download || "Download"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Review Modal */}
-      {selectedRecord && (
+      {selectedReport && (
         <Modal
-          isOpen={!!selectedRecord}
-          onClose={() => setSelectedRecord(null)}
-          title={selectedRecord.title}
-          subtitle={`Patient ID: ${selectedRecord.patientId} • Date: ${selectedRecord.date}`}
-          maxWidth="2xl"
-          footer={
-            <>
-              <Button variant="outline" size="sm" onClick={() => setSelectedRecord(null)}>
-                Close
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                leftIcon={<UserCheck className="w-4 h-4" />}
-                onClick={() => handleVerifyReport(selectedRecord.id)}
-              >
-                Sign Off & Authorize
-              </Button>
-            </>
-          }
+          isOpen={!!selectedReport}
+          onClose={() => setSelectedReport(null)}
+          title={selectedReport.title}
         >
           <div className="space-y-4 text-xs">
-            <div className="p-3 bg-slate-50 border rounded-xl">
-              <span className="text-slate-500 block uppercase font-bold text-[10px]">Clinical Summary</span>
-              <p className="text-slate-800 text-xs mt-1 leading-relaxed">{selectedRecord.summary}</p>
+            <div className="p-3 bg-sky-50 rounded-xl border border-sky-200">
+              <span className="font-bold text-sky-900 block mb-0.5">{selectedReport.patient}</span>
+              <span className="text-sky-700 text-[11px]">{selectedReport.facility}</span>
             </div>
 
-            {selectedRecord.biomarkers && (
-              <div className="border rounded-xl overflow-x-auto">
-                <table className="min-w-full divide-y text-xs text-left">
-                  <thead className="bg-slate-50 font-bold text-slate-700">
-                    <tr>
-                      <th className="p-2.5">Parameter</th>
-                      <th className="p-2.5">Observed</th>
-                      <th className="p-2.5">Ref Range</th>
-                      <th className="p-2.5">Status</th>
+            <div>
+              <h4 className="font-bold text-slate-800 mb-1">{t.clinicalSummary || "Clinical Diagnostic Summary"}</h4>
+              <p className="text-slate-600 leading-relaxed">{selectedReport.summary}</p>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <table className="min-w-full divide-y divide-slate-200 text-xs">
+                <thead className="bg-slate-50 font-bold text-slate-700">
+                  <tr>
+                    <th className="p-2.5 text-left">{t.key || "Parameter"}</th>
+                    <th className="p-2.5 text-left">{t.observedValue || "Observed"}</th>
+                    <th className="p-2.5 text-left">{t.referenceRange || "Ref Range"}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  {selectedReport.parameters.map((p: any, i: number) => (
+                    <tr key={i}>
+                      <td className="p-2.5 font-medium text-slate-800">{p.name}</td>
+                      <td className="p-2.5 font-bold text-slate-900">{p.value}</td>
+                      <td className="p-2.5 text-slate-500">{p.range}</td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y bg-white">
-                    {selectedRecord.biomarkers.map((b, i) => (
-                      <tr key={i}>
-                        <td className="p-2.5 font-bold">{b.name}</td>
-                        <td className="p-2.5 font-bold">{b.value} {b.unit}</td>
-                        <td className="p-2.5 text-slate-500">{b.referenceRange}</td>
-                        <td className="p-2.5">
-                          <StatusBadge variant={b.status === 'Normal' ? 'success' : 'warning'} size="sm">
-                            {b.status}
-                          </StatusBadge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button variant="outline" size="sm" onClick={() => setSelectedReport(null)}>
+                {t.close || "Close"}
+              </Button>
+            </div>
           </div>
         </Modal>
       )}

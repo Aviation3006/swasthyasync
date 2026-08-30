@@ -1,107 +1,116 @@
+import { useAuth } from '../../context/AuthContext';
+import { useUserLocation } from '../../context/UserLocationContext';
+import { useTranslation } from '../../i18n/useTranslation';
 import React, { useState, useEffect } from 'react';
 import { appointmentService } from '../../services/appointmentService';
-import { hospitalService } from '../../services/hospitalService';
-import { Appointment, AppointmentStatus } from '../../types/appointment';
+import { Appointment } from '../../types/appointment';
 import { 
   Calendar, 
   Clock, 
   Search, 
+  Filter, 
   User, 
-  Building2, 
   CheckCircle2, 
   XCircle, 
-  AlertCircle, 
-  Filter,
-  UserCheck,
-  Stethoscope
+  Phone, 
+  Building2, 
+  FileText, 
+  ChevronRight,
+  AlertCircle
 } from 'lucide-react';
 import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { DataTable, Column } from '../../components/tables/DataTable';
-import { Tabs } from '../../components/common/Tabs';
 import { useToast } from '../../context/ToastContext';
 
 export const HospitalAppointments: React.FC = () => {
+  const { location: userLoc } = useUserLocation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const { showSuccess, showInfo } = useToast();
-  const [appointments, setAppointments] = useState<Appointment[]>(appointmentService.getAllAppointments());
-  const [activeTab, setActiveTab] = useState<string>('All');
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>('All');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const unsub = appointmentService.subscribe((list) => setAppointments(list));
+    // Load hospital appointments
+    const list = appointmentService.getHospitalAppointments();
+    setAppointments(list);
+    const unsub = appointmentService.subscribeAppointments(() => {
+      setAppointments(appointmentService.getHospitalAppointments());
+    });
     return unsub;
   }, []);
 
-  const handleUpdateStatus = (apptId: string, newStatus: AppointmentStatus) => {
-    appointmentService.updateStatus(apptId, newStatus);
-    showSuccess('Status Updated', `Appointment marked as "${newStatus}".`);
-  };
-
-  const tabs = [
-    { id: 'All', label: 'All OPD Bookings', count: appointments.length },
-    { id: 'Upcoming', label: 'Upcoming', count: appointments.filter((a) => a.status === 'Upcoming').length },
-    { id: 'Checked In', label: 'Checked In', count: appointments.filter((a) => a.status === 'Checked In').length },
-    { id: 'In Consultation', label: 'In Consultation', count: appointments.filter((a) => a.status === 'In Consultation').length },
-    { id: 'Completed', label: 'Completed', count: appointments.filter((a) => a.status === 'Completed').length },
-    { id: 'Cancelled', label: 'Cancelled', count: appointments.filter((a) => a.status === 'Cancelled').length }
-  ];
+  const departments = ['All', 'General Medicine', 'Cardiology', 'Pediatrics', 'Orthopedics', 'OB-GYN'];
 
   const filteredAppointments = appointments.filter((a) => {
-    const matchesTab = activeTab === 'All' || a.status === activeTab;
-    const matchesDept = selectedDept === 'All' || a.departmentName === selectedDept;
-    return matchesTab && matchesDept;
+    const matchesDept = selectedDept === 'All' || a.department === selectedDept;
+    const matchesSearch = 
+      (a.patientName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (a.tokenNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (a.reason || '').toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesDept && matchesSearch;
   });
+
+  const handleStatusUpdate = (id: string, status: 'In Consultation' | 'Completed' | 'Cancelled') => {
+    appointmentService.updateStatus(id, status);
+    showSuccess(t.status || 'Status Updated', `Appointment marked as "${status}".`);
+  };
 
   const columns: Column<Appointment>[] = [
     {
-      header: 'Token / Date',
+      header: t.tokenNumber || 'Token #',
       cell: (a) => (
-        <div className="space-y-0.5">
-          <span className="font-mono font-bold text-xs px-2 py-0.5 rounded bg-health-100 text-health-900 border border-health-200">
-            {a.tokenNumber}
-          </span>
-          <div className="text-xs text-slate-500 font-medium pt-1">
-            {a.date} ({a.timeSlot})
+        <span className="font-mono font-bold text-xs bg-slate-100 text-slate-800 px-2 py-1 rounded">
+          {a.tokenNumber}
+        </span>
+      )
+    },
+    {
+      header: t.patientName || 'Patient Details',
+      cell: (a) => (
+        <div>
+          <div className="font-bold text-slate-900">{a.patientName}</div>
+          <div className="text-xs text-slate-500 flex items-center gap-2">
+            <span>{a.age ? `${a.age} ${t.years || 'Yrs'}` : ''} • {a.gender || ''}</span>
+            {a.abhaId && <span className="text-emerald-700 font-mono text-[10px]">ABHA: {a.abhaId}</span>}
           </div>
         </div>
       )
     },
     {
-      header: 'Patient Details',
+      header: t.department || 'Department & Doctor',
       cell: (a) => (
-        <div className="space-y-0.5">
-          <div className="font-bold text-slate-900">{a.patientName}</div>
-          <div className="text-xs text-slate-500">{a.patientPhone}</div>
-          <div className="text-[11px] text-slate-400 italic line-clamp-1">Reason: {a.reason}</div>
+        <div className="text-xs">
+          <div className="font-semibold text-slate-800">{a.department}</div>
+          <div className="text-slate-500">{a.doctorName}</div>
         </div>
       )
     },
     {
-      header: 'Doctor & Department',
+      header: t.time || 'Schedule',
       cell: (a) => (
-        <div className="space-y-0.5">
-          <div className="font-semibold text-slate-900 text-xs">{a.doctorName}</div>
-          <div className="text-xs text-slate-500">{a.departmentName}</div>
-          <div className="text-[10px] text-slate-400">{a.roomNumber || 'OPD Room 104'}</div>
+        <div className="text-xs text-slate-600">
+          <div>{a.date}</div>
+          <div className="font-medium text-slate-800">{a.timeSlot}</div>
         </div>
       )
     },
     {
-      header: 'Status',
+      header: t.status || 'Status',
       cell: (a) => (
         <StatusBadge
           variant={
-            a.status === 'Upcoming'
-              ? 'info'
-              : a.status === 'Checked In'
-              ? 'warning'
-              : a.status === 'In Consultation'
-              ? 'urgent'
-              : a.status === 'Completed'
+            a.status === 'Completed'
               ? 'success'
-              : 'error'
+              : a.status === 'In Consultation'
+              ? 'warning'
+              : a.status === 'Cancelled'
+              ? 'error'
+              : 'info'
           }
           size="sm"
         >
@@ -110,51 +119,26 @@ export const HospitalAppointments: React.FC = () => {
       )
     },
     {
-      header: 'Triage Actions',
-      className: 'text-right',
+      header: t.action || 'Actions',
       cell: (a) => (
-        <div className="flex items-center justify-end gap-1.5 flex-wrap">
+        <div className="flex items-center gap-1.5">
           {a.status === 'Upcoming' && (
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleUpdateStatus(a.id, 'Checked In')}
-              leftIcon={<UserCheck className="w-3 h-3 text-amber-600" />}
-            >
-              Check In
-            </Button>
-          )}
-
-          {a.status === 'Checked In' && (
-            <Button
               variant="primary"
-              size="sm"
-              onClick={() => handleUpdateStatus(a.id, 'In Consultation')}
-              leftIcon={<Stethoscope className="w-3 h-3" />}
+              size="xs"
+              onClick={() => handleStatusUpdate(a.id, 'In Consultation')}
             >
-              Start Visit
+              {t.callIntoOpd || "Call In"}
             </Button>
           )}
-
           {a.status === 'In Consultation' && (
             <Button
-              variant="success"
-              size="sm"
-              onClick={() => handleUpdateStatus(a.id, 'Completed')}
-              leftIcon={<CheckCircle2 className="w-3 h-3" />}
+              variant="secondary"
+              size="xs"
+              leftIcon={<CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+              onClick={() => handleStatusUpdate(a.id, 'Completed')}
             >
-              Complete
-            </Button>
-          )}
-
-          {a.status !== 'Completed' && a.status !== 'Cancelled' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-rose-600 hover:bg-rose-50"
-              onClick={() => handleUpdateStatus(a.id, 'Cancelled')}
-            >
-              No Show
+              {t.statusCompleted || "Complete"}
             </Button>
           )}
         </div>
@@ -165,48 +149,53 @@ export const HospitalAppointments: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHeader
-        title="Clinical OPD Schedule & Appointments"
-        subtitle="Live daily outpatient appointment list with check-in, triage caller, and consultation statuses"
+        title={t.clinicalOpdSchedule || "Clinical OPD Schedule & Appointments"}
+        subtitle={t.opdScheduleSubtitle || "Live daily outpatient appointment list with check-in, triage caller, and consultation statuses."}
         breadcrumbs={[
-          { label: 'Hospital Portal', path: '/hospital' },
-          { label: 'Appointments' }
+          { label: t.portalHospital || 'Hospital Portal', path: '/hospital' },
+          { label: t.navAppointments || 'Appointments' }
         ]}
       />
 
-      <div className="space-y-4">
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onChange={setActiveTab}
-          variant="underline"
-        />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder={t.searchPatient || "Search patient, token number..."}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+              />
+            </div>
 
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold text-slate-700">Filter Department:</span>
-            <select
-              value={selectedDept}
-              onChange={(e) => setSelectedDept(e.target.value)}
-              className="border border-slate-300 rounded-lg px-2.5 py-1 text-slate-800 bg-white shadow-subtle"
-            >
-              <option value="All">All Departments</option>
-              <option value="General Medicine">General Medicine</option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Pediatrics & Neonatology">Pediatrics</option>
-              <option value="Obstetrics & Gynecology">OBGYN</option>
-              <option value="Orthopedics & Trauma">Orthopedics</option>
-            </select>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Filter className="w-4 h-4 text-slate-400" />
+              <span className="text-xs font-semibold text-slate-600">{t.filterDepartment || "Filter Department:"}</span>
+              <select
+                value={selectedDept}
+                onChange={(e) => setSelectedDept(e.target.value)}
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              >
+                {departments.map((d) => (
+                  <option key={d} value={d}>
+                    {d === 'All' ? (t.allDepartments || 'All Departments') : d}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
 
-        {/* Table */}
-        <DataTable
-          data={filteredAppointments}
-          columns={columns}
-          keyExtractor={(a) => a.id}
-          searchPlaceholder="Search by patient name, phone, doctor, or token..."
-        />
-      </div>
+          <DataTable
+            columns={columns}
+            data={filteredAppointments}
+            keyExtractor={(a) => a.id}
+            emptyMessage={t.noAppointmentsFound || "No appointments found matching the current filters."}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
