@@ -26,19 +26,9 @@ const KEY_ALIASES: Record<string, keyof Translations> = {
 };
 
 /**
- * Humanize a raw key into a readable label as a safety fallback
- * Example: 'symptomCheckerTitle' -> 'Symptom Checker'
- * Example: 'patient.records.view' -> 'Patient Records View'
+ * Canonical English Fallback Resolver
+ * Never exposes raw internal keys or transforms them into humanized strings.
  */
-function humanizeKey(key: string): string {
-  if (!key) return '';
-  const clean = key.includes('.') ? key.split('.').pop()! : key;
-  const words = clean.replace(/([A-Z])/g, ' $1').replace(/[_.-]/g, ' ').trim();
-  // Strip trailing internal markers
-  const stripped = words.replace(/\b(Title|Subtitle|Desc|Label|Btn|Col|Tab|Placeholder)\b/gi, '').trim();
-  const finalStr = stripped || words;
-  return finalStr.charAt(0).toUpperCase() + finalStr.slice(1);
-}
 
 export function useTranslation() {
   const { language, setLanguage } = useAuth();
@@ -138,21 +128,35 @@ export function useTranslation() {
 
   /**
    * Functional translator with parameter interpolation, dot-notation & fallback safety
+   * Fallback chain:
+   * 1. current selected locale[key]
+   * 2. canonical English en.json[key]
+   * 3. safe empty string + development console warning (never renders the raw translation key)
    */
   const translateFn = (key: TranslationKey | string, params?: Record<string, string | number>): string => {
     const aliasKey = KEY_ALIASES[key];
     const normalizedKey = key.includes('.') ? key.split('.').pop()! : key;
     
+    // 1. Current selected locale
     let val: string | undefined = 
       (aliasKey && currentDict[aliasKey]) ||
       currentDict[key as keyof Translations] || 
-      currentDict[normalizedKey as keyof Translations] || 
-      (aliasKey && translations.en[aliasKey]) ||
-      translations.en[key as keyof Translations] || 
-      translations.en[normalizedKey as keyof Translations];
+      currentDict[normalizedKey as keyof Translations];
       
+    // 2. Canonical English fallback
+    if (!val || val === key || val.trim() === '') {
+      val = 
+        (aliasKey && translations.en[aliasKey]) ||
+        translations.en[key as keyof Translations] || 
+        translations.en[normalizedKey as keyof Translations];
+    }
+      
+    // 3. If missing entirely from English schema, never leak raw key
     if (!val || val === key) {
-      val = humanizeKey(key);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`[i18n Missing Key]: "${key}"`);
+      }
+      return '';
     }
               
     if (params) {
@@ -173,17 +177,34 @@ export function useTranslation() {
       if (prop === 'formatDate') return formatDate;
       if (prop === 'status') return translateStatus;
       if (prop in target) return (target as any)[prop];
-      if (prop in currentDict && currentDict[prop as keyof Translations]) {
-        return currentDict[prop as keyof Translations];
+
+      // 1. Current locale lookup
+      if (prop in currentDict) {
+        const v = currentDict[prop as keyof Translations];
+        if (v && v !== prop && v.trim() !== '') return v;
       }
       if (prop in KEY_ALIASES) {
         const mapped = KEY_ALIASES[prop];
-        return currentDict[mapped] || translations.en[mapped];
+        const v = currentDict[mapped];
+        if (v && v !== mapped && v.trim() !== '') return v;
       }
-      if (prop in translations.en && translations.en[prop as keyof Translations]) {
-        return translations.en[prop as keyof Translations];
+
+      // 2. Canonical English lookup
+      if (prop in translations.en) {
+        const v = translations.en[prop as keyof Translations];
+        if (v && v !== prop && v.trim() !== '') return v;
       }
-      return humanizeKey(prop);
+      if (prop in KEY_ALIASES) {
+        const mapped = KEY_ALIASES[prop];
+        const v = translations.en[mapped];
+        if (v && v !== mapped && v.trim() !== '') return v;
+      }
+
+      // 3. Fallback: warn in development, return safe empty string (never the raw key!)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`[i18n Missing Key]: "${prop}"`);
+      }
+      return '';
     }
   }) as unknown as Translations & {
     (key: TranslationKey | string, params?: Record<string, string | number>): string;

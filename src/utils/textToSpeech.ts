@@ -78,6 +78,13 @@ export function isSpeechSynthesisSupported(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window;
 }
 
+export function getDeviceVoices(): SpeechSynthesisVoice[] {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    return window.speechSynthesis.getVoices();
+  }
+  return [];
+}
+
 export function scoreVoiceForLanguage(voice: SpeechSynthesisVoice, lang: Language): number {
   const voiceLang = (voice.lang || '').replace('_', '-').toLowerCase();
   const voiceName = (voice.name || '').toLowerCase();

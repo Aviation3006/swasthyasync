@@ -154,7 +154,7 @@ export const HospitalPatients: React.FC = () => {
           isOpen={!!selectedPatient}
           onClose={() => setSelectedPatient(null)}
           title={`${selectedPatient.name} — ${t.careSetuRecordTitle || "Longitudinal EHR"}`}
-          size="lg"
+          maxWidth="lg"
         >
           <div className="space-y-4 text-xs">
             <div className="flex gap-2 border-b border-slate-200 pb-2">
@@ -251,7 +251,7 @@ export const HospitalPatients: React.FC = () => {
                         <span className="text-slate-400 text-[10px]">{px.date}</span>
                       </div>
                       <div className="text-[11px] text-slate-600">
-                        {px.medications.map((m) => `${m.name} (${m.dosage})`).join(', ')}
+                        {px.medications.map((m) => `${m.medicineName} (${m.dosage})`).join(', ')}
                       </div>
                     </div>
                   ))

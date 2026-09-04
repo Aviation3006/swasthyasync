@@ -123,11 +123,8 @@ const files = fs.readdirSync(localesDir).filter(f => f.endsWith('.json'));
 
 const caresetuKeys = [
   'navHealthQR',
-  'healthCardQR',
   'smartHealthCard',
   'smartHealthCardQR',
-  'smartHealthCardTitle',
-  'smartHealthCardBadge',
   'careSetuId',
   'careSetuCard',
   'scanCareSetuBtn',

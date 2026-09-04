@@ -112,17 +112,17 @@ export const SignupPage: React.FC = () => {
 
     // Required Field Validations
     if (!fullName.trim()) {
-      showError('Required Field Missing', 'Please enter your full legal name.');
+      showError(t.requiredFieldMissing || 'Required Field Missing', t.enterLegalNamePrompt || 'Please enter your full legal name.');
       return;
     }
 
     if (!email.trim() || !email.includes('@')) {
-      showError('Invalid Email Address', 'Please provide a valid email address.');
+      showError(t.invalidEmailTitle || 'Invalid Email Address', t.enterValidEmailPrompt || 'Please provide a valid email address.');
       return;
     }
 
     if (!phone.trim() || phone.replace(/\D/g, '').length < 10) {
-      showError('Invalid Mobile Number', 'Please provide a valid 10-digit Indian mobile number.');
+      showError(t.invalidMobileTitle || 'Invalid Mobile Number', t.enterValidPhonePrompt || 'Please provide a valid 10-digit Indian mobile number.');
       return;
     }
 
@@ -130,19 +130,19 @@ export const SignupPage: React.FC = () => {
     if (abhaNumber.trim()) {
       const cleanDigits = abhaNumber.replace(/\D/g, '');
       if (cleanDigits.length !== 14) {
-        showError('Invalid ABHA Number', 'If provided, ABHA Number must contain exactly 14 digits.');
-        setAbhaError('ABHA number must be 14 digits (e.g., 12-3456-7890-1234)');
+        showError(t.invalidAbhaTitle || 'Invalid ABHA Number', t.abha14DigitsPrompt || 'If provided, ABHA Number must contain exactly 14 digits.');
+        setAbhaError(t.abha14DigitsFormat || 'ABHA number must be 14 digits (e.g., 12-3456-7890-1234)');
         return;
       }
     }
 
     if (!password || password.length < 6) {
-      showError('Weak Password', 'Password must be at least 6 characters long.');
+      showError(t.weakPasswordTitle || 'Weak Password', t.passwordMinLengthPrompt || 'Password must be at least 6 characters long.');
       return;
     }
 
     if (password !== confirmPassword) {
-      showError('Password Mismatch', 'The password confirmation does not match.');
+      showError(t.passwordMismatchTitle || 'Password Mismatch', t.passwordsDoNotMatchPrompt || 'The password confirmation does not match.');
       return;
     }
 
@@ -301,24 +301,24 @@ export const SignupPage: React.FC = () => {
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-800">
-                      ABHA Number <span className="text-slate-400 font-normal">(Optional)</span>
+                      {t.abhaNumber || "ABHA Number"} <span className="text-slate-400 font-normal">({(t as any).optional || "Optional"})</span>
                     </label>
                     <span className="text-[10px] font-semibold text-[#DB2777] bg-pink-50 px-2 py-0.5 rounded border border-pink-200">
-                      Optional
+                      {(t as any).optional || "Optional"}
                     </span>
                   </div>
                   <Input
                     type="text"
                     value={abhaNumber}
                     onChange={(e) => handleAbhaChange(e.target.value)}
-                    placeholder="14-digit ABHA (e.g. 12-3456-7890-1234)"
+                    placeholder={t.abha14DigitsFormat || "14-digit ABHA (e.g. 12-3456-7890-1234)"}
                     leftIcon={<CreditCard className="w-4 h-4 text-slate-400" />}
                   />
                   {abhaError ? (
                     <p className="text-[11px] text-rose-600 font-medium mt-1">{abhaError}</p>
                   ) : (
                     <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                      Already have an ABHA? Add it to help connect your existing digital health records.
+                      {t.abhaMigrationExplanation || "Already have an ABHA? Add it to help connect your existing digital health records."}
                     </p>
                   )}
                 </div>

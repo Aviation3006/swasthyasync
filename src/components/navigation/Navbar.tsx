@@ -103,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
   );
 
   return (
-    <header className={`sticky top-0 z-30 ${theme.sidebarBg} border-b ${theme.sidebarBorder} text-white shadow-md min-w-0 max-w-full transition-colors duration-300`}>
+    <header className={`sticky top-0 z-30 ${theme.topbarBg} ${theme.sidebarBorder} text-white shadow-md min-w-0 max-w-full transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-4 min-w-0">
           
@@ -132,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                     Swasthya<span className="text-white/85">Sync</span>
                   </span>
                   <span className="text-[9px] sm:text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded bg-white/20 text-white border border-white/30 hidden sm:inline-block shrink-0 shadow-2xs">
-                    {theme.portalBadgeText}
+                    {theme.role === 'patient' ? (t.portalPatient || 'PATIENT PORTAL') : theme.role === 'hospital' ? (t.portalHospital || 'DOCTOR PORTAL') : (t.portalAdmin || 'DISTRICT ADMIN PORTAL')}
                   </span>
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-medium text-white/80 hidden sm:inline truncate max-w-[200px] lg:max-w-none">
@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                 title="Scan CareSetu Smart Health Card"
               >
                 <QrCode className="w-4 h-4 text-[#1D4ED8]" />
-                <span>Scan CareSetu</span>
+                <span>{t.scanCareSetuBtn || 'Scan CareSetu'}</span>
               </Link>
             )}
 

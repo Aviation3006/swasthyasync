@@ -58,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const hospitalNavItems = [
     { label: t.navHospitalCommand, path: '/hospital', icon: LayoutDashboard, exact: true },
-    { label: 'CareSetu Record', path: '/hospital/caresetu', icon: QrCode },
+    { label: t.careSetuCard || 'CareSetu Record', path: '/hospital/caresetu', icon: QrCode },
     { label: t.navPatientDirectory, path: '/hospital/patients', icon: Users },
     { label: t.navHospitalAppointments, path: '/hospital/appointments', icon: Calendar },
     { label: t.navLiveQueue, path: '/hospital/queue', icon: Clock },

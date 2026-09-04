@@ -90,7 +90,7 @@ export const HospitalReports: React.FC = () => {
                   <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
                     <Button
                       variant="outline"
-                      size="xs"
+                      size="sm"
                       leftIcon={<Eye className="w-3.5 h-3.5" />}
                       onClick={() => setSelectedReport(r)}
                     >
@@ -98,7 +98,7 @@ export const HospitalReports: React.FC = () => {
                     </Button>
                     <Button
                       variant="secondary"
-                      size="xs"
+                      size="sm"
                       leftIcon={<Download className="w-3.5 h-3.5" />}
                       onClick={() => showSuccess('Report Dispatched', `Downloading ${r.title}`)}
                     >
@@ -129,7 +129,7 @@ export const HospitalReports: React.FC = () => {
               <p className="text-slate-600 leading-relaxed">{selectedReport.summary}</p>
             </div>
 
-            <div className="border border-slate-200 rounded-xl overflow-hidden">
+            <div className="border rounded-xl overflow-x-auto border-slate-200">
               <table className="min-w-full divide-y divide-slate-200 text-xs">
                 <thead className="bg-slate-50 font-bold text-slate-700">
                   <tr>

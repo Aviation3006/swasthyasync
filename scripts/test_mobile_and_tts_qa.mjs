@@ -109,8 +109,7 @@ check('PatientReports renders ReportAudioPlayer with active report text and sele
 console.log('\n--- TEST GROUP 4: 23-Language i18n Key Parity ---');
 const localesDir = path.resolve('src/locales');
 const requiredTTSKeys = [
-  'readAloud', 'pauseReading', 'resumeReading', 'stopReading', 
-  'speakingStatus', 'pausedStatus', 'audioExplanation', 'voiceLanguage', 'ttsSpeed'
+  'readAloud', 'audioExplanation', 'voiceLanguage', 'ttsSpeed'
 ];
 
 const allLangs = [

@@ -36,10 +36,10 @@ export const HospitalAppointments: React.FC = () => {
 
   useEffect(() => {
     // Load hospital appointments
-    const list = appointmentService.getHospitalAppointments();
+    const list = appointmentService.getAllAppointments();
     setAppointments(list);
-    const unsub = appointmentService.subscribeAppointments(() => {
-      setAppointments(appointmentService.getHospitalAppointments());
+    const unsub = appointmentService.subscribe(() => {
+      setAppointments(appointmentService.getAllAppointments());
     });
     return unsub;
   }, []);
@@ -47,7 +47,7 @@ export const HospitalAppointments: React.FC = () => {
   const departments = ['All', 'General Medicine', 'Cardiology', 'Pediatrics', 'Orthopedics', 'OB-GYN'];
 
   const filteredAppointments = appointments.filter((a) => {
-    const matchesDept = selectedDept === 'All' || a.department === selectedDept;
+    const matchesDept = selectedDept === 'All' || a.departmentName === selectedDept;
     const matchesSearch = 
       (a.patientName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (a.tokenNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -75,8 +75,8 @@ export const HospitalAppointments: React.FC = () => {
         <div>
           <div className="font-bold text-slate-900">{a.patientName}</div>
           <div className="text-xs text-slate-500 flex items-center gap-2">
-            <span>{a.age ? `${a.age} ${t.years || 'Yrs'}` : ''} • {a.gender || ''}</span>
-            {a.abhaId && <span className="text-emerald-700 font-mono text-[10px]">ABHA: {a.abhaId}</span>}
+            <span>{(a as any).age ? `${(a as any).age} ${t.years || 'Yrs'}` : ''} • {(a as any).gender || a.patientPhone}</span>
+            {(a as any).abhaId && <span className="text-emerald-700 font-mono text-[10px]">ABHA: {(a as any).abhaId}</span>}
           </div>
         </div>
       )
@@ -85,7 +85,7 @@ export const HospitalAppointments: React.FC = () => {
       header: t.department || 'Department & Doctor',
       cell: (a) => (
         <div className="text-xs">
-          <div className="font-semibold text-slate-800">{a.department}</div>
+          <div className="font-semibold text-slate-800">{a.departmentName}</div>
           <div className="text-slate-500">{a.doctorName}</div>
         </div>
       )
@@ -125,7 +125,7 @@ export const HospitalAppointments: React.FC = () => {
           {a.status === 'Upcoming' && (
             <Button
               variant="primary"
-              size="xs"
+              size="sm"
               onClick={() => handleStatusUpdate(a.id, 'In Consultation')}
             >
               {t.callIntoOpd || "Call In"}
@@ -134,7 +134,7 @@ export const HospitalAppointments: React.FC = () => {
           {a.status === 'In Consultation' && (
             <Button
               variant="secondary"
-              size="xs"
+              size="sm"
               leftIcon={<CheckCircle2 className="w-3 h-3 text-emerald-600" />}
               onClick={() => handleStatusUpdate(a.id, 'Completed')}
             >
@@ -192,7 +192,7 @@ export const HospitalAppointments: React.FC = () => {
             columns={columns}
             data={filteredAppointments}
             keyExtractor={(a) => a.id}
-            emptyMessage={t.noAppointmentsFound || "No appointments found matching the current filters."}
+            emptyTitle={t.noAppointmentsFound || "No appointments found matching the current filters."}
           />
         </CardContent>
       </Card>

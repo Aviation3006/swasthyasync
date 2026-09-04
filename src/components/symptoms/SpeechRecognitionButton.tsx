@@ -84,6 +84,13 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
         </p>
       </div>
 
+      {!isSupported && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-center gap-2 max-w-sm">
+          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+          <span>{(t as any).voiceInputUnsupported || "Voice input isn't supported on this device. You can type your symptoms"}</span>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />

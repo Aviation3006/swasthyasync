@@ -31,7 +31,7 @@ export const AuthLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-theme-background text-slate-900 flex flex-col justify-between selection:bg-theme-primary selection:text-white max-w-full overflow-x-hidden transition-colors duration-300">
       {/* Top Header with Dynamic Role Gradient Banner */}
-      <header className={`${theme.sidebarBg} border-b ${theme.sidebarBorder} text-white px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 sticky top-0 z-40 w-full shadow-md transition-all duration-300`}>
+      <header className={`${theme.topbarBg} text-white px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 sticky top-0 z-40 w-full shadow-md transition-all duration-300`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 min-w-0">
           
           {/* Left Brand Container */}
@@ -48,7 +48,7 @@ export const AuthLayout: React.FC = () => {
                   Swasthya<span className="text-white/85">Sync</span>
                 </span>
                 <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/20 text-white border border-white/30 hidden xs:inline-flex items-center shrink-0 shadow-2xs">
-                  {theme.portalBadgeText}
+                  {theme.role === 'patient' ? (t.portalPatient || 'PATIENT PORTAL') : theme.role === 'hospital' ? (t.portalHospital || 'DOCTOR PORTAL') : (t.portalAdmin || 'DISTRICT ADMIN PORTAL')}
                 </span>
               </div>
               <p className="text-[11px] text-white/80 hidden md:block truncate">

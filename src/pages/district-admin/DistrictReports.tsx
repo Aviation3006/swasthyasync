@@ -156,7 +156,7 @@ export const DistrictReports: React.FC = () => {
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    size="xs"
+                    size="sm"
                     leftIcon={<Eye className="w-3.5 h-3.5" />}
                     onClick={() => setSelectedReport(r)}
                   >
@@ -164,7 +164,7 @@ export const DistrictReports: React.FC = () => {
                   </Button>
                   <Button
                     variant="secondary"
-                    size="xs"
+                    size="sm"
                     leftIcon={<Download className="w-3.5 h-3.5 text-emerald-700" />}
                     onClick={() => showSuccess('Download Dispatched', `Downloading ${r.title}`)}
                   >

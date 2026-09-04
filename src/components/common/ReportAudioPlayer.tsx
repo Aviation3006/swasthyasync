@@ -48,6 +48,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
     CLOUD_TTS_LANGUAGES[0];
 
   const [selectedLanguage, setSelectedLanguage] = useState<TTSLanguageOption>(defaultOption);
+  const languageLabel = selectedLanguage.label;
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -211,7 +212,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
             <p className="text-[11px] text-slate-300 mt-0.5 flex items-center gap-1.5 flex-wrap">
               <span className="text-slate-400">Voice:</span>
               <span className="text-emerald-400 font-semibold truncate max-w-[220px] sm:max-w-[280px]">
-                {selectedLanguage.cloudVoiceName}
+                {selectedLanguage.label} • {selectedLanguage.cloudVoiceName}
               </span>
             </p>
           </div>

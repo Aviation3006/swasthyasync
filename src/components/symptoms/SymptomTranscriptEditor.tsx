@@ -48,6 +48,10 @@ export const SymptomTranscriptEditor: React.FC<SymptomTranscriptEditorProps> = (
             rows={5}
             className="w-full p-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-theme-ring focus:border-theme-primary text-sm text-slate-800 leading-relaxed placeholder:text-slate-400 resize-y"
           />
+          <div className="flex justify-between items-center text-xs text-slate-400 mt-1 px-1">
+            <span>{(t as any).symptomNotesOptional || "Type or speak clearly"}</span>
+            <span id="charCount">{transcript.length} characters</span>
+          </div>
         </div>
 
         {/* Analyze Button */}

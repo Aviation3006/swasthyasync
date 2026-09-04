@@ -161,35 +161,35 @@ export const LoginPage: React.FC = () => {
     patient: {
       cardBorder: 'border-2 border-pink-300/80 shadow-pink-200/70',
       headerBg: 'bg-gradient-to-r from-[#4A0420] via-[#5C0628] to-[#360317]',
-      portalBadge: 'PATIENT PORTAL',
-      tagline: 'Citizen Health & Records • Unified CareSetu Digital Locker',
+      portalBadge: t.portalPatient || 'PATIENT PORTAL',
+      tagline: t.citizenRoleDesc || 'Citizen Health & Records • Unified CareSetu Digital Locker',
       icon: HeartPulse,
       btnClass: 'bg-[#DB2777] hover:bg-[#BE185D] text-white shadow-md shadow-pink-500/30 focus:ring-[#F472B6]',
       roleBadgeBg: 'bg-pink-50 text-pink-900 border-pink-200',
       accentColor: 'text-[#DB2777]',
-      submitLabel: 'Sign In to Patient Portal →'
+      submitLabel: t.signInToPatientPortal || 'Sign In to Patient Portal →'
     },
     hospital: {
       cardBorder: 'border-2 border-blue-300/80 shadow-blue-200/70',
       headerBg: 'bg-gradient-to-r from-[#0A192F] via-[#0D213F] to-[#081326]',
-      portalBadge: 'DOCTOR PORTAL',
-      tagline: 'Clinical Care & Patient Management • Hospital Command',
+      portalBadge: t.portalHospital || 'DOCTOR PORTAL',
+      tagline: t.hospitalRoleDesc || 'Clinical Care & Patient Management • Hospital Command',
       icon: Stethoscope,
       btnClass: 'bg-[#1D4ED8] hover:bg-[#1E40AF] text-white shadow-md shadow-blue-500/30 focus:ring-[#60A5FA]',
       roleBadgeBg: 'bg-sky-50 text-sky-900 border-sky-200',
       accentColor: 'text-[#1D4ED8]',
-      submitLabel: 'Sign In to Doctor Portal →'
+      submitLabel: t.signInToDoctorPortal || 'Sign In to Doctor Portal →'
     },
     district_admin: {
       cardBorder: 'border-2 border-emerald-300/80 shadow-emerald-200/70',
       headerBg: 'bg-gradient-to-r from-[#042F24] via-[#064E3B] to-[#022119]',
-      portalBadge: 'DISTRICT ADMIN PORTAL',
-      tagline: 'District Health Administration • Surveillance & Governance',
+      portalBadge: t.portalAdmin || 'DISTRICT ADMIN PORTAL',
+      tagline: t.adminRoleDesc || 'District Health Administration • Surveillance & Governance',
       icon: Building,
       btnClass: 'bg-[#047857] hover:bg-[#065F46] text-white shadow-md shadow-emerald-500/30 focus:ring-[#34D399]',
       roleBadgeBg: 'bg-emerald-50 text-emerald-900 border-emerald-200',
       accentColor: 'text-[#047857]',
-      submitLabel: 'Sign In to Admin Portal →'
+      submitLabel: t.signInToAdminPortal || 'Sign In to Admin Portal →'
     }
   }[selectedRole];
 
@@ -201,7 +201,7 @@ export const LoginPage: React.FC = () => {
       <div className={`bg-white rounded-3xl shadow-2xl ${roleCardConfig.cardBorder} overflow-hidden transition-all duration-300`}>
         
         {/* Prominent Role Header Area */}
-        <div className={`${roleCardConfig.headerBg} text-white p-5 sm:p-7 text-center space-y-2 relative overflow-hidden transition-colors duration-300`}>
+        <div className={`${roleCardConfig.headerBg} p-4 sm:p-8 text-white text-center space-y-2 relative overflow-hidden transition-colors duration-300`}>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase bg-white/20 text-white border border-white/30 shadow-xs backdrop-blur-xs">
             <RoleHeaderIcon className="w-3.5 h-3.5 text-white" />
             <span>{roleCardConfig.portalBadge}</span>
@@ -212,7 +212,7 @@ export const LoginPage: React.FC = () => {
           </h2>
 
           <p className="text-xs text-white/85 max-w-md mx-auto leading-relaxed font-medium">
-            {selectedRole === "patient" ? (t.loginSubtitle || roleCardConfig.tagline) : roleCardConfig.tagline}
+            {roleCardConfig.tagline}
           </p>
         </div>
 
@@ -328,7 +328,7 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <div className="text-[10px] text-slate-500 flex items-center justify-between pt-1">
-              <span>{t.accountId || "Account ID:"} <strong className="text-slate-900 font-mono">{identifier}</strong></span>
+              <span>{t.accountId || "Account ID:"} <strong className="text-slate-900 font-mono break-all">{identifier}</strong></span>
               <span className="text-emerald-700 font-bold">{t.autoFilled || "Auto-filled"}</span>
             </div>
           </div>
@@ -338,7 +338,7 @@ export const LoginPage: React.FC = () => {
             <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-start gap-2.5 animate-shake">
               <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <span className="font-bold block">Sign In Notice</span>
+                <span className="font-bold block">{t.signInNotice || "Sign In Notice"}</span>
                 <span>{errorMessage}</span>
               </div>
             </div>
@@ -420,7 +420,7 @@ export const LoginPage: React.FC = () => {
                 isLoading={isSubmitting || isLoading}
                 className={`${roleCardConfig.btnClass} shadow-md text-sm font-black tracking-wide py-3`}
               >
-                {isSubmitting ? (t.loading || "Verifying Credentials...") : (selectedRole === "patient" ? (t.signInToPatientPortal || roleCardConfig.submitLabel) : selectedRole === "hospital" ? (t.signInToDoctorPortal || roleCardConfig.submitLabel) : (t.signInToAdminPortal || roleCardConfig.submitLabel))}
+                {isSubmitting ? (t.loading || "Verifying Credentials...") : roleCardConfig.submitLabel}
               </Button>
             </div>
           </form>

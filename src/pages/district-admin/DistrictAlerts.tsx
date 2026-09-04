@@ -156,7 +156,7 @@ export const DistrictAlerts: React.FC = () => {
                     </StatusBadge>
                     <span className="text-xs text-slate-400 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {new Date(alert.timestamp).toLocaleDateString()}
+                      {new Date((alert as any).timestamp || alert.reportedDate).toLocaleDateString()}
                     </span>
                   </div>
 
@@ -164,7 +164,7 @@ export const DistrictAlerts: React.FC = () => {
                     {alert.status === 'Active' && (
                       <Button
                         variant="outline"
-                        size="xs"
+                        size="sm"
                         onClick={() => handleStatusChange(alert.id, 'Under Investigation')}
                       >
                         {t.investigate || "Investigate"}
@@ -173,7 +173,7 @@ export const DistrictAlerts: React.FC = () => {
                     {alert.status !== 'Resolved' && (
                       <Button
                         variant="secondary"
-                        size="xs"
+                        size="sm"
                         leftIcon={<CheckCircle2 className="w-3 h-3 text-emerald-600" />}
                         onClick={() => handleStatusChange(alert.id, 'Resolved')}
                       >
