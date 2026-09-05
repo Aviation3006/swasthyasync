@@ -71,7 +71,7 @@ export const HospitalReports: React.FC = () => {
                 placeholder={t.searchRecordsPlaceholder || "Search diagnostic records, tests..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-md text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 font-medium"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ export const HospitalReports: React.FC = () => {
             {filtered.map(r => (
               <Card key={r.id} hoverEffect className="flex flex-col justify-between">
                 <CardHeader
-                  icon={<FileText className="w-5 h-5 text-sky-600" />}
+                  icon={<FileText className="w-5 h-5 text-blue-600" />}
                   title={r.title}
                   subtitle={`${r.patient} • ${r.date}`}
                   action={<StatusBadge variant="success" size="sm">{t.verifiedAbdm || "Verified"}</StatusBadge>}
@@ -119,9 +119,9 @@ export const HospitalReports: React.FC = () => {
           title={selectedReport.title}
         >
           <div className="space-y-4 text-xs">
-            <div className="p-3 bg-sky-50 rounded-xl border border-sky-200">
-              <span className="font-bold text-sky-900 block mb-0.5">{selectedReport.patient}</span>
-              <span className="text-sky-700 text-[11px]">{selectedReport.facility}</span>
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <span className="font-bold text-blue-950 block mb-0.5">{selectedReport.patient}</span>
+              <span className="text-blue-800 text-[11px]">{selectedReport.facility}</span>
             </div>
 
             <div>

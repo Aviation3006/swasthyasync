@@ -400,7 +400,7 @@ export const HospitalPrescriptions: React.FC = () => {
                   <div
                     key={rx.id}
                     onClick={() => setPreviewRx(rx)}
-                    className="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-health-400 cursor-pointer shadow-subtle space-y-1.5 transition-all"
+                    className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-health-400 cursor-pointer shadow-subtle space-y-1.5 transition-all"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-mono font-bold text-xs text-health-900">{rx.prescriptionNumber}</span>

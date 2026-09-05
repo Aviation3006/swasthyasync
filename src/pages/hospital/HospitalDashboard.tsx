@@ -96,22 +96,22 @@ export const HospitalDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Hospital Clinical Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 rounded-2xl p-5 sm:p-7 text-white shadow-elevated border border-sky-800/50">
+      {/* Hospital Clinical Command Header */}
+      <div className="bg-white rounded-xl p-5 sm:p-6 text-slate-900 shadow-card border border-slate-200">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-200">
                 {facility?.facilityType || hospital.facilityType} • {location.district ? `${location.district} District, ${location.state}` : `${hospital.taluka} District`}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                 ● Live OPD Active
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{facility?.facilityName || user?.facilityName || hospital.name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">{facility?.facilityName || user?.facilityName || hospital.name}</h1>
 
-            <p className="text-xs sm:text-sm text-slate-300">{facility?.facilityAddress || (location.district ? `${location.city || location.district}, ${location.state}` : hospital.address)} • Emergency Casualty: <strong>{facility?.facilityContact || hospital.emergencyHelpline}</strong></p>
+            <p className="text-xs sm:text-sm text-slate-600">{facility?.facilityAddress || (location.district ? `${location.city || location.district}, ${location.state}` : hospital.address)} • Emergency Casualty: <strong>{facility?.facilityContact || hospital.emergencyHelpline}</strong></p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -120,7 +120,7 @@ export const HospitalDashboard: React.FC = () => {
               size="md"
               leftIcon={<QrCode className="w-4 h-4" />}
               onClick={() => setIsScannerOpen(true)}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-xs"
             >
               {t.scanCareSetuBtn || 'Scan CareSetu QR'}
             </Button>
@@ -130,7 +130,7 @@ export const HospitalDashboard: React.FC = () => {
               </Button>
             </Link>
             <Link to="/hospital/prescriptions">
-              <Button variant="outline" size="md" leftIcon={<Pill className="w-4 h-4" />} className="bg-slate-800 text-white border-slate-700 hover:bg-slate-700">
+              <Button variant="outline" size="md" leftIcon={<Pill className="w-4 h-4" />}>
                 {t.navPrescriptions}
               </Button>
             </Link>
@@ -138,28 +138,28 @@ export const HospitalDashboard: React.FC = () => {
         </div>
 
         {/* Quick Operational Metrics */}
-        <div className="mt-6 pt-5 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+        <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div>
-            <span className="text-slate-400 block">{t.bedOccupancyRate}</span>
-            <div className="text-lg font-bold text-white mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.bedOccupancyRate}</span>
+            <div className="text-lg font-bold text-slate-900 mt-0.5">
               {occupancyRate}% <span className="text-xs font-normal text-slate-400">({occupiedBeds}/{totalBeds})</span>
             </div>
           </div>
           <div>
-            <span className="text-slate-400 block">{t.icuBedsAvailable}</span>
-            <div className="text-lg font-bold text-amber-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.icuBedsAvailable}</span>
+            <div className="text-lg font-bold text-amber-700 mt-0.5">
               {hospital.beds.icuOccupied} / {hospital.beds.icuTotal} <span className="text-xs font-normal text-slate-400">{t.beds}</span>
             </div>
           </div>
           <div>
-            <span className="text-slate-400 block">{t.bloodUnitsAvailable}</span>
-            <div className="text-lg font-bold text-emerald-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.bloodUnitsAvailable}</span>
+            <div className="text-lg font-bold text-emerald-700 mt-0.5">
               {hospital.bloodBankUnitsAvailable} <span className="text-xs font-normal text-slate-400">{t.units}</span>
             </div>
           </div>
           <div>
-            <span className="text-slate-400 block">{t.ambulancesActive}</span>
-            <div className="text-lg font-bold text-sky-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.ambulancesActive}</span>
+            <div className="text-lg font-bold text-slate-900 mt-0.5">
               {hospital.ambulanceAvailable} <span className="text-xs font-normal text-slate-400">Vehicles</span>
             </div>
           </div>
@@ -417,31 +417,46 @@ export const HospitalDashboard: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
             <Card className="border-slate-200 text-center p-3.5 bg-slate-50">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.overallHospitalScore || 'Overall Hospital Score'}</span>
-              <span className="text-xl font-extrabold text-amber-700 mt-1 block">⭐ {hospitalAudit.overallHospitalRating} / 5</span>
+              <span className="text-xl font-extrabold text-amber-700 mt-1 flex items-center justify-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                {hospitalAudit.overallHospitalRating} / 5
+              </span>
               <span className="text-[10px] text-slate-400 mt-0.5 block">{hospitalAudit.totalRatings} Verified Reviews</span>
             </Card>
 
             <Card className="border-slate-200 text-center p-3.5 bg-white">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.doctorCareAverage || 'Doctor Clinical Care'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">⭐ {hospitalAudit.doctorExperienceAverage}</span>
+              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                {hospitalAudit.doctorExperienceAverage}
+              </span>
               <span className="text-[10px] text-emerald-600 mt-0.5 block">Clinical Quality</span>
             </Card>
 
             <Card className="border-slate-200 text-center p-3.5 bg-white">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.staffBehaviourAverage || 'Staff Behaviour'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">⭐ {hospitalAudit.staffAverage}</span>
+              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                {hospitalAudit.staffAverage}
+              </span>
               <span className="text-[10px] text-slate-500 mt-0.5 block">Courtesy & Help</span>
             </Card>
 
             <Card className="border-slate-200 text-center p-3.5 bg-white">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.facilityHygieneAverage || 'Cleanliness & Hygiene'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">⭐ {hospitalAudit.cleanlinessAverage}</span>
+              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                {hospitalAudit.cleanlinessAverage}
+              </span>
               <span className="text-[10px] text-slate-500 mt-0.5 block">Sanitation Index</span>
             </Card>
 
             <Card className="border-slate-200 text-center p-3.5 bg-white col-span-2 sm:col-span-1">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.waitingTimeAverage || 'Queue & Wait Exp.'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">⭐ {hospitalAudit.waitingExperienceAverage}</span>
+              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                {hospitalAudit.waitingExperienceAverage}
+              </span>
               <span className="text-[10px] text-amber-700 mt-0.5 block">OPD Triage</span>
             </Card>
           </div>
@@ -477,12 +492,28 @@ export const HospitalDashboard: React.FC = () => {
                         <td className="py-3 px-3 text-slate-600">{doc.department}</td>
                         <td className="py-3 px-3 font-mono font-semibold text-slate-700">{doc.totalCompletedVisits}</td>
                         <td className="py-3 px-3 font-mono font-bold text-emerald-800">{doc.totalRatings}</td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">⭐ {doc.averageCommunication}</td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">⭐ {doc.averageProfessionalism}</td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">⭐ {doc.averageExplanation}</td>
+                        <td className="py-3 px-3 font-semibold text-slate-800">
+                          <span className="inline-flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            {doc.averageCommunication}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 font-semibold text-slate-800">
+                          <span className="inline-flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            {doc.averageProfessionalism}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 font-semibold text-slate-800">
+                          <span className="inline-flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            {doc.averageExplanation}
+                          </span>
+                        </td>
                         <td className="py-3 px-3">
-                          <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300">
-                            ⭐ {doc.averageOverall} / 5
+                          <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 inline-flex items-center gap-1">
+                            <Star className="w-3.5 h-3.5 text-amber-600 fill-amber-600" />
+                            {doc.averageOverall} / 5
                           </span>
                         </td>
                       </tr>
@@ -516,8 +547,9 @@ export const HospitalDashboard: React.FC = () => {
                   <div key={fb.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-900">{fb.doctorName} ({fb.department})</span>
-                      <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                        ⭐ {fb.rating} / 5
+                      <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                        {fb.rating} / 5
                       </span>
                     </div>
                     <p className="text-slate-700 italic bg-white p-2.5 rounded-lg border border-slate-100">
@@ -571,7 +603,7 @@ export const HospitalDashboard: React.FC = () => {
           <div className="space-y-5 text-xs">
             
             {/* Live Camera Scanner Simulation Graphic */}
-            <div className="bg-slate-950 rounded-2xl p-6 border-2 border-dashed border-emerald-500/60 text-center relative overflow-hidden">
+            <div className="bg-slate-900 rounded-xl p-6 border-2 border-dashed border-emerald-500/60 text-center relative overflow-hidden">
               <div className="w-40 h-40 mx-auto border-2 border-emerald-400 rounded-xl relative flex items-center justify-center bg-slate-900/80">
                 {/* Scanning Laser Line Animation */}
                 <div className="absolute top-2 left-2 right-2 h-0.5 bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse" />

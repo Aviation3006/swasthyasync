@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Flame,
   Search,
-  Building2
+  Building2,
+  AlertTriangle
 } from 'lucide-react';
 import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
@@ -89,31 +90,42 @@ export const HospitalQueue: React.FC = () => {
     showSuccess('Walk-In Token Added', `Token ${tokenNumber} registered to queue.`);
   };
 
-  const columns: { id: QueueStatus | 'UrgentCol'; title: string; filter: (item: QueueItem) => boolean; color: string; badge: string }[] = [
+  const columns: { 
+    id: QueueStatus | 'UrgentCol'; 
+    title: string; 
+    icon: React.ReactNode;
+    filter: (item: QueueItem) => boolean; 
+    color: string; 
+    badge: string;
+  }[] = [
     {
       id: 'UrgentCol',
-      title: '🚨 Urgent / Emergency Triage',
+      title: 'Urgent / Emergency Triage',
+      icon: <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />,
       filter: (item) => item.priority === 'Emergency' || item.status === 'Urgent',
       color: 'border-rose-300 bg-rose-50/40',
       badge: 'bg-rose-100 text-rose-800'
     },
     {
       id: 'Waiting',
-      title: '⏳ Waiting in OPD Lobby',
+      title: 'Waiting in OPD Lobby',
+      icon: <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />,
       filter: (item) => item.status === 'Waiting' && item.priority !== 'Emergency',
       color: 'border-amber-200 bg-amber-50/30',
       badge: 'bg-amber-100 text-amber-800'
     },
     {
       id: 'In Consultation',
-      title: '🩺 In Doctor Consultation',
+      title: 'In Doctor Consultation',
+      icon: <Stethoscope className="w-3.5 h-3.5 text-blue-600 shrink-0" />,
       filter: (item) => item.status === 'In Consultation',
-      color: 'border-sky-300 bg-sky-50/40',
-      badge: 'bg-sky-100 text-sky-800'
+      color: 'border-blue-300 bg-blue-50/40',
+      badge: 'bg-blue-100 text-blue-800'
     },
     {
       id: 'Completed',
-      title: '✅ Completed / Discharged',
+      title: 'Completed / Discharged',
+      icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />,
       filter: (item) => item.status === 'Completed',
       color: 'border-emerald-200 bg-emerald-50/30',
       badge: 'bg-emerald-100 text-emerald-800'
@@ -148,11 +160,14 @@ export const HospitalQueue: React.FC = () => {
           return (
             <div
               key={col.id}
-              className={`rounded-2xl border ${col.color} p-4 flex flex-col min-h-[500px] shadow-subtle`}
+              className={`rounded-xl border ${col.color} p-4 flex flex-col min-h-[500px] shadow-subtle`}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 mb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">{col.title}</h3>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${col.badge}`}>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 mb-3 gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  {col.icon}
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 truncate">{col.title}</h3>
+                </div>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${col.badge}`}>
                   {items.length}
                 </span>
               </div>
@@ -226,10 +241,10 @@ export const HospitalQueue: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleStatusChange(item.id, 'Urgent')}
-                            className="p-1 rounded text-rose-500 hover:bg-rose-50 text-xs font-semibold"
-                            title="Mark Urgent"
+                            className="p-1.5 rounded-md border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold inline-flex items-center justify-center transition-colors"
+                            title="Mark Urgent Triage"
                           >
-                            🚨
+                            <AlertTriangle className="w-3.5 h-3.5" />
                           </button>
                         )}
                       </div>

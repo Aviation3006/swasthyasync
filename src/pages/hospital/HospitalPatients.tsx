@@ -160,24 +160,24 @@ export const HospitalPatients: React.FC = () => {
             <div className="flex gap-2 border-b border-slate-200 pb-2">
               <button
                 onClick={() => setActiveDrawerTab('overview')}
-                className={`px-3 py-1.5 rounded-lg font-bold ${
-                  activeDrawerTab === 'overview' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  activeDrawerTab === 'overview' ? 'bg-blue-50 text-blue-800 border border-blue-200' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {t.clinicalOverview || "Overview"}
               </button>
               <button
                 onClick={() => setActiveDrawerTab('records')}
-                className={`px-3 py-1.5 rounded-lg font-bold ${
-                  activeDrawerTab === 'records' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  activeDrawerTab === 'records' ? 'bg-blue-50 text-blue-800 border border-blue-200' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {t.navRecords || "Records"} ({patientRecords.length})
               </button>
               <button
                 onClick={() => setActiveDrawerTab('prescriptions')}
-                className={`px-3 py-1.5 rounded-lg font-bold ${
-                  activeDrawerTab === 'prescriptions' ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  activeDrawerTab === 'prescriptions' ? 'bg-blue-50 text-blue-800 border border-blue-200' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {t.navPrescriptions || "Prescriptions"} ({patientPrescriptions.length})
@@ -187,26 +187,26 @@ export const HospitalPatients: React.FC = () => {
             {activeDrawerTab === 'overview' && (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[10px] text-slate-400 block">{t.bloodGroup || "Blood Group"}</span>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-500 block font-medium">{t.bloodGroup || "Blood Group"}</span>
                     <span className="font-bold text-rose-700">{selectedPatient.bloodGroup}</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[10px] text-slate-400 block">{t.bloodPressure || "Blood Pressure"}</span>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-500 block font-medium">{t.bloodPressure || "Blood Pressure"}</span>
                     <span className="font-bold text-slate-800">{selectedPatient.vitals?.bloodPressure || '120/80'}</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[10px] text-slate-400 block">{t.heartRate || "Heart Rate"}</span>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-500 block font-medium">{t.heartRate || "Heart Rate"}</span>
                     <span className="font-bold text-slate-800">{selectedPatient.vitals?.heartRate || '74'} bpm</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[10px] text-slate-400 block">ABHA ID</span>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] text-slate-500 block font-medium">ABHA ID</span>
                     <span className="font-mono font-bold text-slate-800 text-[10px] truncate block">{selectedPatient.abhaId}</span>
                   </div>
                 </div>
 
                 {selectedPatient.allergies && selectedPatient.allergies.length > 0 && (
-                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl space-y-1">
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg space-y-1">
                     <div className="font-bold text-rose-900 flex items-center gap-1.5">
                       <AlertCircle className="w-4 h-4 text-rose-600" />
                       <span>{t.criticalAllergyAlert || "CRITICAL ALLERGY ALERT / CONTRAINDICATION:"}</span>
@@ -227,7 +227,7 @@ export const HospitalPatients: React.FC = () => {
               <div className="space-y-2 max-h-72 overflow-y-auto">
                 {patientRecords.length > 0 ? (
                   patientRecords.map((rec) => (
-                    <div key={rec.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div key={rec.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
                       <div className="flex justify-between font-bold text-slate-800">
                         <span>{rec.title}</span>
                         <span className="text-slate-400 text-[10px]">{rec.date}</span>
@@ -245,7 +245,7 @@ export const HospitalPatients: React.FC = () => {
               <div className="space-y-2 max-h-72 overflow-y-auto">
                 {patientPrescriptions.length > 0 ? (
                   patientPrescriptions.map((px) => (
-                    <div key={px.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div key={px.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
                       <div className="flex justify-between font-bold text-slate-800">
                         <span>{px.diagnosis}</span>
                         <span className="text-slate-400 text-[10px]">{px.date}</span>
