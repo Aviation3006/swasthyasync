@@ -72,11 +72,11 @@ const StarRatingInput: React.FC<StarRatingProps> = ({ label, value, onChange, re
 
   const getRatingLabel = (score: number) => {
     switch (score) {
-      case 1: return t.star1Poor || '⭐ 1 — Poor';
-      case 2: return t.star2Fair || '⭐ 2 — Fair';
-      case 3: return t.star3Good || '⭐ 3 — Good';
-      case 4: return t.star4VeryGood || '⭐ 4 — Very Good';
-      case 5: return t.star5Excellent || '⭐ 5 — Excellent';
+      case 1: return t.star1Poor || '1 — Poor';
+      case 2: return t.star2Fair || '2 — Fair';
+      case 3: return t.star3Good || '3 — Good';
+      case 4: return t.star4VeryGood || '4 — Very Good';
+      case 5: return t.star5Excellent || '5 — Excellent';
       default: return t.notRated || 'Not Rated';
     }
   };
@@ -85,7 +85,7 @@ const StarRatingInput: React.FC<StarRatingProps> = ({ label, value, onChange, re
 
   return (
     <div
-      className={`rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between transition-all hover:border-slate-300 ${
+      className={`rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between transition-all hover:border-slate-300 ${
         isLarge ? 'p-5 text-center bg-gradient-to-b from-slate-50/60 to-white' : 'p-4'
       }`}
     >
@@ -422,7 +422,7 @@ export const PatientAppointments: React.FC = () => {
 
   const tabs = [
     { id: 'Upcoming', label: t.upcomingConsultations, count: appointments.filter((a) => a.status === 'Upcoming' || a.status === 'Checked In').length },
-    { id: 'NearbyHospitals', label: `🏥 ${t.findNearbyHospitals}`, count: isDemoAccount ? mockHospitals.length : realFacilities.length },
+    { id: 'NearbyHospitals', label: t.findNearbyHospitals, count: isDemoAccount ? mockHospitals.length : realFacilities.length },
     { id: 'Completed', label: t.pastCompletedVisits, count: appointments.filter((a) => a.status === 'Completed').length },
     { id: 'Cancelled', label: t.cancelledTokens, count: appointments.filter((a) => a.status === 'Cancelled').length },
   ];
@@ -640,7 +640,7 @@ export const PatientAppointments: React.FC = () => {
           
           {/* Demo Banner if demo account */}
           {isDemoAccount ? (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
                 <span>
@@ -652,7 +652,7 @@ export const PatientAppointments: React.FC = () => {
               </span>
             </div>
           ) : (
-            <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span>
@@ -666,7 +666,7 @@ export const PatientAppointments: React.FC = () => {
           )}
 
           {/* Location Status & Filter Bar */}
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
                 <Navigation className="w-5 h-5" />
@@ -791,7 +791,7 @@ export const PatientAppointments: React.FC = () => {
               {/* Active Hospital Preview Details Card */}
               {isDemoAccount ? (
                 activeDemoHospital && (
-                  <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
+                  <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
                     <div className="space-y-3">
                       <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
@@ -802,7 +802,7 @@ export const PatientAppointments: React.FC = () => {
                             {activeDemoHospital.name}
                           </h3>
                         </div>
-                        <span className="text-xs font-extrabold text-health-800 bg-health-50 px-2.5 py-1 rounded-xl border border-health-200 whitespace-nowrap">
+                        <span className="text-xs font-bold text-health-800 bg-health-50 px-2.5 py-1 rounded-md border border-health-200 whitespace-nowrap">
                           {t("distanceFromSimulated", { distance: activeDemoHospital.distanceKm ?? 0 })}
                         </span>
                       </div>
@@ -859,7 +859,7 @@ export const PatientAppointments: React.FC = () => {
                 )
               ) : (
                 activeRealFacility && (
-                  <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
+                  <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
                     <div className="space-y-3">
                       <div className="flex flex-col xs:flex-row items-start justify-between gap-2">
                         <div>
@@ -871,7 +871,7 @@ export const PatientAppointments: React.FC = () => {
                           </h3>
                         </div>
                         {activeRealFacility.distanceKm && (
-                          <span className="text-xs font-extrabold text-health-800 bg-health-50 px-2.5 py-1 rounded-xl border border-health-200 whitespace-nowrap">
+                          <span className="text-xs font-bold text-health-800 bg-health-50 px-2.5 py-1 rounded-md border border-health-200 whitespace-nowrap">
                             {t("distanceFromUser", { distance: activeRealFacility.distanceKm })}
                           </span>
                         )}
@@ -947,7 +947,7 @@ export const PatientAppointments: React.FC = () => {
                             {hosp.name}
                           </h3>
                         </div>
-                        <span className="text-xs font-extrabold text-health-800 bg-health-50 px-2.5 py-1 rounded-xl border border-health-200 whitespace-nowrap">
+                        <span className="text-xs font-bold text-health-800 bg-health-50 px-2.5 py-1 rounded-md border border-health-200 whitespace-nowrap">
                           {isDemoAccount ? t("distanceFromSimulated", { distance: hosp.distanceKm ?? 0 }) : t("distanceFromUser", { distance: hosp.distanceKm ?? 0 })}
                         </span>
                       </div>
@@ -992,7 +992,7 @@ export const PatientAppointments: React.FC = () => {
                           </h3>
                         </div>
                         {fac.distanceKm && (
-                          <span className="text-xs font-extrabold text-health-800 bg-health-50 px-2.5 py-1 rounded-xl border border-health-200 whitespace-nowrap">
+                          <span className="text-xs font-bold text-health-800 bg-health-50 px-2.5 py-1 rounded-md border border-health-200 whitespace-nowrap">
                             {t("distanceFromUser", { distance: fac.distanceKm })}
                           </span>
                         )}
@@ -1661,7 +1661,7 @@ export const PatientAppointments: React.FC = () => {
             </div>
 
             {/* 1. Doctor Rating Section */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
               <div className="flex items-center justify-between border-b pb-2">
                 <span className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
                   <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -1706,7 +1706,7 @@ export const PatientAppointments: React.FC = () => {
             </div>
 
             {/* 2. Hospital Staff Section */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <span className="font-extrabold text-slate-900 text-sm block border-b pb-2">
                 {t.hospitalStaffSection || "Hospital Staff & Nursing"}
               </span>
@@ -1727,7 +1727,7 @@ export const PatientAppointments: React.FC = () => {
             </div>
 
             {/* 3. Facility Infrastructure Section */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <span className="font-extrabold text-slate-900 text-sm block border-b pb-2">
                 {t.facilitySection || "Hospital Facility & Infrastructure"}
               </span>
@@ -1759,7 +1759,7 @@ export const PatientAppointments: React.FC = () => {
                 placeholder={t.additionalFeedbackPlaceholder || "Share constructive feedback regarding your visit (max 500 characters)..."}
                 value={ratingFeedback}
                 onChange={(e) => setRatingFeedback(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 p-3 text-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-900"
+                className="w-full rounded-md border border-slate-300 p-3 text-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-900"
               />
             </div>
 

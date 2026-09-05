@@ -120,37 +120,37 @@ export const PatientProfile: React.FC = () => {
         }
       />
 
-      {/* ABHA Identity Summary Card with Action Buttons */}
-      <div className="bg-gradient-to-r from-health-900 via-slate-900 to-navy-950 text-white rounded-2xl p-6 shadow-card border border-health-800">
+      {/* Patient Identity & CareSetu Summary Card */}
+      <div className="bg-white rounded-xl p-5 sm:p-6 shadow-card border border-slate-200">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-health-700/60 border border-health-600/60 text-white font-bold text-2xl flex items-center justify-center shadow-inner flex-shrink-0">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xl flex items-center justify-center shrink-0">
               {(patient.name || user?.name || 'C').charAt(0)}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-xl sm:text-2xl font-bold">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                   {language === 'mr' && patient.nameMarathi ? patient.nameMarathi : (patient.name || user?.name || t.citizenPatientTab)}
                 </h2>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-semibold">
-                  <ShieldCheck className="w-3.5 h-3.5" /> CareSetu Active
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1 font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> CareSetu Active
                 </span>
                 {patient.abhaId && (
-                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-1 font-semibold">
+                  <span className="text-xs px-2.5 py-0.5 rounded-md bg-sky-50 text-sky-800 border border-sky-200 flex items-center gap-1 font-semibold">
                     ABHA Linked
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-300 mt-1">
-                CareSetu ID: <code className="text-emerald-300 font-mono font-bold">{patient.careSetuId || 'CSU-IND-PUN-00018427'}</code> • {t.abhaAddress}: <code className="text-health-300">{patient.abhaAddress || t.notConfigured}</code>
+              <p className="text-xs text-slate-600 mt-1">
+                CareSetu ID: <code className="text-emerald-700 font-mono font-bold">{patient.careSetuId || 'CSU-IND-PUN-00018427'}</code> • {t.abhaAddress}: <code className="text-slate-800 font-mono">{patient.abhaAddress || t.notConfigured}</code>
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-            <div className="p-3 bg-white/10 rounded-xl border border-white/10 text-xs space-y-1 text-center sm:text-left">
-              <div className="text-slate-300">{t.careSetuId || "CareSetu ID"}:</div>
-              <div className="text-base font-mono font-bold text-emerald-300 tracking-wider">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0">
+            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-0.5 text-center sm:text-left">
+              <div className="text-slate-500 font-medium">{t.careSetuId || "CareSetu ID"}:</div>
+              <div className="text-sm sm:text-base font-mono font-bold text-slate-900 tracking-wider tabular-nums">
                 {patient.careSetuId || 'CSU-IND-PUN-00018427'}
               </div>
             </div>
@@ -158,10 +158,10 @@ export const PatientProfile: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-2">
               <Link to="/patient/health-qr">
                 <Button
-                  variant="primary"
+                  variant="outline"
                   size="sm"
-                  leftIcon={<QrCode className="w-4 h-4 text-emerald-800 flex-shrink-0" />}
-                  className="bg-white hover:bg-emerald-50 text-emerald-950 font-bold border-2 border-emerald-400 shadow-sm w-full sm:w-auto px-3.5 py-2"
+                  leftIcon={<QrCode className="w-4 h-4 text-emerald-700 shrink-0" />}
+                  className="border-emerald-600 text-emerald-800 hover:bg-emerald-50 font-semibold w-full sm:w-auto px-3.5 py-2"
                 >
                   {t.smartHealthCardQR}
                 </Button>
@@ -170,8 +170,8 @@ export const PatientProfile: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<Calendar className="w-4 h-4 text-white flex-shrink-0" />}
-                  className="bg-health-600 hover:bg-health-500 text-white font-bold border border-health-400/80 shadow-sm w-full sm:w-auto px-3.5 py-2"
+                  leftIcon={<Calendar className="w-4 h-4 text-white shrink-0" />}
+                  className="w-full sm:w-auto px-3.5 py-2 font-semibold"
                 >
                   {t.bookOpdAppointment}
                 </Button>

@@ -228,7 +228,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
       />
 
       {/* Safety Notice Ribbon */}
-      <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-3 shadow-subtle min-w-0">
+      <div className="p-3.5 sm:p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-3 shadow-subtle min-w-0">
         <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <h4 className="font-bold text-amber-950">Informational Health Organization Tool</h4>
@@ -270,13 +270,13 @@ export const VoiceSymptomDashboard: React.FC = () => {
             <div className="space-y-6 animate-fade-in min-w-0">
               
               {/* Save To Records Action Header Bar */}
-              <div className="p-4 bg-emerald-900 text-white rounded-2xl shadow-card border border-emerald-700 flex flex-col xs:flex-row xs:items-center justify-between gap-3 min-w-0">
+              <div className="p-4 bg-emerald-50 text-emerald-950 rounded-xl border border-emerald-200 shadow-card flex flex-col xs:flex-row xs:items-center justify-between gap-3 min-w-0">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-300" />
-                    <span className="font-bold text-sm text-emerald-100">Structured AI Analysis Ready</span>
+                    <Sparkles className="w-4 h-4 text-emerald-700" />
+                    <span className="font-bold text-sm text-emerald-950">Structured Clinical Analysis Ready</span>
                   </div>
-                  <p className="text-xs text-emerald-200/90 mt-0.5">
+                  <p className="text-xs text-emerald-800 mt-0.5">
                     {t.geminiVerified || "Verified for non-diagnostic clinical accuracy."}
                   </p>
                 </div>
@@ -287,11 +287,11 @@ export const VoiceSymptomDashboard: React.FC = () => {
                   size="sm"
                   onClick={handleSaveToRecords}
                   disabled={isSaved}
-                  leftIcon={isSaved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4 text-slate-900" />}
+                  leftIcon={isSaved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
                   className={
                     isSaved
-                      ? 'bg-emerald-700 text-emerald-200 cursor-default'
-                      : 'bg-white hover:bg-emerald-50 text-slate-950 font-black shadow-md'
+                      ? 'bg-emerald-700 text-emerald-100 cursor-default'
+                      : 'font-bold'
                   }
                 >
                   {isSaved ? 'Saved to Health Records' : 'Save to My Health Records'}
@@ -316,8 +316,8 @@ export const VoiceSymptomDashboard: React.FC = () => {
             </div>
           ) : (
             /* Empty State Placeholder */
-            <div className="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-8 sm:p-12 text-center space-y-4 text-slate-500 shadow-subtle min-w-0">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+            <div className="bg-white rounded-xl border-2 border-dashed border-slate-200 p-8 sm:p-12 text-center space-y-4 text-slate-500 shadow-subtle min-w-0">
+              <div className="w-14 h-14 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                 <Stethoscope className="w-8 h-8" />
               </div>
               <div className="space-y-1 max-w-sm mx-auto">

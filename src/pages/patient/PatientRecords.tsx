@@ -153,7 +153,7 @@ export const PatientRecords: React.FC = () => {
                     </span>
                   </div>
 
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                     <ShieldCheck className="w-3 h-3" /> Verified
                   </span>
                 </div>

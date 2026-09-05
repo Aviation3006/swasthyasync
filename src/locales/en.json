@@ -740,7 +740,7 @@
   "whatsappHealthUpdates": "WhatsApp Health Updates",
   "whatsappDesc": "Receive instant token QR slips on your verified WhatsApp mobile number.",
   "smsAlerts": "SMS Mobile Alerts",
-  "smsDesc": "Receive token numbers and appointment reminder messages via National Health SMS Gateway.",
+  "smsDesc": "Receive token numbers and appointment reminder messages via SMS.",
   "emailNotifications": "Email Notifications",
   "emailDesc": "Receive lab report summaries and discharge summaries at registered email.",
   "abhaMigrationExplanation": "Already have an ABHA? Add it to help connect and migrate your eligible digital health records into your CareSetu Smart Card.",

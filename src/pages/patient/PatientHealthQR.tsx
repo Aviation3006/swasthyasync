@@ -109,42 +109,36 @@ export const PatientHealthQR: React.FC = () => {
         
         {/* 1. CARESETU SMART HEALTH CARD (7 COLS) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-emerald-500/40 relative overflow-hidden group">
+          <div className="bg-slate-900 text-white rounded-xl p-5 sm:p-6 md:p-7 shadow-card border border-slate-800 relative overflow-hidden">
             
-            {/* Background Holographic & Watermark Accents */}
-            <div className="absolute top-0 right-0 transform translate-x-12 -translate-y-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 transform -translate-x-12 translate-y-12 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Microchip Graphic & Card Brand Header */}
-            <div className="flex flex-col xs:flex-row xs:items-start justify-between gap-3.5 pb-4 border-b border-slate-800/80 min-w-0">
+            {/* Card Brand Header */}
+            <div className="flex flex-col xs:flex-row xs:items-start justify-between gap-3.5 pb-4 border-b border-slate-800 min-w-0">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                {/* Gold Smart Chip Graphic */}
-                <div className="w-11 h-8 sm:w-12 sm:h-9 rounded-lg bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 p-0.5 shadow-md flex items-center justify-center shrink-0">
-                  <div className="w-full h-full border border-amber-800/40 rounded flex items-center justify-center">
-                    <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-950" />
-                  </div>
+                {/* Discrete Security Chip Emblem */}
+                <div className="w-10 h-8 rounded-md bg-slate-800 border border-slate-700 p-1 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1.5">
                       Care<span className="text-emerald-400">Setu</span>™
                     </span>
-                    <span className="text-[9px] sm:text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 flex items-center gap-1 shrink-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-600/50 flex items-center gap-1 shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                       {cardStatus}
                     </span>
                   </div>
                   <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium tracking-wide truncate">
-                    {t.smartHealthCard || "Smart Health Card"} • National Health Network
+                    {t.smartHealthCard || "Smart Health Card"} • Partner Healthcare Network
                   </p>
                 </div>
               </div>
 
               <div className="text-left xs:text-right shrink-0 min-w-0">
-                <span className="text-[9px] sm:text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
+                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
                   {t.careSetuId || "CareSetu ID"}
                 </span>
-                <span className="font-mono font-black text-emerald-300 text-xs sm:text-base tracking-wider break-all">
+                <span className="font-mono font-bold text-emerald-400 text-xs sm:text-base tracking-wider break-all">
                   {careSetuId}
                 </span>
               </div>
@@ -165,7 +159,7 @@ export const PatientHealthQR: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs pt-1 min-w-0">
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                  <div className="bg-slate-800/70 p-2.5 rounded-lg border border-slate-700/60 min-w-0">
                     <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.bloodGroup || "Blood Group"}</span>
                     <span className="font-extrabold text-rose-400 text-sm flex items-center gap-1">
                       <Droplet className="w-3.5 h-3.5 fill-rose-400" />
@@ -173,21 +167,21 @@ export const PatientHealthQR: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                  <div className="bg-slate-800/70 p-2.5 rounded-lg border border-slate-700/60 min-w-0">
                     <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.ageGender || "Age / Gender"}</span>
                     <span className="font-bold text-slate-200 text-xs truncate block">
                       {patient.age > 0 ? `${patient.age} Yrs / ${patient.gender}` : '48 Yrs / Male'}
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                  <div className="bg-slate-800/70 p-2.5 rounded-lg border border-slate-700/60 min-w-0">
                     <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{t.district || "Location"}</span>
                     <span className="font-semibold text-slate-200 text-xs truncate block" title={`${patient.address?.district || 'Pune'}, ${patient.address?.state || 'Maharashtra'}`}>
                       {patient.address?.district || 'Pune'}, {patient.address?.state || 'Maharashtra'}
                     </span>
                   </div>
 
-                  <div className="bg-slate-900/60 p-2 rounded-xl border border-slate-800 min-w-0">
+                  <div className="bg-slate-800/70 p-2.5 rounded-lg border border-slate-700/60 min-w-0">
                     <span className="text-[10px] text-slate-400 block uppercase font-medium truncate">{(t as any).issuedDate || "Issue Date"}</span>
                     <span className="font-semibold text-slate-300 text-xs truncate block">{issueDate}</span>
                   </div>
@@ -203,7 +197,7 @@ export const PatientHealthQR: React.FC = () => {
               </div>
 
               {/* Secure CareSetu QR Gateway */}
-              <div className="shrink-0 p-3 bg-white rounded-2xl shadow-2xl border-4 border-emerald-500 flex flex-col items-center">
+              <div className="shrink-0 p-3 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col items-center">
                 <QRCodeSVG
                   value={secureQrPayload}
                   size={135}
@@ -211,7 +205,7 @@ export const PatientHealthQR: React.FC = () => {
                   includeMargin={false}
                   className="w-28 h-28 sm:w-34 sm:h-34"
                 />
-                <span className="mt-2 text-[9px] font-black text-slate-800 tracking-wider uppercase flex items-center gap-1">
+                <span className="mt-2 text-[9px] font-bold text-slate-700 tracking-wider uppercase flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-600" />
                   CareSetu Secure QR
                 </span>
@@ -219,7 +213,7 @@ export const PatientHealthQR: React.FC = () => {
             </div>
 
             {/* Card Footer Security Notice */}
-            <div className="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
+            <div className="pt-3.5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
               <div className="flex items-center gap-1.5 text-slate-300">
                 <Lock className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                 <span>Encrypted Healthcare Gateway</span>
@@ -235,7 +229,7 @@ export const PatientHealthQR: React.FC = () => {
             <button
               type="button"
               onClick={() => window.print()}
-              className="p-3 bg-white rounded-2xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
+              className="p-3 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
             >
               <Printer className="w-4 h-4 text-emerald-600" />
               <span>Print Physical Card</span>
@@ -243,7 +237,7 @@ export const PatientHealthQR: React.FC = () => {
             <button
               type="button"
               onClick={() => showSuccess("Downloaded", "CareSetu Smart Card PDF saved.")}
-              className="p-3 bg-white rounded-2xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
+              className="p-3 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
             >
               <Download className="w-4 h-4 text-emerald-600" />
               <span>Download Digital PDF</span>
@@ -254,7 +248,7 @@ export const PatientHealthQR: React.FC = () => {
                 navigator.clipboard?.writeText?.(careSetuId);
                 showSuccess("Copied", `CareSetu ID ${careSetuId} copied to clipboard.`);
               }}
-              className="p-3 bg-white rounded-2xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
+              className="p-3 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 text-center text-xs font-bold text-slate-800 hover:text-emerald-700 transition-all shadow-xs flex flex-col items-center justify-center gap-1"
             >
               <Share2 className="w-4 h-4 text-emerald-600" />
               <span>Copy CareSetu ID</span>

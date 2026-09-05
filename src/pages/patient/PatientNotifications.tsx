@@ -123,7 +123,7 @@ export const PatientNotifications: React.FC = () => {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 flex-1">
-                  <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-subtle">
+                  <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-subtle">
                     {getCategoryIcon(notif.category)}
                   </div>
                   <div className="space-y-1 flex-1">
@@ -132,7 +132,7 @@ export const PatientNotifications: React.FC = () => {
                         {language === 'mr' && notif.titleMarathi ? notif.titleMarathi : notif.title}
                       </h4>
                       {!notif.isRead && (
-                        <span className="w-2 h-2 rounded-full bg-health-600 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-health-600 shrink-0" />
                       )}
                       <StatusBadge
                         variant={notif.priority === 'urgent' ? 'urgent' : notif.priority === 'high' ? 'warning' : 'neutral'}

@@ -226,7 +226,7 @@ export const PatientReports: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Custom file drag/drop dropzone */}
-            <div className="border-2 border-dashed border-slate-300 hover:border-health-500 rounded-2xl p-6 text-center flex flex-col items-center justify-center bg-slate-50/60 hover:bg-slate-50 transition-colors">
+            <div className="border-2 border-dashed border-slate-300 hover:border-health-500 rounded-xl p-6 text-center flex flex-col items-center justify-center bg-slate-50/60 hover:bg-slate-50 transition-colors">
               <UploadCloud className="w-10 h-10 text-health-600 mb-2" />
               <p className="text-sm font-semibold text-slate-800">{t.uploadNewRecord}</p>
               <p className="text-xs text-slate-500 mt-1 mb-4">Select PDF, JPG or PNG (Max 10MB)</p>
@@ -318,7 +318,7 @@ export const PatientReports: React.FC = () => {
           )}
 
           {/* Top Report Toolbar & View Mode Switcher */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-subtle">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-subtle">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">{activeReport.title}</h2>
@@ -410,19 +410,19 @@ export const PatientReports: React.FC = () => {
 
           {/* DIGITAL RECORD SAVING PROMPT (OPTIONAL BUT RECOMMENDED) */}
           {!isCurrentReportSaved && !isDismissedSavePrompt && (
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-900 via-health-900 to-navy-950 text-white border-2 border-emerald-500/50 shadow-elevated animate-scale-up flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="p-5 rounded-xl bg-emerald-50 text-emerald-950 border border-emerald-300 shadow-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-400 text-emerald-950">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
                     Recommended
                   </span>
-                  <h4 className="text-base font-bold text-white flex items-center gap-1.5">
-                    <BookmarkPlus className="w-5 h-5 text-emerald-400" />
+                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+                    <BookmarkPlus className="w-5 h-5 text-emerald-700" />
                     Save this Report Digitally to your Medical Records Locker?
                   </h4>
                 </div>
-                <p className="text-xs text-slate-200 max-w-2xl leading-relaxed">
-                  Saving this report is <strong>optional but recommended</strong>. Digitally saving attaches this laboratory document and AI summary to your longitudinal medical profile for doctor OPD visits and emergency triage.
+                <p className="text-xs text-slate-700 max-w-2xl leading-relaxed">
+                  Saving this report is <strong>optional but recommended</strong>. Digitally saving attaches this laboratory document and clinical summary to your longitudinal medical profile for doctor OPD visits and emergency triage.
                 </p>
               </div>
 
@@ -433,15 +433,15 @@ export const PatientReports: React.FC = () => {
                   leftIcon={<Save className="w-4 h-4" />}
                   onClick={handleSaveToMedicalRecords}
                   isLoading={isSavingRecord}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold border-none shadow-md w-full md:w-auto"
+                  className="w-full md:w-auto font-bold"
                 >
-                  Save to My Digital Records (Recommended)
+                  Save to My Digital Records
                 </Button>
                 <Button
                   variant="ghost"
                   size="md"
                   onClick={() => setIsDismissedSavePrompt(true)}
-                  className="text-slate-300 hover:text-white hover:bg-white/10 text-xs"
+                  className="text-slate-600 hover:text-slate-900 text-xs"
                 >
                   Skip for Now
                 </Button>
@@ -451,7 +451,7 @@ export const PatientReports: React.FC = () => {
 
           {/* SAVED CONFIRMATION BADGE */}
           {isCurrentReportSaved && (
-            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs flex items-center justify-between flex-wrap gap-3 shadow-subtle">
+            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs flex items-center justify-between flex-wrap gap-3 shadow-subtle">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                 <div>
@@ -577,16 +577,16 @@ export const PatientReports: React.FC = () => {
             {(viewMode === 'side-by-side' || viewMode === 'summary') && (
               <div className={`space-y-6 ${viewMode === 'side-by-side' ? 'lg:col-span-7' : 'w-full'}`}>
                 {/* Plain-Language Summary Box with Integrated Text-to-Speech Accessibility Player */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-health-900 to-navy-950 text-white shadow-elevated border border-health-800 space-y-3.5">
+                <div className="p-4 sm:p-5 rounded-xl bg-white text-slate-900 shadow-card border border-slate-200 space-y-3.5">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs tracking-wider uppercase">
-                      <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" /> {t.plainLanguageExplanation}
+                    <div className="flex items-center gap-2 text-health-700 font-bold text-xs tracking-wider uppercase">
+                      <Sparkles className="w-4 h-4 text-health-600 shrink-0" /> {t.plainLanguageExplanation}
                     </div>
-                    <span className="text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-slate-300 font-medium">
+                    <span className="text-[10px] bg-health-50 border border-health-200 px-2.5 py-0.5 rounded-full text-health-800 font-semibold">
                       AI Simplified Report
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm md:text-base leading-relaxed text-slate-100 font-normal">
+                  <p className="text-xs sm:text-sm md:text-base leading-relaxed text-slate-700 font-normal">
                     {reportLang === 'mr' ? activeReport.overallSummaryMarathi : activeReport.overallSummary}
                   </p>
 

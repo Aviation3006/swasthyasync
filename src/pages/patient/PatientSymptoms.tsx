@@ -21,7 +21,11 @@ import {
   Sparkles,
   Edit3,
   HelpCircle,
-  PhoneCall
+  PhoneCall,
+  Brain,
+  Wind,
+  Bone,
+  Thermometer
 } from 'lucide-react';
 import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
@@ -44,8 +48,8 @@ export const PatientSymptoms: React.FC = () => {
   const [symptoms, setSymptoms] = useState<SymptomEntry[]>([]);
   const [selectedBodyArea, setSelectedBodyArea] = useState<BodyArea>('Muscles & Joints');
   const [symptomName, setSymptomName] = useState('');
-  const [severity, setSeverity] = useState<SymptomSeverity>('Mild');
-  const [duration, setDuration] = useState('3 days');
+  const [severity, setSeverity] = useState<SymptomSeverity>('Moderate');
+  const [duration, setDuration] = useState('2-3 days');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState('');
   const [associatedTag, setAssociatedTag] = useState('');
@@ -68,13 +72,13 @@ export const PatientSymptoms: React.FC = () => {
     return unsub;
   }, [primaryPatient.id]);
 
-  const bodyAreas: { name: BodyArea; label: string; icon: string; desc: string }[] = [
-    { name: 'Head & Neck', label: t.headNeck, icon: '🧠', desc: 'Headache, vision, throat, dizziness' },
-    { name: 'Chest & Respiratory', label: t.chestRespiratory, icon: '🫁', desc: 'Cough, wheezing, shortness of breath' },
-    { name: 'Abdomen & Digestion', label: t.abdomenDigestion, icon: '🫄', desc: 'Stomach ache, nausea, acidity' },
-    { name: 'Muscles & Joints', label: t.musclesJoints, icon: '🦴', desc: 'Joint pain, stiffness, muscle cramps' },
-    { name: 'Skin & Allergies', label: t.skinAllergies, icon: '🩹', desc: 'Rashes, itching, swelling, hives' },
-    { name: 'General & Whole Body', label: t.generalWholeBody, icon: '🌡️', desc: 'Fever, fatigue, weakness, chills' }
+  const bodyAreas: { name: BodyArea; label: string; icon: React.ComponentType<{ className?: string }>; desc: string }[] = [
+    { name: 'Head & Neck', label: t.headNeck, icon: Brain, desc: 'Headache, vision, throat, dizziness' },
+    { name: 'Chest & Respiratory', label: t.chestRespiratory, icon: Wind, desc: 'Cough, wheezing, shortness of breath' },
+    { name: 'Abdomen & Digestion', label: t.abdomenDigestion, icon: Activity, desc: 'Stomach ache, nausea, acidity' },
+    { name: 'Muscles & Joints', label: t.musclesJoints, icon: Bone, desc: 'Joint pain, stiffness, muscle cramps' },
+    { name: 'Skin & Allergies', label: t.skinAllergies, icon: ShieldAlert, desc: 'Rashes, itching, swelling, hives' },
+    { name: 'General & Whole Body', label: t.generalWholeBody, icon: Thermometer, desc: 'Fever, fatigue, weakness, chills' }
   ];
 
   const handleVoiceTranscription = (transcript: string) => {
@@ -244,22 +248,30 @@ export const PatientSymptoms: React.FC = () => {
                     1. {t.selectBodyArea} <span className="text-rose-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                    {bodyAreas.map((area) => (
-                      <button
-                        key={area.name}
-                        type="button"
-                        onClick={() => setSelectedBodyArea(area.name)}
-                        className={`p-3 rounded-xl border text-left transition-all ${
-                          selectedBodyArea === area.name
-                            ? 'bg-health-50/80 border-health-500 ring-2 ring-health-400/30'
-                            : 'bg-white border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        <span className="text-lg block mb-1">{area.icon}</span>
-                        <span className="text-xs font-bold text-slate-900 block">{area.label}</span>
-                        <span className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{area.desc}</span>
-                      </button>
-                    ))}
+                    {bodyAreas.map((area) => {
+                      const IconComponent = area.icon;
+                      const isSelected = selectedBodyArea === area.name;
+                      return (
+                        <button
+                          key={area.name}
+                          type="button"
+                          onClick={() => setSelectedBodyArea(area.name)}
+                          className={`p-3 rounded-lg border text-left transition-all ${
+                            isSelected
+                              ? 'bg-health-50/80 border-health-500 ring-2 ring-health-400/30'
+                              : 'bg-white border-slate-200 hover:border-slate-300'
+                          }`}
+                        >
+                          <div className={`w-7 h-7 rounded-md flex items-center justify-center mb-1.5 ${
+                            isSelected ? 'bg-health-600 text-white' : 'bg-slate-100 text-slate-600'
+                          }`}>
+                            <IconComponent className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-bold text-slate-900 block">{area.label}</span>
+                          <span className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{area.desc}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

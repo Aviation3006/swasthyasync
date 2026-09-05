@@ -99,7 +99,7 @@ export const PatientSettings: React.FC = () => {
                 </div>
               </div>
               <div className="text-xs text-slate-600 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm font-medium">
-                🌐 Managed from Top Navigation Header
+                Managed from Top Navigation Header
               </div>
             </div>
           </CardContent>
@@ -164,7 +164,7 @@ export const PatientSettings: React.FC = () => {
               <ToggleSwitch
                 id="pref-sms"
                 label="SMS Mobile Alerts"
-                description="Receive token numbers and appointment reminder messages via National Health SMS Gateway"
+                description="Receive token numbers and appointment reminder messages via SMS"
                 checked={smsAlerts}
                 onChange={setSmsAlerts}
               />

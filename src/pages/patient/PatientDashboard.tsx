@@ -25,7 +25,11 @@ import {
   Building2,
   Bell,
   Mic,
-  ArrowUpRight
+  ArrowUpRight,
+  Sun,
+  Sunrise,
+  Moon,
+  Stethoscope
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -200,23 +204,23 @@ export const PatientDashboard: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. Structured Healthcare Actions (Broken out from the generic 5 equal cards pattern) */}
+      {/* 2. Structured Healthcare Actions (Calm clinical surfaces with purposeful hierarchy) */}
       <section aria-label="Clinical Services & Actions" className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
         
-        {/* Prominent Assistive Intake Card: Voice Symptom Logger */}
-        <div className="lg:col-span-6 bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-xl p-4 sm:p-5 border border-slate-800 shadow-card flex flex-col justify-between space-y-3">
+        {/* Assistive Intake Card: Voice Symptom Logger */}
+        <div className="lg:col-span-6 bg-white text-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200 shadow-card flex flex-col justify-between space-y-3">
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-[10px] font-bold uppercase tracking-wider">
-                <Mic className="w-3 h-3 text-indigo-300" />
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] font-bold uppercase tracking-wider">
+                <Mic className="w-3 h-3 text-indigo-600" />
                 Clinical Speech AI
               </span>
-              <span className="text-[11px] text-slate-300 font-medium">Hindi • Marathi • English</span>
+              <span className="text-[11px] text-slate-500 font-medium">Hindi • Marathi • English</span>
             </div>
-            <h3 className="text-base font-bold text-white tracking-tight">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight">
               {t.voiceSymptomLogger || "Voice Symptom Logger"}
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed font-normal">
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
               Speak your symptoms naturally in your regional language. Structured clinical summaries are generated for your next OPD doctor consultation.
             </p>
           </div>
@@ -227,19 +231,19 @@ export const PatientDashboard: React.FC = () => {
                 variant="primary"
                 size="sm"
                 leftIcon={<Mic className="w-3.5 h-3.5" />}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 shadow-xs"
+                className="bg-indigo-700 hover:bg-indigo-800 text-white font-semibold text-xs px-3.5 py-1.5 shadow-xs"
               >
                 Record Symptoms
               </Button>
             </Link>
-            <Link to="/patient/symptoms" className="text-xs text-indigo-200 hover:text-white flex items-center gap-1 font-medium transition-colors">
+            <Link to="/patient/symptoms" className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1 font-medium transition-colors">
               <span>{t.navSymptoms}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
 
-        {/* Clean Structured Navigation Utilities (Records, Diagnostic Explainer, CareSetu) */}
+        {/* Clean Structured Navigation Utilities (Records, Diagnostic Explainer, Symptom Diary) */}
         <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link to="/patient/records" className="group">
             <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
@@ -273,17 +277,17 @@ export const PatientDashboard: React.FC = () => {
             </div>
           </Link>
 
-          <Link to="/patient/health-qr" className="group">
+          <Link to="/patient/symptoms" className="group">
             <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
               <div className="space-y-1">
                 <div className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center mb-1">
-                  <QrCode className="w-4 h-4 text-emerald-700" />
+                  <Stethoscope className="w-4 h-4 text-emerald-700" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">CareSetu</h4>
-                <p className="text-[11px] text-slate-500 leading-tight">{t.smartHealthCard || "Smart Health Card"}</p>
+                <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navSymptoms}</h4>
+                <p className="text-[11px] text-slate-500 leading-tight">{t.symptomCheckerTitle || "Symptom Tracker"}</p>
               </div>
               <div className="pt-2 text-[11px] font-semibold text-emerald-700 flex items-center gap-0.5 group-hover:text-emerald-800">
-                <span>Show QR Pass</span>
+                <span>View Diary</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -382,7 +386,7 @@ export const PatientDashboard: React.FC = () => {
                   <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/70 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-                        ☀️ {t.morningDosage}
+                        <Sun className="w-3.5 h-3.5 text-amber-600" /> {t.morningDosage}
                       </span>
                       <span className="text-[11px] text-slate-500 font-mono">08:30 AM - 09:30 AM</span>
                     </div>
@@ -423,8 +427,8 @@ export const PatientDashboard: React.FC = () => {
                   {/* Afternoon & Night */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/70 space-y-2">
-                      <div className="text-xs font-bold uppercase tracking-wider text-sky-800">
-                        🌤️ {t.afternoonDosage}
+                      <div className="text-xs font-bold uppercase tracking-wider text-sky-800 flex items-center gap-1.5">
+                        <Sunrise className="w-3.5 h-3.5 text-sky-600" /> {t.afternoonDosage}
                       </div>
                       <label className={`flex items-center justify-between p-2.5 rounded-md border cursor-pointer transition-colors ${
                         medsTaken['afternoon-calcium'] ? 'bg-emerald-50/70 border-emerald-300' : 'bg-white border-slate-200 hover:border-slate-300'
@@ -443,8 +447,8 @@ export const PatientDashboard: React.FC = () => {
                     </div>
 
                     <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/70 space-y-2">
-                      <div className="text-xs font-bold uppercase tracking-wider text-indigo-800">
-                        🌙 {t.nightDosage}
+                      <div className="text-xs font-bold uppercase tracking-wider text-indigo-800 flex items-center gap-1.5">
+                        <Moon className="w-3.5 h-3.5 text-indigo-600" /> {t.nightDosage}
                       </div>
                       <label className={`flex items-center justify-between p-2.5 rounded-md border cursor-pointer transition-colors ${
                         medsTaken['night-atorvastatin'] ? 'bg-emerald-50/70 border-emerald-300' : 'bg-white border-slate-200 hover:border-slate-300'
@@ -537,7 +541,7 @@ export const PatientDashboard: React.FC = () => {
         <div className="space-y-5">
           
           {/* Emergency 24x7 Quick Card */}
-          <div className="bg-rose-800 text-white rounded-xl p-4 sm:p-5 shadow-card border border-rose-900 space-y-3">
+          <div className="bg-rose-900 text-white rounded-xl p-4 sm:p-5 shadow-card border border-rose-950 space-y-3">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-md bg-white/15 flex items-center justify-center flex-shrink-0">
                 <PhoneCall className="w-4 h-4 text-white" />
@@ -551,15 +555,15 @@ export const PatientDashboard: React.FC = () => {
             <div className="space-y-1.5 pt-1 text-xs">
               <div className="flex items-center justify-between p-2 rounded-md bg-black/20">
                 <span className="text-white/90">{t.ambulanceDispatch}</span>
-                <a href="tel:108" className="font-bold underline text-sm font-mono text-white">108</a>
+                <a href="tel:108" className="font-bold underline text-sm font-mono text-white tabular-nums">108</a>
               </div>
               <div className="flex items-center justify-between p-2 rounded-md bg-black/20">
                 <span className="text-white/90">{t.hospitalCasualty}</span>
-                <a href="tel:+912027280999" className="font-bold underline text-xs font-mono text-white">+91 20 2728 0999</a>
+                <a href="tel:+912027280999" className="font-bold underline text-xs font-mono text-white tabular-nums">+91 20 2728 0999</a>
               </div>
               <div className="flex items-center justify-between p-2 rounded-md bg-black/20">
                 <span className="text-white/90">{t.emergencyContact} ({patient.emergencyContact?.relationship || t.emergencyContact})</span>
-                <span className="font-semibold font-mono text-white">{patient.emergencyContact?.phone || patient.phone}</span>
+                <span className="font-semibold font-mono text-white tabular-nums">{patient.emergencyContact?.phone || patient.phone}</span>
               </div>
             </div>
           </div>
