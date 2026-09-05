@@ -21,7 +21,8 @@ import {
   ChevronDown,
   Check,
   CheckCheck,
-  Search
+  Search,
+  ArrowLeftRight
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -83,8 +84,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  const handleSwitchAccount = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -103,16 +109,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
   );
 
   return (
-    <header className={`sticky top-0 z-30 ${theme.topbarBg} ${theme.sidebarBorder} text-white shadow-md min-w-0 max-w-full transition-colors duration-300`}>
+    <header className={`sticky top-0 z-30 ${theme.topbarBg} border-b ${theme.sidebarBorder} text-white shadow-xs min-w-0 max-w-full transition-colors duration-200`}>
       <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-4 min-w-0">
+        <div className="flex items-center justify-between h-14 gap-1.5 sm:gap-4 min-w-0">
           
-          {/* Left: Hamburger Toggle and Brand */}
+          {/* Left: Mobile Toggle & Clinical Brand */}
           <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
             {onToggleSidebar && (
               <button
                 onClick={onToggleSidebar}
-                className="p-1.5 sm:p-2 -ml-1 sm:ml-0 rounded-lg text-white/80 hover:text-white hover:bg-white/15 lg:hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-white"
+                className="p-1.5 sm:p-2 -ml-1 sm:ml-0 rounded-md text-white/85 hover:text-white hover:bg-white/15 lg:hidden shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="Toggle navigation menu"
               >
                 {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -123,16 +129,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               to={role === 'patient' ? '/patient' : role === 'hospital' ? '/hospital' : '/district-admin'}
               className="flex items-center gap-2 sm:gap-2.5 group min-w-0 shrink"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform shrink-0 backdrop-blur-xs">
-                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-white/20 border border-white/25 flex items-center justify-center text-white shadow-xs shrink-0">
+                <Activity className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white" />
               </div>
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="font-black text-base sm:text-xl text-white tracking-tight shrink-0">
-                    Swasthya<span className="text-white/85">Sync</span>
+                  <span className="font-bold text-base sm:text-lg text-white tracking-tight shrink-0">
+                    Swasthya<span className="text-white/80 font-normal">Sync</span>
                   </span>
-                  <span className="text-[9px] sm:text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded bg-white/20 text-white border border-white/30 hidden sm:inline-block shrink-0 shadow-2xs">
-                    {theme.role === 'patient' ? (t.portalPatient || 'PATIENT PORTAL') : theme.role === 'hospital' ? (t.portalHospital || 'DOCTOR PORTAL') : (t.portalAdmin || 'DISTRICT ADMIN PORTAL')}
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/25 shrink-0 shadow-2xs">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>{theme.portalBadgeText}</span>
                   </span>
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-medium text-white/80 hidden sm:inline truncate max-w-[200px] lg:max-w-none">
@@ -142,12 +149,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             </Link>
           </div>
 
-          {/* Right: Actions (CareSetu QR button on tablet/desktop, Language, Notifications, Profile) */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {/* Emergency 108 Call Quick Link (Desktop) */}
+          {/* Right: Actions (108 Emergency, CareSetu, Switch Role, Language, Notifications, User) */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* National Emergency 108 Call Quick Link */}
             <a
               href="tel:108"
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-950/80 border border-rose-600/80 text-rose-200 text-xs font-bold hover:bg-rose-900 transition-colors shrink-0 shadow-xs"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-950/80 border border-rose-500/80 text-rose-200 text-xs font-semibold hover:bg-rose-900 transition-colors shrink-0 shadow-xs"
               title="National Emergency Health Helpline"
             >
               <PhoneCall className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
@@ -158,13 +165,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             {role === 'patient' && (
               <Link
                 to="/patient/health-qr"
-                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all shrink-0 ${
+                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors shrink-0 ${
                   location.pathname === '/patient/health-qr' || location.pathname === '/patient/caresetu'
-                    ? 'bg-white text-[#DB2777] border-white shadow-sm'
+                    ? 'bg-white text-[#DB2777] border-white shadow-xs'
                     : 'bg-white/15 border-white/25 text-white hover:bg-white/25'
                 }`}
               >
-                <QrCode className="w-4 h-4" />
+                <QrCode className="w-3.5 h-3.5" />
                 <span>CareSetu</span>
               </Link>
             )}
@@ -173,23 +180,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             {role === 'hospital' && (
               <Link
                 to="/hospital/caresetu"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#1D4ED8] hover:bg-blue-50 shadow-sm transition-all shrink-0"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-white text-[#1D4ED8] hover:bg-blue-50 border border-transparent shadow-xs transition-colors shrink-0"
                 title="Scan CareSetu Smart Health Card"
               >
-                <QrCode className="w-4 h-4 text-[#1D4ED8]" />
+                <QrCode className="w-3.5 h-3.5 text-[#1D4ED8]" />
                 <span>{t.scanCareSetuBtn || 'Scan CareSetu'}</span>
               </Link>
             )}
+
+            {/* Fast Switch Account/Role for Demo Mode (Large screens) */}
+            <button
+              onClick={handleSwitchAccount}
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-medium transition-colors shrink-0"
+              title={t.switchAccount}
+            >
+              <ArrowLeftRight className="w-3 h-3 text-white/80" />
+              <span>{t.switchAccount}</span>
+            </button>
 
             {/* 23 Indian Languages Selector Dropdown */}
             <div className="relative shrink-0" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold bg-black/30 text-white hover:bg-black/40 border border-white/25 transition-colors shrink-0 backdrop-blur-xs"
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-md text-xs font-semibold bg-black/20 text-white hover:bg-black/30 border border-white/20 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="Select Language (23 Languages)"
               >
                 <Globe className="w-3.5 h-3.5 text-white shrink-0" />
-                <span className="uppercase font-black text-white text-[11px] sm:text-xs">{language}</span>
+                <span className="uppercase font-bold text-white text-[11px] sm:text-xs">{language}</span>
                 <span className="hidden sm:inline text-white/90 text-[11px]">
                   ({SUPPORTED_LANGUAGES.find(l => l.code === language)?.nativeName || 'English'})
                 </span>
@@ -197,9 +214,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               </button>
 
               {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-xs sm:w-72 bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-scale-up">
+                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-xs sm:w-72 bg-white text-slate-900 rounded-xl shadow-dropdown border border-slate-200 py-2 z-50 animate-scale-up">
                   <div className="px-3 pb-2 border-b border-slate-100">
-                    <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider block mb-1.5">
+                    <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
                       23 Official Indian Languages
                     </span>
                     <div className="relative">
@@ -209,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                         placeholder="Search language..."
                         value={langSearch}
                         onChange={(e) => setLangSearch(e.target.value)}
-                        className="w-full pl-8 pr-2 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-theme-ring"
+                        className="w-full pl-8 pr-2 py-1 text-xs border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-theme-ring"
                         autoFocus
                       />
                     </div>
@@ -243,19 +260,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             <div className="relative shrink-0" ref={notifRef}>
               <button
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="relative p-1.5 sm:p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white transition-colors shrink-0"
+                className="relative p-1.5 sm:p-2 rounded-md text-white/90 hover:text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors shrink-0"
                 aria-label={`Notifications (${unreadCount} unread)`}
               >
                 <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-rose-500 text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center ring-2 ring-black/40">
+                  <span className="absolute top-1 right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-rose-500 text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center ring-2 ring-black/30">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
               </button>
 
               {isNotifOpen && (
-                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-scale-up">
+                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-white text-slate-900 rounded-xl shadow-dropdown border border-slate-200 overflow-hidden z-50 animate-scale-up">
                   <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-slate-900">{t.notifications}</h4>
@@ -315,23 +332,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             <div className="relative shrink-0" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 rounded-xl hover:bg-white/15 transition-colors shrink-0"
+                className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 rounded-md hover:bg-white/15 transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="User account menu"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 border border-white/30 text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white/20 border border-white/25 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-white/70 hidden sm:block shrink-0" />
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-200 py-1.5 z-50 animate-scale-up">
-                  <div className="px-3.5 py-2 border-b border-slate-100">
+                <div className="absolute right-0 mt-2 w-64 bg-white text-slate-900 rounded-xl shadow-dropdown border border-slate-200 py-1.5 z-50 animate-scale-up">
+                  <div className="px-3.5 py-2.5 border-b border-slate-100">
                     <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Citizen'}</p>
                     <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                    <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-theme-primary-subtle text-theme-text-accent border border-theme-primary-border">
-                      {user?.roleTitle || theme.portalBadgeText}
-                    </span>
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-theme-primary-subtle text-theme-text-accent border border-theme-primary-border">
+                        {user?.roleTitle || theme.portalBadgeText}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      {t.loggedInAs} <span className="font-semibold text-slate-700">{user?.name || user?.email || 'User'}</span>
+                    </p>
                   </div>
 
                   <Link
@@ -342,6 +364,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                     <User className="w-3.5 h-3.5 text-slate-400" />
                     <span>{t.navProfile}</span>
                   </Link>
+
+                  <button
+                    onClick={handleSwitchAccount}
+                    className="w-full flex items-center gap-2 px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-100 font-medium"
+                  >
+                    <ArrowLeftRight className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{t.switchAccount}</span>
+                  </button>
 
                   <button
                     onClick={handleLogout}

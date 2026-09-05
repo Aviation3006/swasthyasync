@@ -681,7 +681,7 @@ export const PatientAppointments: React.FC = () => {
                 <p className="text-[11px] text-slate-500 mt-0.5">
                   {isDemoAccount 
                     ? `Proximity calculated across ${mockHospitals.length} demo public hospitals.`
-                    : `Discovered ${realFacilities.length} empaneled healthcare facilities in ${selectedState}.`
+                    : `Discovered ${realFacilities.length} partner healthcare facilities in ${selectedState}.`
                   }
                 </p>
               </div>
@@ -1308,7 +1308,7 @@ export const PatientAppointments: React.FC = () => {
           isOpen={isBookingOpen}
           onClose={() => setIsBookingOpen(false)}
           title={`${t.bookNewAppointment} (${t.step} ${bookingStep} ${t.of} 7)`}
-          subtitle="Empaneled Empaneled Healthcare Facilities"
+          subtitle="Partner Healthcare Facilities"
           maxWidth="2xl"
           footer={
             <div className="flex items-center justify-between w-full">
@@ -1372,7 +1372,7 @@ export const PatientAppointments: React.FC = () => {
           {/* Step 1: Select Hospital */}
           {bookingStep === 1 && (
             <div className="space-y-3">
-              <p className="text-xs text-slate-500">Choose an empaneled government healthcare facility:</p>
+              <p className="text-xs text-slate-500">Choose a partner healthcare facility:</p>
               <div className="space-y-2.5 max-h-80 overflow-y-auto">
                 {demoHospitalsWithDistance.map((hosp) => (
                   <div
@@ -1608,7 +1608,7 @@ export const PatientAppointments: React.FC = () => {
 
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>Zero registration fee under Empaneled Health Coverage Network.</span>
+                <span>Zero registration fee under Partner Health Coverage Network.</span>
               </div>
             </div>
           )}

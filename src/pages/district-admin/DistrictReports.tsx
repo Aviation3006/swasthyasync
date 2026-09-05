@@ -67,7 +67,7 @@ export const DistrictReports: React.FC = () => {
       status: 'Published',
       summary: 'Quarterly institutional delivery metrics, high-risk pregnancy tracking, and ANC registration audit across 14 talukas.',
       highlights: [
-        'Institutional delivery rate: 99.2% across government and empaneled private facilities',
+        'Institutional delivery rate: 99.2% across public and partner private facilities',
         'High-Risk Pregnancy (HRP) identification rate reached 18.4% of total registrations',
         '100% IFA supplement distribution completed in all tribal sub-centres'
       ]

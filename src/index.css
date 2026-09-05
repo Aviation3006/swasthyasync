@@ -16,6 +16,15 @@
   --theme-surface: #FFFFFF;
   --theme-border: #FCE7F3;
   --theme-sidebar-active: #DB2777;
+  /* Phase 1: Semantic Healthcare Tokens */
+  --clinical-canvas: #F8FAFC;
+  --clinical-surface: #FFFFFF;
+  --clinical-border-subtle: #F1F5F9;
+  --clinical-border-default: #E2E8F0;
+  --clinical-border-strong: #CBD5E1;
+  --clinical-text-primary: #0F172A;
+  --clinical-text-secondary: #475569;
+  --clinical-text-muted: #64748B;
 }
 
 [data-theme='hospital'] {
@@ -30,6 +39,15 @@
   --theme-surface: #FFFFFF;
   --theme-border: #E0F2FE;
   --theme-sidebar-active: #1D4ED8;
+  /* Phase 1: Semantic Healthcare Tokens */
+  --clinical-canvas: #F8FAFC;
+  --clinical-surface: #FFFFFF;
+  --clinical-border-subtle: #F1F5F9;
+  --clinical-border-default: #E2E8F0;
+  --clinical-border-strong: #CBD5E1;
+  --clinical-text-primary: #0F172A;
+  --clinical-text-secondary: #475569;
+  --clinical-text-muted: #64748B;
 }
 
 [data-theme='district_admin'] {
@@ -44,6 +62,15 @@
   --theme-surface: #FFFFFF;
   --theme-border: #D1FAE5;
   --theme-sidebar-active: #047857;
+  /* Phase 1: Semantic Healthcare Tokens */
+  --clinical-canvas: #F8FAFC;
+  --clinical-surface: #FFFFFF;
+  --clinical-border-subtle: #F1F5F9;
+  --clinical-border-default: #E2E8F0;
+  --clinical-border-strong: #CBD5E1;
+  --clinical-text-primary: #0F172A;
+  --clinical-text-secondary: #475569;
+  --clinical-text-muted: #64748B;
 }
 
 @tailwind base;
@@ -127,3 +154,27 @@ html, body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   PHASE 1: SWASTHYASYNC CLINICAL DESIGN SYSTEM UTILITIES
+   ========================================================================== */
+
+/* Tabular numerics for vitals, dates, lab values, and tokens */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Safe area padding for mobile navigation */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0.75rem);
+}
+
+/* Authoritative clinical keyboard focus indicator */
+.focus-ring-clinical {
+  outline: none;
+}
+.focus-ring-clinical:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+

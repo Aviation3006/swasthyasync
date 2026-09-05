@@ -26,12 +26,12 @@ export const RoleSwitcherBanner: React.FC = () => {
     <aside aria-label="Authenticated environment banner" className={`${theme.topbarBg} text-white text-xs px-2.5 sm:px-6 py-1.5 sm:py-2 min-w-0 max-w-full shadow-xs`}>
       <div className="max-w-7xl mx-auto flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 sm:gap-2 min-w-0">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">
-          <span className={`flex items-center gap-1 font-bold ${theme.topbarBadge} px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-[11px] shrink-0 uppercase tracking-wider`}>
+          <span className={`flex items-center gap-1 font-bold ${theme.topbarBadge} px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] shrink-0 uppercase tracking-wider`}>
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>{theme.portalBadgeText}</span>
           </span>
           <span className="text-white/90 text-[10px] sm:text-xs truncate">
-            {t.departmentName || "Ayushman Bharat Digital Health Mission"} • <strong className="text-white">{roleLabel}</strong>
+            {t.departmentName || "Connected Healthcare Platform"} • <strong className="text-white">{roleLabel}</strong>
           </span>
         </div>
 
@@ -41,7 +41,7 @@ export const RoleSwitcherBanner: React.FC = () => {
           </span>
           <button
             onClick={handleSwitchAccount}
-            className="flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-black/30 hover:bg-rose-900/80 text-white/90 hover:text-white border border-white/20 hover:border-rose-500 text-[10px] sm:text-[11px] font-medium transition-colors shrink-0 backdrop-blur-xs"
+            className="flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-black/25 hover:bg-rose-900/80 text-white/90 hover:text-white border border-white/20 hover:border-rose-500 text-[10px] sm:text-[11px] font-medium transition-colors shrink-0"
           >
             <LogOut className="w-3 h-3" />
             <span>{t.switchAccount}</span>

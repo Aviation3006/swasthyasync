@@ -25,6 +25,7 @@ export interface RoleThemeConfig {
   activeNavClass: string;     // Active sidebar navigation classes
   activeMobileNavClass: string; // Active mobile bottom navigation classes
   buttonPrimaryClass: string; // Primary button classes
+  topbarSolid?: string;       // Solid authoritative clinical topbar for unified navigation
 }
 
 export const ROLE_THEMES: Record<UserRole, RoleThemeConfig> = {
@@ -53,6 +54,7 @@ export const ROLE_THEMES: Record<UserRole, RoleThemeConfig> = {
     activeNavClass: 'bg-[#DB2777] text-white shadow-sm font-semibold',
     activeMobileNavClass: 'text-[#DB2777] font-extrabold bg-[#FCE7F3] shadow-xs border-b-2 border-[#DB2777]',
     buttonPrimaryClass: 'bg-[#DB2777] hover:bg-[#BE185D] text-white focus:ring-[#F472B6]',
+    topbarSolid: 'bg-[#500724] border-b border-pink-950',
   },
   hospital: {
     role: 'hospital',
@@ -79,6 +81,7 @@ export const ROLE_THEMES: Record<UserRole, RoleThemeConfig> = {
     activeNavClass: 'bg-[#1D4ED8] text-white shadow-sm font-semibold',
     activeMobileNavClass: 'text-[#1D4ED8] font-extrabold bg-[#EFF6FF] shadow-xs border-b-2 border-[#1D4ED8]',
     buttonPrimaryClass: 'bg-[#1D4ED8] hover:bg-[#1E40AF] text-white focus:ring-[#38BDF8]',
+    topbarSolid: 'bg-[#0F172A] border-b border-slate-800',
   },
   district_admin: {
     role: 'district_admin',
@@ -105,5 +108,6 @@ export const ROLE_THEMES: Record<UserRole, RoleThemeConfig> = {
     activeNavClass: 'bg-[#047857] text-white shadow-sm font-semibold',
     activeMobileNavClass: 'text-[#047857] font-extrabold bg-[#D1FAE5] shadow-xs border-b-2 border-[#047857]',
     buttonPrimaryClass: 'bg-[#047857] hover:bg-[#065F46] text-white focus:ring-[#34D399]',
+    topbarSolid: 'bg-[#064E3B] border-b border-emerald-950',
   },
 };

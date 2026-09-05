@@ -129,7 +129,7 @@ export const patientService = {
       diagnosedDate: new Date().toISOString().split('T')[0],
       status: 'Controlled' as const,
       treatingDoctor: 'Primary Care Physician',
-      hospital: 'Empaneled Facility',
+      hospital: 'Partner Healthcare Facility',
       notes: 'Reported during registration'
     }));
 

@@ -120,7 +120,7 @@ export const CareSetuPatientRecord: React.FC = () => {
 
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-300 bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-700">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>ABDM Encrypted Gateway</span>
+          <span>Encrypted Health Gateway</span>
         </div>
       </div>
 
@@ -286,7 +286,7 @@ export const CareSetuPatientRecord: React.FC = () => {
         <Card>
           <CardHeader
             title="Consolidated Medical History & Consultation Encounters"
-            subtitle="Encrypted timeline from empaneled district hospitals"
+            subtitle="Encrypted timeline from participating district hospitals"
           />
           <CardContent className="space-y-4">
             {patientRecords.map((rec) => (
@@ -410,7 +410,7 @@ export const CareSetuPatientRecord: React.FC = () => {
         <Card>
           <CardHeader
             title="Hospital Visits & OPD Consultation History"
-            subtitle="Previous visits across empaneled district healthcare facilities"
+            subtitle="Previous visits across participating district healthcare facilities"
           />
           <CardContent className="space-y-3">
             {patientAppointments.map((appt: Appointment) => (

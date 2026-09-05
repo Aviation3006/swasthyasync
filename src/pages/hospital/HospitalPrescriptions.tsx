@@ -153,7 +153,7 @@ export const HospitalPrescriptions: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <PageHeader
         title="Clinical Digital Prescription (Rx) Builder"
-        subtitle="Issue digitally signed e-prescriptions integrated with ABDM and Fair Price Generic Pharmacy counters"
+        subtitle="Issue digitally signed e-prescriptions integrated with pharmacy counters"
         breadcrumbs={[
           { label: 'Hospital Portal', path: '/hospital' },
           { label: 'Prescriptions' }
@@ -452,7 +452,7 @@ export const HospitalPrescriptions: React.FC = () => {
             <div className="flex items-start justify-between pb-3 border-b border-slate-200">
               <div>
                 <h3 className="text-base font-bold text-slate-900">{previewRx.hospitalName}</h3>
-                <p className="text-xs text-slate-500">Empaneled Healthcare Clinical Network</p>
+                <p className="text-xs text-slate-500">Clinical Healthcare Network</p>
                 <p className="text-xs font-semibold text-health-800 mt-1">
                   Doctor: {previewRx.doctorName} ({previewRx.doctorRegistrationNo})
                 </p>
@@ -517,7 +517,7 @@ export const HospitalPrescriptions: React.FC = () => {
               <div className="text-right">
                 <div className="w-24 h-8 border-b border-dashed border-slate-400 mb-1" />
                 <span className="text-[10px] text-slate-500 block font-mono">{previewRx.doctorName}</span>
-                <span className="text-[9px] text-emerald-600 font-bold block">✓ ABDM Verified Digital Sign</span>
+                <span className="text-[9px] text-emerald-600 font-bold block">✓ Verified Digital Signature</span>
               </div>
             </div>
           </div>

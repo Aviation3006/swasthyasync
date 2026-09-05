@@ -21,7 +21,7 @@ export const HospitalReports: React.FC = () => {
       patient: 'Rameshwar Patil (ABHA: 91-0492-1192-4412)',
       date: '2026-02-27',
       facility: 'Aundh District Hospital Central Laboratory',
-      status: 'ABDM Verified',
+      status: 'Verified',
       summary: 'Hemoglobin: 14.2 g/dL (Normal). Platelet count: 240,000 /mcL (Normal). WBC: 7,200 /mcL.',
       parameters: [
         { name: 'Hemoglobin', value: '14.2 g/dL', range: '13.0 - 17.0 g/dL', status: 'Normal' },
@@ -35,7 +35,7 @@ export const HospitalReports: React.FC = () => {
       patient: 'Sunita Sharma (ABHA: 91-8841-3920-5591)',
       date: '2026-02-25',
       facility: 'District Hospital Pathology Department',
-      status: 'ABDM Verified',
+      status: 'Verified',
       summary: 'Total Cholesterol: 185 mg/dL. HDL: 48 mg/dL. LDL: 110 mg/dL. Triglycerides: 135 mg/dL.',
       parameters: [
         { name: 'Total Cholesterol', value: '185 mg/dL', range: '< 200 mg/dL', status: 'Normal' },
@@ -83,7 +83,7 @@ export const HospitalReports: React.FC = () => {
                   icon={<FileText className="w-5 h-5 text-sky-600" />}
                   title={r.title}
                   subtitle={`${r.patient} • ${r.date}`}
-                  action={<StatusBadge variant="success" size="sm">{t.verifiedAbdm || "ABDM Verified"}</StatusBadge>}
+                  action={<StatusBadge variant="success" size="sm">{t.verifiedAbdm || "Verified"}</StatusBadge>}
                 />
                 <CardContent className="space-y-3 pt-2">
                   <p className="text-xs text-slate-600">{r.summary}</p>

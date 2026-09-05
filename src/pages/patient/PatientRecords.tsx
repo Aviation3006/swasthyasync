@@ -334,7 +334,7 @@ export const PatientRecords: React.FC = () => {
             <div className="p-3 bg-slate-900 text-slate-300 rounded-xl text-xs space-y-1.5 font-mono min-w-0">
               <div className="flex items-center justify-between text-emerald-400 font-sans font-semibold flex-wrap gap-1">
                 <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4" /> Digitally Signed ABDM Document
+                  <ShieldCheck className="w-4 h-4" /> Digitally Signed Health Document
                 </span>
                 <span className="text-[10px] uppercase">SHA-256 Validated</span>
               </div>

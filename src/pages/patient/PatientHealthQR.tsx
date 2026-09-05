@@ -65,7 +65,7 @@ export const PatientHealthQR: React.FC = () => {
     careSetuId: careSetuId,
     patientName: patient.name || user?.name || 'Citizen User',
     token: `sec_csu_${patient.id}_${Date.now().toString(36)}`,
-    gatewayUrl: `https://swasthyasync.gov.in/caresetu/record?id=${careSetuId}`,
+    gatewayUrl: `${typeof window !== 'undefined' ? window.location.origin : 'https://app.swasthyasync.org'}/caresetu/record?id=${careSetuId}`,
     authRoleRequired: 'healthcare_provider',
     emergencyAccessEnabled: consent.allowEmergencyAccess,
     issuedAt: issueDate
@@ -222,10 +222,10 @@ export const PatientHealthQR: React.FC = () => {
             <div className="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
               <div className="flex items-center gap-1.5 text-slate-300">
                 <Lock className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span>Encrypted ABDM-Compliant Healthcare Gateway</span>
+                <span>Encrypted Healthcare Gateway</span>
               </div>
               <div className="text-[10px] font-mono text-slate-500">
-                AUTH: GOV-IN-CSU-2026
+                AUTH: SHA256-CSU-2026
               </div>
             </div>
           </div>
@@ -344,7 +344,7 @@ export const PatientHealthQR: React.FC = () => {
 
               <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
                 <div>
-                  <span className="font-bold text-xs text-slate-900 block">Share with Empaneled Hospitals</span>
+                  <span className="font-bold text-xs text-slate-900 block">Share with Partner Hospitals</span>
                   <p className="text-[11px] text-slate-500">Grant authorized network doctors instant access upon QR scan</p>
                 </div>
                 <ToggleSwitch

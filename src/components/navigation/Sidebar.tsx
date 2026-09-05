@@ -23,8 +23,7 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
-  HeartPulse,
-  ShieldCheck
+  HeartPulse
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -83,23 +82,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`h-full flex flex-col ${theme.sidebarBg} text-slate-100 border-r ${theme.sidebarBorder} transition-all duration-300 shadow-xl ${
+      className={`h-full flex flex-col ${theme.sidebarBg} text-slate-100 border-r ${theme.sidebarBorder} transition-all duration-200 shadow-xs ${
         isCollapsed ? 'w-18' : 'w-64'
       } ${className}`}
     >
       {/* Navigation Section */}
-      <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+      <div className="flex-1 py-3.5 px-3 space-y-1 overflow-y-auto">
         {/* Role Portal Header Indicator */}
-        <div className="px-3 pb-3 mb-2 border-b border-white/10 flex items-center justify-between">
+        <div className="px-2 pb-3 mb-2 border-b border-white/10 flex items-center justify-between">
           {!isCollapsed ? (
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase bg-white/20 text-white border border-white/30 shadow-xs">
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-widest uppercase bg-white/15 text-white border border-white/20 shadow-xs">
                 {theme.portalBadgeText}
               </span>
             </div>
           ) : (
             <div className="w-full flex justify-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-white/80 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-white/80" />
             </div>
           )}
         </div>
@@ -113,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               end={item.exact}
               onClick={onNavigate}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive
                     ? theme.sidebarActive
                     : `text-white/80 ${theme.sidebarHover}`
@@ -121,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }
               title={isCollapsed ? item.label : undefined}
             >
-              <Icon className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
+              <Icon className="w-4.5 h-4.5 flex-shrink-0" />
               {!isCollapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           );
@@ -130,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Emergency & Support Card (if not collapsed) */}
       {!isCollapsed && (
-        <div className="p-3 mx-3 mb-4 rounded-xl bg-black/25 border border-white/10 text-xs backdrop-blur-xs">
+        <div className="p-3 mx-3 mb-3 rounded-lg bg-black/20 border border-white/10 text-xs">
           <div className="flex items-center gap-2 text-rose-300 font-semibold mb-1">
             <HeartPulse className="w-4 h-4 text-rose-400" />
             <span>Emergency 24x7</span>
@@ -144,10 +143,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Collapse Toggle Footer */}
       {onToggleCollapse && (
-        <div className="p-3 border-t border-white/10 flex items-center justify-end">
+        <div className="p-2.5 border-t border-white/10 flex items-center justify-end">
           <button
             onClick={onToggleCollapse}
-            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+            className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

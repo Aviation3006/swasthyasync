@@ -3,8 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { Navbar } from '../components/navigation/Navbar';
 import { Sidebar } from '../components/navigation/Sidebar';
 import { MobileNav } from '../components/navigation/MobileNav';
-import { RoleSwitcherBanner } from '../components/navigation/RoleSwitcherBanner';
-
 import { useTheme } from '../context/ThemeContext';
 
 export const PatientLayout: React.FC = () => {
@@ -18,10 +16,7 @@ export const PatientLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-theme-background flex flex-col transition-colors duration-200">
-      {/* Top Demo Banner */}
-      <RoleSwitcherBanner />
-
-      {/* Global Navbar */}
+      {/* Global Clinical Navbar with integrated role & switch account controls */}
       <Navbar
         onToggleSidebar={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         isSidebarOpen={isMobileMenuOpen}
@@ -41,7 +36,7 @@ export const PatientLayout: React.FC = () => {
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-50 lg:hidden flex">
             <div
-              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+              className="fixed inset-0 bg-slate-900/60"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             <div className="relative z-10 w-72 max-w-[80vw] h-full overflow-hidden shadow-2xl">

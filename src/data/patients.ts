@@ -173,7 +173,7 @@ export const mockPatientDirectory: Patient[] = [
     gender: 'Male',
     bloodGroup: 'AB+',
     phone: '+91 94230 19482',
-    email: 'vitthal.kale@demo.gov.in',
+    email: 'vitthal.kale@demo.swasthyasync.in',
     aadhaarMasked: 'XXXX-XXXX-3391',
     address: {
       village: 'Khed Shivapur',
@@ -235,7 +235,7 @@ export const mockPatientDirectory: Patient[] = [
     gender: 'Male',
     bloodGroup: 'A+',
     phone: '+91 98811 44520',
-    email: 'rahul.more@demo.gov.in',
+    email: 'rahul.more@demo.swasthyasync.in',
     aadhaarMasked: 'XXXX-XXXX-6612',
     address: {
       village: 'Chakan',

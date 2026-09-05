@@ -68,7 +68,7 @@ export const DistrictAlerts: React.FC = () => {
       category: alertCategory,
       severity: alertSeverity,
       affectedTalukas: talukaList.length > 0 ? talukaList : [userLoc?.district ? `${userLoc?.district} District Wide` : 'District Wide'],
-      affectedHospitals: ['All Empaneled District & Sub-District Hospitals'],
+      affectedHospitals: ['All Partner District & Sub-District Hospitals'],
       description: alertDesc.trim(),
       actionRequired: actionReq.trim() || 'Immediate compliance with state public health protocols.',
       status: 'Active',

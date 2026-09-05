@@ -130,10 +130,10 @@ async function runTests() {
 
   if (passed === total) {
     console.log('🎉 ALL VOICE SYMPTOM LOGGER DASHBOARD TESTS PASSED (100%)!');
-    process.exit(0);
+    process.exitCode = 0;
   } else {
     console.error('❌ SOME TESTS FAILED');
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 

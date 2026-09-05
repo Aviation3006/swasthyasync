@@ -24,14 +24,14 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   if (variant === 'pills') {
     return (
-      <div className={`flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 overflow-x-auto no-scrollbar max-w-full ${className}`}>
+      <div className={`flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-lg border border-slate-200/80 overflow-x-auto no-scrollbar max-w-full ${className}`}>
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-1.5 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-all focus:outline-none ${
+              className={`flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary select-none ${
                 isActive
                   ? 'bg-white text-theme-primary shadow-sm font-semibold border-b-2 border-theme-primary'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -41,7 +41,7 @@ export const Tabs: React.FC<TabsProps> = ({
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span
-                  className={`px-1.5 py-0.5 text-xs rounded-full ${
+                  className={`px-1.5 py-0.5 text-micro rounded-full tabular-nums font-mono ${
                     isActive
                       ? 'bg-theme-primary-light text-theme-text-accent font-bold'
                       : 'bg-slate-200 text-slate-600'
@@ -66,7 +66,7 @@ export const Tabs: React.FC<TabsProps> = ({
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className={`flex items-center gap-2 py-3 px-1 border-b-2 text-sm font-medium transition-colors focus:outline-none whitespace-nowrap ${
+              className={`flex items-center gap-2 py-3 px-1 border-b-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary whitespace-nowrap select-none ${
                 isActive
                   ? 'border-theme-primary text-theme-primary font-semibold'
                   : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
@@ -76,7 +76,7 @@ export const Tabs: React.FC<TabsProps> = ({
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span
-                  className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                  className={`px-2 py-0.5 text-micro rounded-full font-medium tabular-nums font-mono ${
                     isActive
                       ? 'bg-theme-primary-light text-theme-text-accent font-bold'
                       : 'bg-slate-100 text-slate-600'

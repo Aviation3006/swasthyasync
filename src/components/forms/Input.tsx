@@ -18,12 +18,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           disabled={disabled}
-          className={`w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed ${
+          className={`w-full rounded-md border bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 min-h-[38px] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed ${
             leftIcon ? 'pl-9' : ''
           } ${rightIcon ? 'pr-9' : ''} ${
             error
               ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200'
-              : 'border-slate-300 focus:border-theme-primary focus:ring-theme-primary-light'
+              : 'border-slate-300 hover:border-slate-400 focus:border-theme-primary focus:ring-theme-primary-light'
           } ${className}`}
           {...props}
         />

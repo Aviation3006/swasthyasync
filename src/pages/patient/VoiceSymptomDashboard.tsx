@@ -177,7 +177,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
         });
       }
 
-      // 2. Add an ABDM clinical note to recordService
+      // 2. Add clinical note to recordService
       recordService.addRecord({
         patientId: primaryPatient.id,
         recordType: 'Medical Visit',

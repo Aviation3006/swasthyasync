@@ -110,7 +110,7 @@ export function DataTable<T>({
                   setCurrentPage(1);
                 }}
                 placeholder={searchPlaceholder}
-                className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3.5 py-1.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-health-500 focus:border-health-500"
+                className="w-full rounded-md border border-slate-300 hover:border-slate-400 bg-white pl-9 pr-3.5 py-1.5 text-sm text-slate-800 placeholder:text-slate-400 min-h-[36px] focus:outline-none focus:ring-2 focus:ring-theme-primary focus:border-theme-primary shadow-subtle transition-all"
               />
             </div>
           )}
@@ -122,13 +122,13 @@ export function DataTable<T>({
       <div className="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-            <thead className="bg-slate-50/80 font-semibold text-slate-700">
+            <thead className="bg-slate-50/90 font-semibold text-slate-700 border-b border-slate-200">
               <tr>
                 {columns.map((col, idx) => (
                   <th
                     key={idx}
                     scope="col"
-                    className={`px-4 sm:px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-600 ${
+                    className={`px-4 sm:px-5 py-3 text-caption-sm font-semibold uppercase tracking-wider text-slate-600 ${
                       col.className || ''
                     } ${col.sortable ? 'cursor-pointer select-none hover:text-slate-900' : ''}`}
                     onClick={() => col.sortable && handleSort(col)}
@@ -151,12 +151,12 @@ export function DataTable<T>({
                     onClick={() => onRowClick && onRowClick(row)}
                     className={`transition-colors ${
                       onRowClick
-                        ? 'cursor-pointer hover:bg-health-50/40'
-                        : 'hover:bg-slate-50/70'
+                        ? 'cursor-pointer hover:bg-slate-50/80 active:bg-slate-100/70'
+                        : 'hover:bg-slate-50/60'
                     }`}
                   >
                     {columns.map((col, idx) => (
-                      <td key={idx} className={`px-4 sm:px-6 py-3.5 text-slate-700 text-sm ${col.className || ''}`}>
+                      <td key={idx} className={`px-4 sm:px-5 py-3 text-slate-700 text-sm ${col.className || ''}`}>
                         {col.cell
                           ? col.cell(row)
                           : typeof col.accessor === 'function'
@@ -181,8 +181,8 @@ export function DataTable<T>({
 
         {/* Pagination Footer */}
         {filteredData.length > pageSize && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-3 border-t border-slate-100 bg-slate-50/50 text-xs text-slate-500">
-            <div>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-5 py-2.5 border-t border-slate-200 bg-slate-50/70 text-xs text-slate-500">
+            <div className="tabular-nums font-mono text-[11px] sm:text-xs">
               Showing <span className="font-semibold text-slate-700">{(currentPage - 1) * pageSize + 1}</span> to{' '}
               <span className="font-semibold text-slate-700">
                 {Math.min(currentPage * pageSize, filteredData.length)}
@@ -193,18 +193,18 @@ export function DataTable<T>({
               <button
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                className="p-1.5 rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="px-2 font-medium text-slate-700">
+              <span className="px-2 font-medium text-slate-700 tabular-nums font-mono text-xs">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="p-1.5 rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary"
                 aria-label="Next page"
               >
                 <ChevronRight className="w-4 h-4" />

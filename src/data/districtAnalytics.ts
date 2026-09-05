@@ -155,7 +155,7 @@ export const mockHealthPrograms: HealthProgram[] = [
     targetCount: 1480000,
     coveragePercentage: 90.5,
     status: 'Active',
-    description: 'Cashless treatment up to ₹5,00,000 per family per year across empaneled public and private hospitals.'
+    description: 'Cashless treatment up to ₹5,00,000 per family per year across partner healthcare facilities.'
   },
   {
     id: 'prog-02',
