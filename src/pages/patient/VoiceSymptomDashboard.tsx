@@ -28,7 +28,8 @@ import { recordService } from '../../services/recordService';
 import { patientService } from '../../services/patientService';
 import { 
   SpeechRecognitionController, 
-  isSpeechRecognitionSupported 
+  isSpeechRecognitionSupported,
+  SpeechControllerStatus
 } from '../../utils/speechRecognition';
 import { VoiceSymptomAnalysisOutput } from '../../types/ai';
 
@@ -48,7 +49,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
 
   // Speech Recognition States
   const [isSupported, setIsSupported] = useState(true);
-  const [isListening, setIsListening] = useState(false);
+  const [recognitionStatus, setRecognitionStatus] = useState<SpeechControllerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [transcript, setTranscript] = useState('');
 
@@ -58,6 +59,8 @@ export const VoiceSymptomDashboard: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
 
   const controllerRef = useRef<SpeechRecognitionController | null>(null);
+  const baseTranscriptRef = useRef('');
+  const sessionFinalRef = useRef('');
 
   useEffect(() => {
     const supported = isSpeechRecognitionSupported();
@@ -75,9 +78,10 @@ export const VoiceSymptomDashboard: React.FC = () => {
   // Update speech controller language if user toggles selector
   const handleLanguageChange = (lang: string) => {
     setSelectedLanguage(lang);
-    if (isListening && controllerRef.current) {
+    setErrorMessage(null);
+    if (recognitionStatus === 'listening' && controllerRef.current) {
       controllerRef.current.stop();
-      setIsListening(false);
+      setRecognitionStatus('idle');
     }
   };
 
@@ -88,32 +92,39 @@ export const VoiceSymptomDashboard: React.FC = () => {
       return;
     }
 
+    baseTranscriptRef.current = transcript.trim();
+    sessionFinalRef.current = '';
+    setRecognitionStatus('starting');
+
     const started = controllerRef.current.start({
       language: selectedLanguage,
       onStart: () => {
-        setIsListening(true);
+        setRecognitionStatus('listening');
       },
-      onInterim: (interim) => {
-        // Show interim text dynamically
-        setTranscript((prev) => {
-          // If previous was clean, append
-          return prev ? `${prev} ${interim}` : interim;
-        });
+      onInterim: (interimText) => {
+        const base = baseTranscriptRef.current;
+        const finalChunk = sessionFinalRef.current;
+        const parts = [base, finalChunk, interimText].filter(Boolean);
+        setTranscript(parts.join(' '));
       },
       onResult: (finalText) => {
-        setTranscript(finalText);
+        sessionFinalRef.current = finalText;
+        const base = baseTranscriptRef.current;
+        const parts = [base, finalText].filter(Boolean);
+        setTranscript(parts.join(' '));
       },
       onEnd: () => {
-        setIsListening(false);
+        setRecognitionStatus('idle');
+        baseTranscriptRef.current = transcript.trim();
       },
-      onError: (err) => {
-        setIsListening(false);
-        setErrorMessage(err);
+      onError: (userFriendlyMsg) => {
+        setRecognitionStatus('idle');
+        setErrorMessage(userFriendlyMsg);
       }
     });
 
     if (!started && !errorMessage) {
-      setErrorMessage('Could not initialize microphone. Please check permissions.');
+      setRecognitionStatus('idle');
     }
   };
 
@@ -121,13 +132,26 @@ export const VoiceSymptomDashboard: React.FC = () => {
     if (controllerRef.current) {
       controllerRef.current.stop();
     }
-    setIsListening(false);
+    setRecognitionStatus('idle');
+    baseTranscriptRef.current = transcript.trim();
+  };
+
+  const handleTranscriptChange = (newText: string) => {
+    setTranscript(newText);
+    baseTranscriptRef.current = newText.trim();
   };
 
   const handleClearTranscript = () => {
+    if (controllerRef.current) {
+      controllerRef.current.stop();
+    }
+    setRecognitionStatus('idle');
     setTranscript('');
+    baseTranscriptRef.current = '';
+    sessionFinalRef.current = '';
     setAnalysisResult(null);
     setIsSaved(false);
+    setErrorMessage(null);
     showInfo('Transcript Cleared', 'You can speak or type a new symptom description.');
   };
 
@@ -246,7 +270,8 @@ export const VoiceSymptomDashboard: React.FC = () => {
           {/* Section 1: Speak Your Symptoms */}
           <SpeechRecognitionButton
             isSupported={isSupported}
-            isListening={isListening}
+            isListening={recognitionStatus === 'listening'}
+            isStarting={recognitionStatus === 'starting'}
             errorMessage={errorMessage}
             selectedLanguage={selectedLanguage}
             onLanguageChange={handleLanguageChange}
@@ -258,7 +283,7 @@ export const VoiceSymptomDashboard: React.FC = () => {
           <SymptomTranscriptEditor
             transcript={transcript}
             isAnalyzing={isAnalyzing}
-            onTranscriptChange={setTranscript}
+            onTranscriptChange={handleTranscriptChange}
             onClear={handleClearTranscript}
             onAnalyze={handleAnalyzeSymptoms}
           />

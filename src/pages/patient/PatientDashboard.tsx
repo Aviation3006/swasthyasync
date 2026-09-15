@@ -25,7 +25,6 @@ import {
   Building2,
   Bell,
   Mic,
-  ArrowUpRight,
   Sun,
   Sunrise,
   Moon,
@@ -205,95 +204,70 @@ export const PatientDashboard: React.FC = () => {
       </section>
 
       {/* 2. Structured Healthcare Actions (Calm clinical surfaces with purposeful hierarchy) */}
-      <section aria-label="Clinical Services & Actions" className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
-        
-        {/* Assistive Intake Card: Voice Symptom Logger */}
-        <div className="lg:col-span-6 bg-white text-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200 shadow-card flex flex-col justify-between space-y-3">
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] font-bold uppercase tracking-wider">
-                <Mic className="w-3 h-3 text-indigo-600" />
-                Clinical Speech AI
-              </span>
-              <span className="text-[11px] text-slate-500 font-medium">Hindi • Marathi • English</span>
+      <section aria-label="Clinical Services & Actions" className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <Link to="/patient/records" className="group">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
+            <div className="space-y-1">
+              <div className="w-8 h-8 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center mb-1">
+                <FileText className="w-4 h-4 text-slate-600" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navRecords}</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">{t.medicalRecordsTitle}</p>
             </div>
-            <h3 className="text-base font-bold text-slate-900 tracking-tight">
-              {t.voiceSymptomLogger || "Voice Symptom Logger"}
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Speak your symptoms naturally in your regional language. Structured clinical summaries are generated for your next OPD doctor consultation.
-            </p>
+            <div className="pt-2 text-[11px] font-semibold text-slate-600 flex items-center gap-0.5 group-hover:text-slate-900">
+              <span>{records.length} {t.allRecords || "Records"}</span>
+              <ChevronRight className="w-3 h-3" />
+            </div>
           </div>
+        </Link>
 
-          <div className="pt-1 flex items-center justify-between">
-            <Link to="/patient/symptoms/voice">
-              <Button
-                variant="primary"
-                size="sm"
-                leftIcon={<Mic className="w-3.5 h-3.5" />}
-                className="bg-indigo-700 hover:bg-indigo-800 text-white font-semibold text-xs px-3.5 py-1.5 shadow-xs"
-              >
-                Record Symptoms
-              </Button>
-            </Link>
-            <Link to="/patient/symptoms" className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1 font-medium transition-colors">
-              <span>{t.navSymptoms}</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
+        <Link to="/patient/reports" className="group">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
+            <div className="space-y-1">
+              <div className="w-8 h-8 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center mb-1">
+                <FileCheck2 className="w-4 h-4 text-slate-600" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navReports}</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">{t.recordExplainerTitle}</p>
+            </div>
+            <div className="pt-2 text-[11px] font-semibold text-slate-600 flex items-center gap-0.5 group-hover:text-slate-900">
+              <span>Lab Summaries</span>
+              <ChevronRight className="w-3 h-3" />
+            </div>
           </div>
-        </div>
+        </Link>
 
-        {/* Clean Structured Navigation Utilities (Records, Diagnostic Explainer, Symptom Diary) */}
-        <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Link to="/patient/records" className="group">
-            <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
-              <div className="space-y-1">
-                <div className="w-8 h-8 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center mb-1">
-                  <FileText className="w-4 h-4 text-slate-600" />
-                </div>
-                <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navRecords}</h4>
-                <p className="text-[11px] text-slate-500 leading-tight">{t.medicalRecordsTitle}</p>
+        <Link to="/patient/symptoms" className="group">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
+            <div className="space-y-1">
+              <div className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center mb-1">
+                <Stethoscope className="w-4 h-4 text-emerald-700" />
               </div>
-              <div className="pt-2 text-[11px] font-semibold text-slate-600 flex items-center gap-0.5 group-hover:text-slate-900">
-                <span>{records.length} {t.allRecords || "Records"}</span>
-                <ChevronRight className="w-3 h-3" />
-              </div>
+              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navSymptoms}</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">{t.symptomCheckerTitle || "Symptom Tracker"}</p>
             </div>
-          </Link>
-
-          <Link to="/patient/reports" className="group">
-            <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
-              <div className="space-y-1">
-                <div className="w-8 h-8 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center mb-1">
-                  <FileCheck2 className="w-4 h-4 text-slate-600" />
-                </div>
-                <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navReports}</h4>
-                <p className="text-[11px] text-slate-500 leading-tight">{t.recordExplainerTitle}</p>
-              </div>
-              <div className="pt-2 text-[11px] font-semibold text-slate-600 flex items-center gap-0.5 group-hover:text-slate-900">
-                <span>Lab Summaries</span>
-                <ChevronRight className="w-3 h-3" />
-              </div>
+            <div className="pt-2 text-[11px] font-semibold text-emerald-700 flex items-center gap-0.5 group-hover:text-emerald-800">
+              <span>View Diary</span>
+              <ChevronRight className="w-3 h-3" />
             </div>
-          </Link>
+          </div>
+        </Link>
 
-          <Link to="/patient/symptoms" className="group">
-            <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
-              <div className="space-y-1">
-                <div className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center mb-1">
-                  <Stethoscope className="w-4 h-4 text-emerald-700" />
-                </div>
-                <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.navSymptoms}</h4>
-                <p className="text-[11px] text-slate-500 leading-tight">{t.symptomCheckerTitle || "Symptom Tracker"}</p>
+        <Link to="/patient/symptoms/voice" className="group">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-card h-full flex flex-col justify-between hover:border-slate-300 transition-colors">
+            <div className="space-y-1">
+              <div className="w-8 h-8 rounded-md bg-indigo-50 text-indigo-700 flex items-center justify-center mb-1">
+                <Mic className="w-4 h-4 text-indigo-700" />
               </div>
-              <div className="pt-2 text-[11px] font-semibold text-emerald-700 flex items-center gap-0.5 group-hover:text-emerald-800">
-                <span>View Diary</span>
-                <ChevronRight className="w-3 h-3" />
-              </div>
+              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">{t.voiceSymptomLogger || "Voice Logger"}</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">{t.voiceLanguage || "Clinical Speech AI"}</p>
             </div>
-          </Link>
-        </div>
-
+            <div className="pt-2 text-[11px] font-semibold text-indigo-700 flex items-center gap-0.5 group-hover:text-indigo-800">
+              <span>Open Logger</span>
+              <ChevronRight className="w-3 h-3" />
+            </div>
+          </div>
+        </Link>
       </section>
 
       {/* 3. Main Two-Column Clinical Information Grid */}

@@ -30,11 +30,13 @@ export const SymptomTranscriptEditor: React.FC<SymptomTranscriptEditorProps> = (
         action={
           transcript ? (
             <button
+              type="button"
               onClick={onClear}
               className="text-xs text-slate-500 hover:text-rose-600 flex items-center gap-1 transition-colors font-medium"
+              aria-label="Clear transcript"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>{t.cancel || 'Clear'}</span>
+              <span>Clear</span>
             </button>
           ) : undefined
         }

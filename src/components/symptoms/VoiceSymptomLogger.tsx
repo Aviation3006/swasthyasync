@@ -62,11 +62,15 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
   }, [appLanguage]);
 
   const handleStartListening = () => {
+    if (isListening) return;
     setErrorMessage(null);
     setLiveTranscript('');
     setFinalTranscript('');
 
-    if (!controllerRef.current) return;
+    if (!controllerRef.current) {
+      setErrorMessage('Speech recognition is unavailable on this device. Please type below.');
+      return;
+    }
 
     const started = controllerRef.current.start({
       language: selectedLang,
@@ -90,7 +94,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
     });
 
     if (!started && !errorMessage) {
-      setErrorMessage('Could not initiate speech recognition.');
+      setIsListening(false);
     }
   };
 
