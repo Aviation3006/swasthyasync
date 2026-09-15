@@ -16,7 +16,7 @@ dotenv2.config();
 dotenv2.config({ path: path2.resolve(process.cwd(), ".env.production") });
 function isAllowedOrigin(origin) {
   if (!origin) return true;
-  const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim().toLowerCase()) : [];
+  const envOrigins = "https://swasthyasync-dusky.vercel.app" ? "https://swasthyasync-dusky.vercel.app".split(",").map((o) => o.trim().toLowerCase()) : [];
   const lower = origin.toLowerCase();
   if (envOrigins.includes(lower)) return true;
   if (lower.startsWith("http://localhost:") || lower.startsWith("http://127.0.0.1:") || lower.startsWith("https://localhost:")) {

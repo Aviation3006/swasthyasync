@@ -26,7 +26,11 @@ async function build() {
       platform: 'node',
       format: 'esm',
       target: 'node20',
-      external: ['@google/genai', '@supabase/supabase-js', 'dotenv']
+      external: ['@google/genai', '@supabase/supabase-js', 'dotenv'],
+      define: {
+        'process.env.VITE_ENABLE_DEMO_MODE': '"true"',
+        'process.env.ALLOWED_ORIGINS': '"https://swasthyasync-dusky.vercel.app"'
+      }
     });
 
     const stat = fs.statSync(destPath);

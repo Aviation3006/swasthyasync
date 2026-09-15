@@ -171,7 +171,7 @@ function getServerSupabase() {
 }
 function isAllowedOrigin(origin) {
   if (!origin) return true;
-  const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim().toLowerCase()) : [];
+  const envOrigins = "https://swasthyasync-dusky.vercel.app" ? "https://swasthyasync-dusky.vercel.app".split(",").map((o) => o.trim().toLowerCase()) : [];
   const lower = origin.toLowerCase();
   if (envOrigins.includes(lower)) return true;
   if (lower.startsWith("http://localhost:") || lower.startsWith("http://127.0.0.1:") || lower.startsWith("https://localhost:")) {
@@ -209,7 +209,7 @@ function applyCorsHeaders(req, res) {
   return false;
 }
 async function authenticateApiRequest(req) {
-  const isServerDemoMode = process.env.VITE_ENABLE_DEMO_MODE === "true";
+  const isServerDemoMode = true;
   const authHeader = req.headers?.authorization || req.headers?.Authorization;
   let token;
   if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
