@@ -115,7 +115,8 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-charts': ['recharts'],
-          'vendor-icons': ['lucide-react', 'qrcode.react']
+          'vendor-icons': ['lucide-react', 'qrcode.react'],
+          'vendor-leaflet': ['leaflet']
         }
       }
     }

@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { translations, Translations, TranslationKey } from './translations';
+import { translations, Translations, TranslationKey, loadLocale, isLocaleLoaded } from './translations';
 import { Language } from '../types/common';
 
 // Dot-notation and semantic aliases mapping to canonical translation keys
@@ -33,6 +33,23 @@ const KEY_ALIASES: Record<string, keyof Translations> = {
 export function useTranslation() {
   const { language, setLanguage } = useAuth();
   const currentLang: Language = language || 'en';
+  const [, setVersion] = useState(0);
+
+  // Dynamic async locale loader for non-English languages
+  useEffect(() => {
+    if (currentLang !== 'en' && !isLocaleLoaded(currentLang)) {
+      let isMounted = true;
+      loadLocale(currentLang).then(() => {
+        if (isMounted) {
+          setVersion(v => v + 1);
+        }
+      });
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [currentLang]);
+
   const currentDict: Translations = translations[currentLang] || translations.en;
 
   // Automate RTL for Urdu and LTR for other 22 languages

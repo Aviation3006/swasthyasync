@@ -11,42 +11,60 @@ import { PatientLayout } from './layouts/PatientLayout';
 import { HospitalLayout } from './layouts/HospitalLayout';
 import { DistrictAdminLayout } from './layouts/DistrictAdminLayout';
 
-// Pages - Auth
-import { LoginPage } from './pages/auth/LoginPage';
-import { SignupPage } from './pages/auth/SignupPage';
-import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
-import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
-import { NotFound } from './pages/NotFound';
+// Pages - Auth (Lazy Loaded)
+const LoginPage = React.lazy(() => import('./pages/auth/LoginPage').then(m => ({ default: m.LoginPage })));
+const SignupPage = React.lazy(() => import('./pages/auth/SignupPage').then(m => ({ default: m.SignupPage })));
+const ForgotPasswordPage = React.lazy(() => import('./pages/auth/ForgotPasswordPage').then(m => ({ default: m.ForgotPasswordPage })));
+const ResetPasswordPage = React.lazy(() => import('./pages/auth/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
+const NotFound = React.lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
 
-// Pages - Patient
-import { PatientDashboard } from './pages/patient/PatientDashboard';
-import { PatientProfile } from './pages/patient/PatientProfile';
-import { PatientRecords } from './pages/patient/PatientRecords';
-import { PatientAppointments } from './pages/patient/PatientAppointments';
-import { PatientSymptoms } from './pages/patient/PatientSymptoms';
-import { VoiceSymptomDashboard } from './pages/patient/VoiceSymptomDashboard';
-import { PatientReports } from './pages/patient/PatientReports';
-import { PatientHealthQR } from './pages/patient/PatientHealthQR';
-import { PatientNotifications } from './pages/patient/PatientNotifications';
-import { PatientSettings } from './pages/patient/PatientSettings';
+// Pages - Patient (Lazy Loaded)
+const PatientDashboard = React.lazy(() => import('./pages/patient/PatientDashboard').then(m => ({ default: m.PatientDashboard })));
+const PatientProfile = React.lazy(() => import('./pages/patient/PatientProfile').then(m => ({ default: m.PatientProfile })));
+const PatientRecords = React.lazy(() => import('./pages/patient/PatientRecords').then(m => ({ default: m.PatientRecords })));
+const PatientAppointments = React.lazy(() => import('./pages/patient/PatientAppointments').then(m => ({ default: m.PatientAppointments })));
+const PatientSymptoms = React.lazy(() => import('./pages/patient/PatientSymptoms').then(m => ({ default: m.PatientSymptoms })));
+const VoiceSymptomDashboard = React.lazy(() => import('./pages/patient/VoiceSymptomDashboard').then(m => ({ default: m.VoiceSymptomDashboard })));
+const PatientReports = React.lazy(() => import('./pages/patient/PatientReports').then(m => ({ default: m.PatientReports })));
+const PatientHealthQR = React.lazy(() => import('./pages/patient/PatientHealthQR').then(m => ({ default: m.PatientHealthQR })));
+const PatientNotifications = React.lazy(() => import('./pages/patient/PatientNotifications').then(m => ({ default: m.PatientNotifications })));
+const PatientSettings = React.lazy(() => import('./pages/patient/PatientSettings').then(m => ({ default: m.PatientSettings })));
 
-// Pages - Hospital
-import { HospitalDashboard } from './pages/hospital/HospitalDashboard';
-import { HospitalPatients } from './pages/hospital/HospitalPatients';
-import { HospitalAppointments } from './pages/hospital/HospitalAppointments';
-import { HospitalQueue } from './pages/hospital/HospitalQueue';
-import { HospitalPrescriptions } from './pages/hospital/HospitalPrescriptions';
-import { HospitalReports } from './pages/hospital/HospitalReports';
-import { CareSetuPatientRecord } from './pages/hospital/CareSetuPatientRecord';
+// Pages - Hospital (Lazy Loaded)
+const HospitalDashboard = React.lazy(() => import('./pages/hospital/HospitalDashboard').then(m => ({ default: m.HospitalDashboard })));
+const HospitalPatients = React.lazy(() => import('./pages/hospital/HospitalPatients').then(m => ({ default: m.HospitalPatients })));
+const HospitalAppointments = React.lazy(() => import('./pages/hospital/HospitalAppointments').then(m => ({ default: m.HospitalAppointments })));
+const HospitalQueue = React.lazy(() => import('./pages/hospital/HospitalQueue').then(m => ({ default: m.HospitalQueue })));
+const HospitalPrescriptions = React.lazy(() => import('./pages/hospital/HospitalPrescriptions').then(m => ({ default: m.HospitalPrescriptions })));
+const HospitalReports = React.lazy(() => import('./pages/hospital/HospitalReports').then(m => ({ default: m.HospitalReports })));
+const CareSetuPatientRecord = React.lazy(() => import('./pages/hospital/CareSetuPatientRecord').then(m => ({ default: m.CareSetuPatientRecord })));
 
-// Pages - District Admin
-import { DistrictDashboard } from './pages/district-admin/DistrictDashboard';
-import { DistrictHospitals } from './pages/district-admin/DistrictHospitals';
-import { DistrictAnalytics } from './pages/district-admin/DistrictAnalytics';
-import { DistrictReports } from './pages/district-admin/DistrictReports';
-import { DistrictAudit } from './pages/district-admin/DistrictAudit';
-import { DistrictAlerts } from './pages/district-admin/DistrictAlerts';
-import { DoctorAuditDetail } from './pages/district-admin/DoctorAuditDetail';
+// Pages - District Admin (Lazy Loaded)
+const DistrictDashboard = React.lazy(() => import('./pages/district-admin/DistrictDashboard').then(m => ({ default: m.DistrictDashboard })));
+const DistrictHospitals = React.lazy(() => import('./pages/district-admin/DistrictHospitals').then(m => ({ default: m.DistrictHospitals })));
+const DistrictAnalytics = React.lazy(() => import('./pages/district-admin/DistrictAnalytics').then(m => ({ default: m.DistrictAnalytics })));
+const DistrictReports = React.lazy(() => import('./pages/district-admin/DistrictReports').then(m => ({ default: m.DistrictReports })));
+const DistrictAudit = React.lazy(() => import('./pages/district-admin/DistrictAudit').then(m => ({ default: m.DistrictAudit })));
+const DistrictAlerts = React.lazy(() => import('./pages/district-admin/DistrictAlerts').then(m => ({ default: m.DistrictAlerts })));
+const DoctorAuditDetail = React.lazy(() => import('./pages/district-admin/DoctorAuditDetail').then(m => ({ default: m.DoctorAuditDetail })));
+
+// Lightweight, accessible fallback for lazy route transitions
+const RouteLoadingFallback: React.FC = () => (
+  <div
+    role="status"
+    aria-live="polite"
+    className="min-h-[50vh] flex items-center justify-center p-6"
+  >
+    <div className="flex items-center gap-3 text-slate-500">
+      <div
+        className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"
+        aria-hidden="true"
+      />
+      <span className="text-sm font-medium">Loading...</span>
+      <span className="sr-only">Loading page content, please wait</span>
+    </div>
+  </div>
+);
 
 // Protected Route Guard with Strict Role Isolation
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: string[] }> = ({
@@ -100,81 +118,83 @@ export const App: React.FC = () => {
         <ThemeProvider>
         <UserLocationProvider>
           <ToastProvider>
-            <Routes>
-              {/* Root Route: Auth Gate */}
-              <Route path="/" element={<RootRedirect />} />
+            <React.Suspense fallback={<RouteLoadingFallback />}>
+              <Routes>
+                {/* Root Route: Auth Gate */}
+                <Route path="/" element={<RootRedirect />} />
 
-              {/* Auth Routes */}
-              <Route element={<AuthLayout />}>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-              </Route>
+                {/* Auth Routes */}
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage />} />
+                </Route>
 
-              {/* Patient Portal Routes - ONLY for authenticated patients */}
-              <Route
-                path="/patient"
-                element={
-                  <ProtectedRoute allowedRoles={['patient']}>
-                    <PatientLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<PatientDashboard />} />
-                <Route path="profile" element={<PatientProfile />} />
-                <Route path="records" element={<PatientRecords />} />
-                <Route path="appointments" element={<PatientAppointments />} />
-                <Route path="symptoms" element={<PatientSymptoms />} />
-                <Route path="symptoms/voice" element={<VoiceSymptomDashboard />} />
-                <Route path="voice-symptoms" element={<VoiceSymptomDashboard />} />
-                <Route path="reports" element={<PatientReports />} />
-                <Route path="health-qr" element={<PatientHealthQR />} />
-                <Route path="caresetu" element={<PatientHealthQR />} />
-                <Route path="notifications" element={<PatientNotifications />} />
-                <Route path="settings" element={<PatientSettings />} />
-              </Route>
+                {/* Patient Portal Routes - ONLY for authenticated patients */}
+                <Route
+                  path="/patient"
+                  element={
+                    <ProtectedRoute allowedRoles={['patient']}>
+                      <PatientLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<PatientDashboard />} />
+                  <Route path="profile" element={<PatientProfile />} />
+                  <Route path="records" element={<PatientRecords />} />
+                  <Route path="appointments" element={<PatientAppointments />} />
+                  <Route path="symptoms" element={<PatientSymptoms />} />
+                  <Route path="symptoms/voice" element={<VoiceSymptomDashboard />} />
+                  <Route path="voice-symptoms" element={<VoiceSymptomDashboard />} />
+                  <Route path="reports" element={<PatientReports />} />
+                  <Route path="health-qr" element={<PatientHealthQR />} />
+                  <Route path="caresetu" element={<PatientHealthQR />} />
+                  <Route path="notifications" element={<PatientNotifications />} />
+                  <Route path="settings" element={<PatientSettings />} />
+                </Route>
 
-              {/* Hospital Portal Routes - ONLY for authenticated hospital staff */}
-              <Route
-                path="/hospital"
-                element={
-                  <ProtectedRoute allowedRoles={['hospital']}>
-                    <HospitalLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<HospitalDashboard />} />
-                <Route path="patients" element={<HospitalPatients />} />
-                <Route path="appointments" element={<HospitalAppointments />} />
-                <Route path="queue" element={<HospitalQueue />} />
-                <Route path="prescriptions" element={<HospitalPrescriptions />} />
-                <Route path="reports" element={<HospitalReports />} />
-                <Route path="caresetu" element={<CareSetuPatientRecord />} />
-                <Route path="caresetu-record/:careSetuId" element={<CareSetuPatientRecord />} />
-              </Route>
+                {/* Hospital Portal Routes - ONLY for authenticated hospital staff */}
+                <Route
+                  path="/hospital"
+                  element={
+                    <ProtectedRoute allowedRoles={['hospital']}>
+                      <HospitalLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<HospitalDashboard />} />
+                  <Route path="patients" element={<HospitalPatients />} />
+                  <Route path="appointments" element={<HospitalAppointments />} />
+                  <Route path="queue" element={<HospitalQueue />} />
+                  <Route path="prescriptions" element={<HospitalPrescriptions />} />
+                  <Route path="reports" element={<HospitalReports />} />
+                  <Route path="caresetu" element={<CareSetuPatientRecord />} />
+                  <Route path="caresetu-record/:careSetuId" element={<CareSetuPatientRecord />} />
+                </Route>
 
-              {/* District Administrator Portal Routes - ONLY for authenticated district admins */}
-              <Route
-                path="/district-admin"
-                element={
-                  <ProtectedRoute allowedRoles={['district_admin']}>
-                    <DistrictAdminLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DistrictDashboard />} />
-                <Route path="hospitals" element={<DistrictHospitals />} />
-                <Route path="analytics" element={<DistrictAnalytics />} />
-                <Route path="audit" element={<DistrictAudit />} />
-                <Route path="audit/doctor/:doctorId" element={<DoctorAuditDetail />} />
-                <Route path="reports" element={<DistrictReports />} />
-                <Route path="alerts" element={<DistrictAlerts />} />
-              </Route>
+                {/* District Administrator Portal Routes - ONLY for authenticated district admins */}
+                <Route
+                  path="/district-admin"
+                  element={
+                    <ProtectedRoute allowedRoles={['district_admin']}>
+                      <DistrictAdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<DistrictDashboard />} />
+                  <Route path="hospitals" element={<DistrictHospitals />} />
+                  <Route path="analytics" element={<DistrictAnalytics />} />
+                  <Route path="audit" element={<DistrictAudit />} />
+                  <Route path="audit/doctor/:doctorId" element={<DoctorAuditDetail />} />
+                  <Route path="reports" element={<DistrictReports />} />
+                  <Route path="alerts" element={<DistrictAlerts />} />
+                </Route>
 
-              {/* 404 Catch-All Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* 404 Catch-All Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </React.Suspense>
           </ToastProvider>
         </UserLocationProvider>
         </ThemeProvider>

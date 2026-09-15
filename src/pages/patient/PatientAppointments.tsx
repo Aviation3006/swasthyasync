@@ -5,7 +5,9 @@ import { PatientDoctorRating } from '../../types/rating';
 import { patientService } from '../../services/patientService';
 import { mockHospitals, calculateDistanceKm, DEFAULT_PUNE_COORDINATES } from '../../data/hospitals';
 import { realHospitalDiscoveryService, RealHealthcareFacility, NATIONAL_INDIA_HEALTHCARE_REGISTRY } from '../../services/realHospitalDiscoveryService';
-import { FunctionalHospitalMap } from '../../components/maps/FunctionalHospitalMap';
+const FunctionalHospitalMap = React.lazy(() =>
+  import('../../components/maps/FunctionalHospitalMap').then(m => ({ default: m.FunctionalHospitalMap }))
+);
 import { INDIA_STATES_AND_DISTRICTS, getAllStates, getDistrictsForState } from '../../data/indiaGeographicData';
 import { Appointment, BookingFormData, ConsultationType } from '../../types/appointment';
 import { Hospital, Department, Doctor } from '../../types/hospital';
@@ -771,21 +773,32 @@ export const PatientAppointments: React.FC = () => {
               
               {/* Functional Leaflet OpenStreetMap View */}
               <div className="lg:col-span-2 space-y-3">
-                <FunctionalHospitalMap
-                  userCoords={isDemoAccount ? DEFAULT_PUNE_COORDINATES : userCoords}
-                  facilities={isDemoAccount ? demoHospitalsWithDistance : realFacilities}
-                  activeFacilityId={isDemoAccount ? activeDemoHospital?.id : activeRealFacility?.id}
-                  onSelectFacility={(fac) => {
-                    if (isDemoAccount) setActiveDemoHospital(fac);
-                    else setActiveRealFacility(fac);
-                  }}
-                  onBookAppointment={(fac) => {
-                    if (isDemoAccount) handleBookHospitalDirect(fac);
-                    else handleRealFacilityAction(fac);
-                  }}
-                  locationMode={locationMode}
-                  isDemo={isDemoAccount}
-                />
+                <React.Suspense
+                  fallback={
+                    <div className="h-[450px] w-full rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm font-medium">Loading hospital map...</span>
+                      </div>
+                    </div>
+                  }
+                >
+                  <FunctionalHospitalMap
+                    userCoords={isDemoAccount ? DEFAULT_PUNE_COORDINATES : userCoords}
+                    facilities={isDemoAccount ? demoHospitalsWithDistance : realFacilities}
+                    activeFacilityId={isDemoAccount ? activeDemoHospital?.id : activeRealFacility?.id}
+                    onSelectFacility={(fac) => {
+                      if (isDemoAccount) setActiveDemoHospital(fac);
+                      else setActiveRealFacility(fac);
+                    }}
+                    onBookAppointment={(fac) => {
+                      if (isDemoAccount) handleBookHospitalDirect(fac);
+                      else handleRealFacilityAction(fac);
+                    }}
+                    locationMode={locationMode}
+                    isDemo={isDemoAccount}
+                  />
+                </React.Suspense>
               </div>
 
               {/* Active Hospital Preview Details Card */}
