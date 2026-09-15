@@ -1,5 +1,5 @@
-import { generateCloudTTS } from '../server/ttsService';
-import { applyCorsHeaders, authenticateApiRequest } from '../server/apiSecurity';
+import { generateCloudTTS } from '../ttsService';
+import { applyCorsHeaders, authenticateApiRequest } from '../apiSecurity';
 
 export default async function handler(req: any, res: any) {
   // 1. Strict CORS validation & OPTIONS preflight (eliminates wildcard credentials vulnerability)

@@ -26,6 +26,7 @@ dist-ssr/
 .env.test.local
 .env.production.local
 !.env.example
+!.env.production
 
 # OS & Editor files
 .DS_Store

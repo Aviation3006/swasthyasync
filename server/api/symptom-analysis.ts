@@ -1,5 +1,5 @@
-import { analyzeSymptomPattern } from '../server/geminiService';
-import { applyCorsHeaders, authenticateApiRequest } from '../server/apiSecurity';
+import { analyzeSymptomPattern } from '../geminiService';
+import { applyCorsHeaders, authenticateApiRequest } from '../apiSecurity';
 
 export default async function handler(req: any, res: any) {
   // 1. Strict CORS validation & OPTIONS preflight (eliminates wildcard credentials vulnerability)

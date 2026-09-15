@@ -1,5 +1,5 @@
-import { isGeminiConfigured } from '../server/geminiService';
-import { applyCorsHeaders } from '../server/apiSecurity';
+import { isGeminiConfigured } from '../geminiService';
+import { applyCorsHeaders } from '../apiSecurity';
 
 export default async function handler(req: any, res: any) {
   if (applyCorsHeaders(req, res)) return;
