@@ -1,7 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env.production') });
 
 export const SUPPORTED_TTS_LANGUAGES = ['en-IN', 'hi-IN', 'mr-IN'] as const;
 export type SupportedTTSLanguage = typeof SUPPORTED_TTS_LANGUAGES[number];

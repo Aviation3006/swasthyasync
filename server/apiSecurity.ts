@@ -1,4 +1,9 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env.production') });
 
 // Server-Side Supabase Client for JWT verification
 let serverSupabaseClient: SupabaseClient | null = null;

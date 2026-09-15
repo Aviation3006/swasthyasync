@@ -1,7 +1,9 @@
 // server/ttsService.ts
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), ".env.production") });
 var SUPPORTED_TTS_LANGUAGES = ["en-IN", "hi-IN", "mr-IN"];
 function pcmToWavDataUri(pcmBase64, sampleRate = 24e3, numChannels = 1) {
   const pcmBuffer = Buffer.from(pcmBase64, "base64");
@@ -80,6 +82,10 @@ async function generateCloudTTS(params) {
 
 // server/apiSecurity.ts
 import { createClient } from "@supabase/supabase-js";
+import dotenv2 from "dotenv";
+import path2 from "path";
+dotenv2.config();
+dotenv2.config({ path: path2.resolve(process.cwd(), ".env.production") });
 var serverSupabaseClient = null;
 function getServerSupabase() {
   if (serverSupabaseClient) return serverSupabaseClient;

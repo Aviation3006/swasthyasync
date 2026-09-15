@@ -1,13 +1,19 @@
 // server/geminiService.ts
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), ".env.production") });
 var isGeminiConfigured = Boolean(
   process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your-gemini-api-key-here" && process.env.GEMINI_API_KEY.length > 10
 );
 
 // server/apiSecurity.ts
 import { createClient } from "@supabase/supabase-js";
+import dotenv2 from "dotenv";
+import path2 from "path";
+dotenv2.config();
+dotenv2.config({ path: path2.resolve(process.cwd(), ".env.production") });
 function isAllowedOrigin(origin) {
   if (!origin) return true;
   const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim().toLowerCase()) : [];

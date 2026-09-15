@@ -1,7 +1,9 @@
 // server/geminiService.ts
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), ".env.production") });
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === "your-gemini-api-key-here" || apiKey.length < 10) {
@@ -192,6 +194,10 @@ Return ONLY a JSON object:
 
 // server/apiSecurity.ts
 import { createClient } from "@supabase/supabase-js";
+import dotenv2 from "dotenv";
+import path2 from "path";
+dotenv2.config();
+dotenv2.config({ path: path2.resolve(process.cwd(), ".env.production") });
 var serverSupabaseClient = null;
 function getServerSupabase() {
   if (serverSupabaseClient) return serverSupabaseClient;

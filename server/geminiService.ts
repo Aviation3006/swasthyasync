@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import path from 'path';
 import type { 
   SimplifiedReportOutput, 
   SymptomAnalysisOutput, 
@@ -8,6 +9,7 @@ import type {
 } from '../src/types/ai';
 
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env.production') });
 
 export type { 
   SimplifiedReportOutput, 
