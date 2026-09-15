@@ -107,10 +107,13 @@ async function runQA() {
     assert('Voice Dashboard does NOT display "Emergency Triage Assessment"', !voicePageText.includes('Emergency Triage Assessment'));
     assert('Fresh session shows "No Symptoms Analyzed Yet" empty placeholder', voicePageText.includes('No Symptoms Analyzed Yet'));
 
-    // Check Speech Recognition Button initial state
-    const micButton = page.locator('button[aria-label="Start Speaking"], button:has-text("Start Speaking")').first();
+    // Check Speech Recognition Button initial idle state
+    assert('Page does NOT automatically initialize or activate microphone on load', !voicePageText.includes('Initializing microphone...') && !voicePageText.includes('Listening to your voice...'));
+    assert('Voice Dashboard displays idle CTA "Tap microphone to speak symptoms"', voicePageText.includes('Tap microphone to speak symptoms'));
+
+    const micButton = page.locator('button[aria-label="Tap microphone to speak symptoms"], button[aria-label="Start Speaking"]').first();
     const micBtnVisible = await micButton.isVisible();
-    assert('Microphone CTA button is visible in idle state', micBtnVisible);
+    assert('Microphone CTA button is visible and actionable in idle state', micBtnVisible);
 
     // Check language selector options
     const langSelect = page.locator('#voice-lang-select');
@@ -135,6 +138,21 @@ async function runQA() {
     await langSelect.selectOption('en-IN');
     selectedVal = await langSelect.inputValue();
     assert('Successfully selected English (India) (en-IN)', selectedVal === 'en-IN');
+
+    // --- 5B. Test Microphone Activation & Stop/Cancel Lifecycle ---
+    console.log('\n--- 5B. Test Microphone Activation & Stop/Cancel Lifecycle ---');
+    await micButton.click();
+    await page.waitForTimeout(300);
+    const micActiveState = await page.locator('button[aria-label="Stop Listening"], button[aria-label*="Click to cancel"]').first().isVisible();
+    assert('Clicking microphone transitions out of idle (into starting or listening)', micActiveState);
+
+    // Click to cancel or stop
+    const stopOrCancelBtn = page.locator('button[aria-label="Stop Listening"], button[aria-label*="Click to cancel"]').first();
+    await stopOrCancelBtn.click();
+    await page.waitForTimeout(400);
+
+    const micRevertedIdle = await page.locator('button[aria-label="Tap microphone to speak symptoms"]').first().isVisible();
+    assert('Stopping/cancelling microphone cleanly returns to idle state', micRevertedIdle);
 
     // --- 6. Test Manual Typing & Symptom Analysis ---
     console.log('\n--- 6. Test Manual Typing and Symptom Analysis ---');

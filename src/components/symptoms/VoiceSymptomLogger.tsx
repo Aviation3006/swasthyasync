@@ -4,7 +4,8 @@ import {
   Square, 
   RotateCcw, 
   CheckCircle2, 
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { 
   SpeechRecognitionController, 
@@ -34,6 +35,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
   });
 
   const [isSupported, setIsSupported] = useState<boolean>(true);
+  const [isStarting, setIsStarting] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [liveTranscript, setLiveTranscript] = useState<string>('');
   const [finalTranscript, setFinalTranscript] = useState<string>('');
@@ -62,7 +64,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
   }, [appLanguage]);
 
   const handleStartListening = () => {
-    if (isListening) return;
+    if (isListening || isStarting) return;
     setErrorMessage(null);
     setLiveTranscript('');
     setFinalTranscript('');
@@ -72,9 +74,12 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
       return;
     }
 
+    setIsStarting(true);
+
     const started = controllerRef.current.start({
       language: selectedLang,
       onStart: () => {
+        setIsStarting(false);
         setIsListening(true);
       },
       onInterim: (interim) => {
@@ -85,23 +90,27 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
         setLiveTranscript('');
       },
       onEnd: () => {
+        setIsStarting(false);
         setIsListening(false);
       },
       onError: (err) => {
+        setIsStarting(false);
         setIsListening(false);
         setErrorMessage(err);
       }
     });
 
-    if (!started && !errorMessage) {
+    if (!started) {
+      setIsStarting(false);
       setIsListening(false);
     }
   };
 
   const handleStopListening = () => {
     if (controllerRef.current) {
-      controllerRef.current.stop();
+      controllerRef.current.abort();
     }
+    setIsStarting(false);
     setIsListening(false);
   };
 
@@ -182,7 +191,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
           <div className="flex flex-col xs:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
             
             <div className="flex items-center gap-3">
-              {!isListening ? (
+              {!isListening && !isStarting ? (
                 <button
                   type="button"
                   onClick={handleStartListening}
@@ -191,6 +200,16 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
                   title="Click to speak symptoms"
                 >
                   <Mic className="w-6 h-6" />
+                </button>
+              ) : isStarting ? (
+                <button
+                  type="button"
+                  onClick={handleStopListening}
+                  className="w-12 h-12 rounded-xl bg-amber-600 hover:bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-600/30 cursor-pointer animate-pulse shrink-0 ring-4 ring-amber-500/40"
+                  aria-label="Connecting to microphone... Click to cancel"
+                  title="Connecting... Click to cancel"
+                >
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 </button>
               ) : (
                 <button
@@ -206,10 +225,18 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
 
               <div>
                 <span className="text-xs font-bold text-white block">
-                  {isListening ? 'Listening... Speak clearly now' : activeDisplayTranscript ? 'Transcription Ready' : 'Tap microphone to speak symptoms'}
+                  {isStarting
+                    ? 'Connecting to microphone...'
+                    : isListening 
+                    ? 'Listening... Speak clearly now' 
+                    : activeDisplayTranscript 
+                    ? 'Transcription Ready' 
+                    : 'Tap microphone to speak symptoms'}
                 </span>
                 <span className="text-[11px] text-slate-400">
-                  {isListening 
+                  {isStarting
+                    ? 'Initializing audio input... Click to cancel.'
+                    : isListening 
                     ? `Active input language: ${recognitionLanguages.find(l => l.code === selectedLang)?.label}` 
                     : activeDisplayTranscript 
                     ? 'Review, edit or confirm the spoken description below'
@@ -219,14 +246,14 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
             </div>
 
             {/* Listening Control Actions */}
-            {isListening && (
+            {(isListening || isStarting) && (
               <button
                 type="button"
                 onClick={handleStopListening}
-                className="px-3.5 py-2 min-h-[40px] rounded-xl bg-rose-600 text-white font-bold text-xs hover:bg-rose-500 transition-colors shrink-0 flex items-center gap-1.5"
+                className="px-3.5 py-2 min-h-[40px] rounded-xl bg-rose-600 text-white font-bold text-xs hover:bg-rose-500 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
-                <span>Done Speaking</span>
+                <span>{isStarting ? 'Cancel' : 'Done Speaking'}</span>
               </button>
             )}
           </div>

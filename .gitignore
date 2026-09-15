@@ -39,3 +39,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Test outputs & screenshots
+scripts/screenshots/
+scripts/production-smoke-results.json
+scripts/production-smoke-report.md

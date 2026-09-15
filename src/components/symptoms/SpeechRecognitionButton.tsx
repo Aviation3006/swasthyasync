@@ -29,7 +29,10 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
   const { t } = useTranslation();
 
   const handleButtonClick = () => {
-    if (isStarting) return;
+    if (isStarting) {
+      onStopListening();
+      return;
+    }
     if (isListening) {
       onStopListening();
     } else {
@@ -68,20 +71,27 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
         <button
           type="button"
           onClick={handleButtonClick}
-          disabled={!isSupported || isStarting}
+          disabled={!isSupported}
+          title={
+            isStarting
+              ? 'Connecting to microphone... Click to cancel'
+              : isListening
+              ? 'Click to stop listening'
+              : 'Tap microphone to speak symptoms'
+          }
           className={`relative w-20 h-20 rounded-full flex items-center justify-center text-white transition-all shadow-lg focus:outline-none focus:ring-4 ${
             isListening 
-              ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/30 focus:ring-rose-200' 
+              ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/30 focus:ring-rose-200 cursor-pointer' 
               : isStarting
-              ? 'bg-amber-600 shadow-amber-600/30 focus:ring-amber-200 cursor-wait'
+              ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/30 focus:ring-amber-200 cursor-pointer animate-pulse'
               : 'bg-theme-primary hover:bg-theme-primary-hover shadow-theme-primary/30 focus:ring-theme-primary-light cursor-pointer hover:scale-105 active:scale-95'
           } ${!isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
           aria-label={
             isStarting
-              ? 'Initializing microphone...'
+              ? 'Connecting to microphone... Click to cancel'
               : isListening
               ? 'Stop Listening'
-              : 'Start Speaking'
+              : 'Tap microphone to speak symptoms'
           }
         >
           {isStarting ? (
@@ -97,14 +107,14 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
       <div className="space-y-1">
         <h4 className="text-sm font-bold text-slate-800">
           {isStarting
-            ? 'Initializing microphone...'
+            ? 'Starting...'
             : isListening 
             ? 'Listening to your voice...' 
-            : 'Tap Microphone to Speak'}
+            : 'Tap microphone to speak symptoms'}
         </h4>
         <p className="text-xs text-slate-500 max-w-xs mx-auto">
           {isStarting
-            ? 'Connecting to speech recognition...'
+            ? 'Connecting to speech recognition... Click to cancel.'
             : isListening 
             ? (t.cancel || 'Tap the red button when you are finished speaking.') 
             : (t.symptomCheckerSubtitle || 'Speak clearly in your preferred language to describe your symptoms.')}

@@ -105,6 +105,7 @@ export class SpeechRecognitionController {
   private status: SpeechControllerStatus = 'idle';
   private accumulatedFinalText = '';
   private currentParams: SpeechRecognitionStartParams | null = null;
+  private startTimeoutId: any = null;
 
   public getStatus(): SpeechControllerStatus {
     return this.status;
@@ -118,6 +119,13 @@ export class SpeechRecognitionController {
     return this.status === 'starting';
   }
 
+  private clearStartingTimeout(): void {
+    if (this.startTimeoutId) {
+      clearTimeout(this.startTimeoutId);
+      this.startTimeoutId = null;
+    }
+  }
+
   public start(params: SpeechRecognitionStartParams): boolean {
     // Prevent duplicate calls if already listening or starting
     if (this.status === 'listening' || this.status === 'starting') {
@@ -127,6 +135,7 @@ export class SpeechRecognitionController {
     const SpeechRecConstructor = getSpeechRecognitionConstructor();
     if (!SpeechRecConstructor) {
       this.status = 'idle';
+      this.clearStartingTimeout();
       if (params.onError) {
         params.onError(
           'Speech recognition is not supported on this browser. Please use Chrome, Edge, or type manually.',
@@ -137,6 +146,7 @@ export class SpeechRecognitionController {
     }
 
     // Cleanly abort any stale instance before creating a new one
+    this.clearStartingTimeout();
     if (this.recognition) {
       try {
         this.recognition.onstart = null;
@@ -154,6 +164,29 @@ export class SpeechRecognitionController {
     this.accumulatedFinalText = '';
     this.status = 'starting';
 
+    // Start a 6-second watchdog timeout: if the browser never fires onstart or onerror, revert cleanly to idle
+    this.startTimeoutId = setTimeout(() => {
+      if (this.status === 'starting') {
+        console.warn('[SpeechRecognition] Start connection timed out after 6s');
+        this.status = 'idle';
+        this.clearStartingTimeout();
+        if (this.recognition) {
+          try {
+            this.recognition.abort();
+          } catch (e) {
+            // ignore
+          }
+          this.recognition = null;
+        }
+        if (this.currentParams?.onError) {
+          this.currentParams.onError(
+            'Microphone connection timed out. Please verify your browser microphone permissions and try clicking again.',
+            'timeout'
+          );
+        }
+      }
+    }, 6000);
+
     try {
       const rec = new SpeechRecConstructor();
       rec.continuous = true;
@@ -164,6 +197,7 @@ export class SpeechRecognitionController {
       rec.lang = resolvedLocale;
 
       rec.onstart = () => {
+        this.clearStartingTimeout();
         this.status = 'listening';
         if (this.currentParams?.onStart) {
           this.currentParams.onStart();
@@ -194,11 +228,20 @@ export class SpeechRecognitionController {
       };
 
       rec.onerror = (event: any) => {
+        this.clearStartingTimeout();
         const errCode = event.error;
         console.warn('SpeechRecognition error event:', errCode, event.message);
 
-        // Aborted event during deliberate stop/abort is normal lifecycle
+        // Aborted event: handle differently if it was aborted while starting vs intentional stop
         if (errCode === 'aborted') {
+          const wasStarting = this.status === 'starting';
+          this.status = 'idle';
+          if (wasStarting && this.currentParams?.onError) {
+            this.currentParams.onError(
+              'Microphone access was cancelled or interrupted. Click the microphone to try again.',
+              'aborted'
+            );
+          }
           return;
         }
 
@@ -208,7 +251,7 @@ export class SpeechRecognitionController {
         } else if (errCode === 'no-speech') {
           userFriendlyMsg = 'No speech detected. Please speak clearly into your microphone.';
         } else if (errCode === 'audio-capture') {
-          userFriendlyMsg = 'No microphone was found or microphone is in use by another app.';
+          userFriendlyMsg = 'No microphone was found or microphone is in use by another application.';
         } else if (errCode === 'network') {
           userFriendlyMsg = 'Network connection issue with speech service. You can type your symptoms below.';
         } else if (errCode === 'language-not-supported') {
@@ -222,6 +265,7 @@ export class SpeechRecognitionController {
       };
 
       rec.onend = () => {
+        this.clearStartingTimeout();
         this.status = 'idle';
         if (this.currentParams?.onEnd) {
           this.currentParams.onEnd();
@@ -233,13 +277,15 @@ export class SpeechRecognitionController {
       return true;
     } catch (e: any) {
       console.warn('Failed to start SpeechRecognition:', e);
+      this.clearStartingTimeout();
       this.status = 'idle';
       let msg = 'Could not initialize microphone. Please check permissions.';
       if (e.name === 'NotAllowedError') {
         msg = 'Microphone permission was denied. Please allow microphone access in browser settings.';
       } else if (e.name === 'InvalidStateError') {
-        // Browser was still transitioning; state is handled
-        return true;
+        msg = 'Speech recognition service is reinitializing. Please tap again in a moment.';
+      } else if (e.name === 'NotSupportedError') {
+        msg = 'Speech recognition is not supported on this device. You can type symptoms below.';
       }
       if (params.onError) {
         params.onError(msg, e.name);
@@ -249,6 +295,7 @@ export class SpeechRecognitionController {
   }
 
   public stop(): void {
+    this.clearStartingTimeout();
     if (this.recognition && (this.status === 'listening' || this.status === 'starting')) {
       this.status = 'stopping';
       try {
@@ -256,12 +303,15 @@ export class SpeechRecognitionController {
       } catch (e) {
         this.status = 'idle';
       }
+    } else {
+      this.status = 'idle';
     }
   }
 
   public abort(): void {
+    this.clearStartingTimeout();
+    this.status = 'idle';
     if (this.recognition) {
-      this.status = 'idle';
       try {
         this.recognition.onstart = null;
         this.recognition.onresult = null;
@@ -273,7 +323,6 @@ export class SpeechRecognitionController {
       }
       this.recognition = null;
     }
-    this.status = 'idle';
     this.currentParams = null;
   }
 }

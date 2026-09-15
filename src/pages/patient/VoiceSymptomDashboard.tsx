@@ -75,12 +75,29 @@ export const VoiceSymptomDashboard: React.FC = () => {
     };
   }, []);
 
+  // Safety watchdog: guarantee that UI never remains stuck in 'starting' state
+  useEffect(() => {
+    if (recognitionStatus === 'starting') {
+      const timer = setTimeout(() => {
+        if (recognitionStatus === 'starting') {
+          console.warn('[VoiceDashboard] Starting state watchdog timed out; reverting to idle.');
+          if (controllerRef.current) {
+            controllerRef.current.abort();
+          }
+          setRecognitionStatus('idle');
+          setErrorMessage('Microphone connection timed out. Please check microphone permissions and try clicking again.');
+        }
+      }, 7000);
+      return () => clearTimeout(timer);
+    }
+  }, [recognitionStatus]);
+
   // Update speech controller language if user toggles selector
   const handleLanguageChange = (lang: string) => {
     setSelectedLanguage(lang);
     setErrorMessage(null);
-    if (recognitionStatus === 'listening' && controllerRef.current) {
-      controllerRef.current.stop();
+    if ((recognitionStatus === 'listening' || recognitionStatus === 'starting') && controllerRef.current) {
+      controllerRef.current.abort();
       setRecognitionStatus('idle');
     }
   };
@@ -123,14 +140,14 @@ export const VoiceSymptomDashboard: React.FC = () => {
       }
     });
 
-    if (!started && !errorMessage) {
+    if (!started) {
       setRecognitionStatus('idle');
     }
   };
 
   const handleStopListening = () => {
     if (controllerRef.current) {
-      controllerRef.current.stop();
+      controllerRef.current.abort();
     }
     setRecognitionStatus('idle');
     baseTranscriptRef.current = transcript.trim();

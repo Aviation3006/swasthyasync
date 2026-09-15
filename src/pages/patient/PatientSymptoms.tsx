@@ -218,9 +218,9 @@ export const PatientSymptoms: React.FC = () => {
       <div className="p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm flex items-start gap-3 shadow-subtle">
         <AlertTriangle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <h4 className="font-bold text-amber-900">{t.disclaimerNotice || 'Important Clinical Safety Notice'}</h4>
+          <h4 className="font-bold text-amber-900">{t.disclaimerNotice || 'Non-Diagnostic Informational Disclaimer'}</h4>
           <p className="text-xs text-amber-800 leading-relaxed">
-            {t.emergencyWarning} {t.consultPhysicianNotice}
+            {t.voiceToolDisclaimer}
           </p>
         </div>
       </div>
