@@ -188,7 +188,7 @@ export const DistrictAlerts: React.FC = () => {
                   <p className="text-xs text-slate-600 mt-1 leading-relaxed">{alert.description}</p>
                 </div>
 
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1">
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs space-y-1">
                   <div className="font-bold text-amber-900 flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
                     <span>{t.actionRequiredDirective || "Mandatory Action Directive"}</span>
@@ -272,7 +272,7 @@ export const DistrictAlerts: React.FC = () => {
               value={alertDesc}
               onChange={(e) => setAlertDesc(e.target.value)}
               required
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none"
+              className="w-full p-2.5 bg-white border border-slate-200 rounded-md text-xs focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:outline-none shadow-subtle"
             />
           </FormField>
 
@@ -282,7 +282,7 @@ export const DistrictAlerts: React.FC = () => {
               placeholder={t.actionRequiredPlaceholder || "What actions must Chief Medical Officers and PHC doctors take immediately?"}
               value={actionReq}
               onChange={(e) => setActionReq(e.target.value)}
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none"
+              className="w-full p-2.5 bg-white border border-slate-200 rounded-md text-xs focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:outline-none shadow-subtle"
             />
           </FormField>
 

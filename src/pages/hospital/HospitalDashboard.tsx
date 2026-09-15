@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { hospitalService } from '../../services/hospitalService';
 import { appointmentService } from '../../services/appointmentService';
 import { prescriptionService } from '../../services/prescriptionService';
-import { ratingService } from '../../services/ratingService';
-import { HospitalAuditMetric } from '../../types/rating';
 import { patientService } from '../../services/patientService';
 import { Hospital, QueueItem } from '../../types/hospital';
 import { Appointment } from '../../types/appointment';
@@ -16,43 +14,26 @@ import {
   Calendar, 
   Clock, 
   AlertCircle, 
-  CheckCircle2, 
   Pill, 
   FileText, 
-  Activity, 
-  Bed, 
   Stethoscope, 
-  ArrowRight, 
-  PhoneCall,
-  UserCheck,
-  ChevronRight,
-  ShieldCheck,
-  Star,
-  MessageSquare,
-  AlertTriangle,
-  Award
+  UserCheck
 } from 'lucide-react';
-import { PageHeader } from '../../components/navigation/PageHeader';
 import { Card, CardHeader, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
 import { StatusBadge } from '../../components/common/StatusBadge';
-import { useToast } from '../../context/ToastContext';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useAuth } from '../../context/AuthContext';
 import { useUserLocation } from '../../context/UserLocationContext';
 
 export const HospitalDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const { showSuccess } = useToast();
   const { user } = useAuth();
   const { location, facility } = useUserLocation();
   const navigate = useNavigate();
 
   const [hospital, setHospital] = useState<Hospital>(hospitalService.getDefaultHospital());
-  const [hospitalAudit, setHospitalAudit] = useState<HospitalAuditMetric | null>(() => {
-    return ratingService.getHospitalAudit(facility?.facilityId || 'hosp-pune-01') || ratingService.getHospitalAudit('hosp-pune-01');
-  });
   const [queue, setQueue] = useState<QueueItem[]>(hospitalService.getQueue());
   const [appointments, setAppointments] = useState<Appointment[]>(appointmentService.getAllAppointments());
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -64,31 +45,16 @@ export const HospitalDashboard: React.FC = () => {
       if (hList[0]) setHospital(hList[0]);
     });
     const unsubAppts = appointmentService.subscribe((list) => setAppointments(list));
-    const unsubRating = ratingService.subscribe(() => {
-      const audit = ratingService.getHospitalAudit(facility?.facilityId || hospital.id) || ratingService.getHospitalAudit('hosp-pune-01');
-      setHospitalAudit(audit);
-    });
     return () => {
       unsubQueue();
       unsubHosp();
       unsubAppts();
-      unsubRating();
     };
   }, []);
 
   const waitingCount = queue.filter((q) => q.status === 'Waiting').length;
   const inConsultCount = queue.filter((q) => q.status === 'In Consultation').length;
   const urgentCount = queue.filter((q) => q.priority === 'Urgent' || q.status === 'Urgent').length;
-
-  const handleCallNextPatient = (item: QueueItem) => {
-    hospitalService.updateQueueItemStatus(item.id, 'In Consultation');
-    showSuccess('Patient Called', `Token ${item.tokenNumber} (${item.patientName}) moved to In Consultation.`);
-  };
-
-  const handleCompleteConsultation = (item: QueueItem) => {
-    hospitalService.updateQueueItemStatus(item.id, 'Completed');
-    showSuccess('Consultation Completed', `Token ${item.tokenNumber} marked as Completed.`);
-  };
 
   const totalBeds = hospital.beds.generalTotal + hospital.beds.icuTotal + hospital.beds.oxygenTotal;
   const occupiedBeds = hospital.beds.generalOccupied + hospital.beds.icuOccupied + hospital.beds.oxygenOccupied;
@@ -209,101 +175,8 @@ export const HospitalDashboard: React.FC = () => {
 
       {/* Main Two-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (2 spans): Active Queue Table & Department Load */}
+        {/* Left Column (2 spans): Clinical Department Overview */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Active Queue Triage Widget */}
-          <Card>
-            <CardHeader
-              title={t.navLiveQueue}
-              subtitle="Real-time patient flow and clinical consultation caller"
-              icon={<Clock className="w-5 h-5 text-health-600" />}
-              action={
-                <Link to="/hospital/queue">
-                  <Button variant="ghost" size="sm" rightIcon={<ChevronRight className="w-3.5 h-3.5" />}>
-                    {t.viewAllRecords}
-                  </Button>
-                </Link>
-              }
-            />
-            <CardContent>
-              <div className="divide-y divide-slate-100">
-                {queue.slice(0, 5).map((item) => (
-                  <div key={item.id} className="py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-800">
-                          {item.tokenNumber}
-                        </span>
-                        <StatusBadge
-                          variant={
-                            item.status === 'In Consultation'
-                              ? 'warning'
-                              : item.status === 'Completed'
-                              ? 'success'
-                              : item.priority === 'Urgent'
-                              ? 'urgent'
-                              : 'info'
-                          }
-                          size="sm"
-                        >
-                          {item.status}
-                        </StatusBadge>
-                        <span className="text-[11px] font-semibold text-slate-500">
-                          {item.priority}
-                        </span>
-                      </div>
-
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {item.patientName}{' '}
-                        <span className="text-xs font-normal text-slate-500">
-                          ({item.patientAge} Yrs, {item.patientGender})
-                        </span>
-                      </h4>
-
-                      <p className="text-xs text-slate-600">
-                        {item.departmentName} • Dr. {item.doctorName}
-                      </p>
-
-                      <p className="text-xs text-slate-500 italic line-clamp-1">
-                        Complaint: {item.chiefComplaint}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                      {item.status === 'Waiting' && (
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          onClick={() => handleCallNextPatient(item)}
-                          leftIcon={<UserCheck className="w-3.5 h-3.5" />}
-                        >
-                          Call Patient
-                        </Button>
-                      )}
-
-                      {item.status === 'In Consultation' && (
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => handleCompleteConsultation(item)}
-                          leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
-                        >
-                          Finish Visit
-                        </Button>
-                      )}
-
-                      <Link to={`/hospital/patients`}>
-                        <Button variant="outline" size="sm">
-                          {t.navRecords}
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Department Overview */}
           <Card>
             <CardHeader
@@ -392,177 +265,7 @@ export const HospitalDashboard: React.FC = () => {
         </div>
       </div>
     
-      {/* ================================================================= */}
-      {/* REVIEWS & CLINICAL QUALITY AUDIT SECTION (HOSPITAL LEVEL) */}
-      {/* ================================================================= */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-2">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              {t.hospitalQualityTitle || 'Hospital Clinical Quality & Patient Reviews'}
-            </h2>
-            <p className="text-xs text-slate-500">
-              {t.hospitalQualitySubtitle || 'Aggregated post-visit patient reviews and clinical quality indicators across departments'}
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200">
-            <ShieldCheck className="w-3.5 h-3.5 text-sky-600" />
-            {t.readOnlyNotice || 'Read-Only Quality Metric'}
-          </span>
-        </div>
-
-        {/* Quality KPI Cards */}
-        {hospitalAudit && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
-            <Card className="border-slate-200 text-center p-3.5 bg-slate-50">
-              <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.overallHospitalScore || 'Overall Hospital Score'}</span>
-              <span className="text-xl font-extrabold text-amber-700 mt-1 flex items-center justify-center gap-1">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                {hospitalAudit.overallHospitalRating} / 5
-              </span>
-              <span className="text-[10px] text-slate-400 mt-0.5 block">{hospitalAudit.totalRatings} Verified Reviews</span>
-            </Card>
-
-            <Card className="border-slate-200 text-center p-3.5 bg-white">
-              <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.doctorCareAverage || 'Doctor Clinical Care'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                {hospitalAudit.doctorExperienceAverage}
-              </span>
-              <span className="text-[10px] text-emerald-600 mt-0.5 block">Clinical Quality</span>
-            </Card>
-
-            <Card className="border-slate-200 text-center p-3.5 bg-white">
-              <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.staffBehaviourAverage || 'Staff Behaviour'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                {hospitalAudit.staffAverage}
-              </span>
-              <span className="text-[10px] text-slate-500 mt-0.5 block">Courtesy & Help</span>
-            </Card>
-
-            <Card className="border-slate-200 text-center p-3.5 bg-white">
-              <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.facilityHygieneAverage || 'Cleanliness & Hygiene'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                {hospitalAudit.cleanlinessAverage}
-              </span>
-              <span className="text-[10px] text-slate-500 mt-0.5 block">Sanitation Index</span>
-            </Card>
-
-            <Card className="border-slate-200 text-center p-3.5 bg-white col-span-2 sm:col-span-1">
-              <span className="text-[10px] text-slate-500 font-bold uppercase block">{t.waitingTimeAverage || 'Queue & Wait Exp.'}</span>
-              <span className="text-xl font-bold text-slate-900 mt-1 flex items-center justify-center gap-1">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                {hospitalAudit.waitingExperienceAverage}
-              </span>
-              <span className="text-[10px] text-amber-700 mt-0.5 block">OPD Triage</span>
-            </Card>
-          </div>
-        )}
-
-        {/* Doctor-by-Doctor Clinical Rating Breakdown */}
-        <Card className="border-slate-200">
-          <CardHeader
-            title={t.doctorBreakdownTitle || 'Doctor-by-Doctor Clinical Rating Breakdown'}
-            subtitle={t.doctorBreakdownSubtitle || 'Verified patient ratings and feedback by practitioner (Read-Only Audit)'}
-            icon={<Award className="w-5 h-5 text-emerald-700" />}
-          />
-          <CardContent className="space-y-4">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-700">
-                    <th className="py-2.5 px-3 font-bold">Doctor / Practitioner</th>
-                    <th className="py-2.5 px-3 font-bold">Department</th>
-                    <th className="py-2.5 px-3 font-bold">Completed Visits</th>
-                    <th className="py-2.5 px-3 font-bold">Verified Reviews</th>
-                    <th className="py-2.5 px-3 font-bold">Communication</th>
-                    <th className="py-2.5 px-3 font-bold">Professionalism</th>
-                    <th className="py-2.5 px-3 font-bold">Explanation</th>
-                    <th className="py-2.5 px-3 font-bold">Average Overall</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {hospitalAudit && hospitalAudit.doctorMetrics.length > 0 ? (
-                    hospitalAudit.doctorMetrics.map((doc) => (
-                      <tr key={doc.doctorId} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3 px-3 font-bold text-slate-900">{doc.doctorName}</td>
-                        <td className="py-3 px-3 text-slate-600">{doc.department}</td>
-                        <td className="py-3 px-3 font-mono font-semibold text-slate-700">{doc.totalCompletedVisits}</td>
-                        <td className="py-3 px-3 font-mono font-bold text-emerald-800">{doc.totalRatings}</td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">
-                          <span className="inline-flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                            {doc.averageCommunication}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">
-                          <span className="inline-flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                            {doc.averageProfessionalism}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">
-                          <span className="inline-flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                            {doc.averageExplanation}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 inline-flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 text-amber-600 fill-amber-600" />
-                            {doc.averageOverall} / 5
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={8} className="py-6 text-center text-slate-400">
-                        {t.noReviewsYet || 'No reviews recorded for this facility yet'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Anonymized Patient Feedback */}
-        {hospitalAudit && hospitalAudit.doctorMetrics.some(d => d.recentFeedbacks.length > 0) && (
-          <Card className="border-slate-200">
-            <CardHeader
-              title={t.recentPatientFeedback || 'Recent Anonymized Patient Feedback'}
-              subtitle="Constructive post-consultation observations for clinical quality improvement"
-              icon={<MessageSquare className="w-5 h-5 text-sky-600" />}
-            />
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {hospitalAudit.doctorMetrics.flatMap(d => 
-                  d.recentFeedbacks.map(fb => ({ ...fb, doctorName: d.doctorName, department: d.department }))
-                ).slice(0, 4).map((fb) => (
-                  <div key={fb.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900">{fb.doctorName} ({fb.department})</span>
-                      <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                        {fb.rating} / 5
-                      </span>
-                    </div>
-                    <p className="text-slate-700 italic bg-white p-2.5 rounded-lg border border-slate-100">
-                      "{fb.feedback}"
-                    </p>
-                    <span className="text-[10px] text-slate-400 block text-right">{fb.date}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      {/* Note: Hospital Clinical Quality & Patient Experience Audit (hospitalQualityTitle, overallHospitalScore, doctorBreakdownTitle, readOnlyNotice, recentPatientFeedback) has been removed from the Doctor/Hospital operational portal to prioritize clinical workflows, and is governed under District Health Administration Quality Audit (/district-admin/audit). */}
 
 
       {/* ================================================================= */}

@@ -86,7 +86,7 @@ const StarRatingInput: React.FC<StarRatingProps> = ({ label, value, onChange, re
   return (
     <div
       className={`rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between transition-all hover:border-slate-300 ${
-        isLarge ? 'p-5 text-center bg-gradient-to-b from-slate-50/60 to-white' : 'p-4'
+        isLarge ? 'p-5 text-center bg-slate-50/50' : 'p-4'
       }`}
     >
       {/* Category Title - Uncrowded on Top */}

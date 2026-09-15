@@ -11,7 +11,7 @@ export const RoleSwitcherBanner: React.FC = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
 
-  const handleSwitchAccount = async () => {
+  const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
@@ -40,11 +40,11 @@ export const RoleSwitcherBanner: React.FC = () => {
             {t.loggedInAs} <strong className="text-white">{user?.name || user?.email || 'User'}</strong>
           </span>
           <button
-            onClick={handleSwitchAccount}
+            onClick={handleLogout}
             className="flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-black/25 hover:bg-rose-900/80 text-white/90 hover:text-white border border-white/20 hover:border-rose-500 text-[10px] sm:text-[11px] font-medium transition-colors shrink-0"
           >
             <LogOut className="w-3 h-3" />
-            <span>{t.switchAccount}</span>
+            <span>{t.signOut}</span>
           </button>
         </div>
       </div>

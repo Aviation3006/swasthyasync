@@ -26,7 +26,7 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
   const { t } = useTranslation();
 
   return (
-    <div className={`flex flex-col items-center justify-center p-6 bg-gradient-to-b from-slate-50 to-white rounded-2xl border border-slate-200 text-center space-y-4 ${className}`}>
+    <div className={`flex flex-col items-center justify-center p-6 bg-white rounded-xl border border-slate-200 text-center space-y-4 shadow-card ${className}`}>
       
       {/* Voice Language Selector */}
       <div className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export const SpeechRecognitionButton: React.FC<SpeechRecognitionButtonProps> = (
         <select
           value={selectedLanguage}
           onChange={(e) => onLanguageChange(e.target.value)}
-          className="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-slate-800 font-bold focus:outline-none focus:ring-1 focus:ring-theme-ring"
+          className="text-xs bg-white border border-slate-200 rounded-md px-2.5 py-1 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary-light"
         >
           <option value="en-IN">English (India)</option>
           <option value="hi-IN">हिन्दी (Hindi)</option>

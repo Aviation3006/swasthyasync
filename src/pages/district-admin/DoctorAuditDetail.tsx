@@ -61,13 +61,13 @@ export const DoctorAuditDetail: React.FC = () => {
           <ArrowLeft className="w-4 h-4" />
           {t.backToAuditList}
         </button>
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+        <div className="bg-white rounded-xl p-12 text-center border border-slate-200 shadow-card">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-900 mb-2">{t.noAppointmentsFound}</h2>
           <p className="text-slate-500 mb-6">{t.auditDisclaimer}</p>
           <button
             onClick={() => navigate('/district-admin/audit')}
-            className="px-6 py-2.5 bg-emerald-700 text-white rounded-xl font-medium hover:bg-emerald-800 transition shadow-sm"
+            className="px-6 py-2.5 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 transition shadow-xs"
           >
             {t.backToAuditList}
           </button>
@@ -99,7 +99,7 @@ export const DoctorAuditDetail: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <button
           onClick={() => navigate('/district-admin/audit')}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium text-sm transition shadow-sm"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-md text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium text-xs transition shadow-subtle"
         >
           <ArrowLeft className="w-4 h-4" />
           {t.backToAuditList}
@@ -111,11 +111,11 @@ export const DoctorAuditDetail: React.FC = () => {
       </div>
 
       {/* Doctor Master Header Card */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-start sm:items-center gap-5">
             <div className="relative">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-2xl shadow-inner">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-2xl shadow-xs">
                 {doctor.doctorName.replace('Dr. ', '').split(' ').map((n) => n[0]).join('')}
               </div>
               {doctor.averageOverall >= 4.7 && (
@@ -217,7 +217,7 @@ export const DoctorAuditDetail: React.FC = () => {
       {/* Grid of Sub-Scores & Star Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Card 1: Clinical Consultation Care Metrics */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
               <Stethoscope className="w-4 h-4 text-emerald-600" />
@@ -271,7 +271,7 @@ export const DoctorAuditDetail: React.FC = () => {
         </div>
 
         {/* Card 2: Associated Hospital Infrastructure & OPD Experience */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
               <Building2 className="w-4 h-4 text-blue-600" />
@@ -329,7 +329,7 @@ export const DoctorAuditDetail: React.FC = () => {
         </div>
 
         {/* Card 3: 1-to-5 Star Distribution */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
               <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -367,7 +367,7 @@ export const DoctorAuditDetail: React.FC = () => {
       </div>
 
       {/* Verified Patient Reviews Section */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -386,11 +386,11 @@ export const DoctorAuditDetail: React.FC = () => {
                 placeholder={t.search}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 w-36 sm:w-44 shadow-subtle"
               />
             </div>
 
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-medium">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs font-medium">
               <button
                 onClick={() => setSelectedStarFilter('all')}
                 className={`px-2.5 py-1 rounded-lg transition ${
@@ -491,7 +491,7 @@ export const DoctorAuditDetail: React.FC = () => {
                   </div>
 
                   {/* Written Clinical Feedback */}
-                  <p className="text-sm text-slate-700 bg-slate-50/70 p-3.5 rounded-xl border border-slate-100 leading-relaxed italic">
+                  <p className="text-sm text-slate-700 bg-slate-50 p-3.5 rounded-lg border border-slate-200 leading-relaxed italic">
                     "{review.feedback || 'Consultation verified by patient with satisfactory rating.'}"
                   </p>
 

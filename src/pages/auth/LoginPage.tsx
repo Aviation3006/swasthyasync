@@ -7,6 +7,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/forms/Input';
 import { UserRole } from '../../types/common';
+import { isDemoMode } from '../../config/appConfig';
 import { 
   Building2, 
   User, 
@@ -26,55 +27,76 @@ import {
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { signInWithEmail, isLoading } = useAuth();
+  const { signInWithEmail, isLoading, isAuthenticated, role: authRole } = useAuth();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
-  const { theme, role: currentThemeRole, setThemeRole } = useTheme();
+  const { theme, setThemeRole } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Selected Role derived from ThemeContext or URL
+  // Selected Role derived from URL query parameter or defaulting to citizen patient
   const [selectedRole, setSelectedRole] = useState<UserRole>(() => {
     const search = new URLSearchParams(location.search);
     const r = search.get('role');
     if (r === 'hospital' || r === 'district_admin' || r === 'patient') return r as UserRole;
-    return currentThemeRole || 'patient';
+    return 'patient';
   });
 
   const [selectedDemoRegion, setSelectedDemoRegion] = useState<'Maharashtra' | 'Delhi' | 'Karnataka'>('Delhi');
 
   // Form Fields
-  const [identifier, setIdentifier] = useState('patient.delhi@swasthasync.com');
-  const [password, setPassword] = useState('Delhi@123');
+  const isDemo = isDemoMode();
+  const [identifier, setIdentifier] = useState(isDemo ? 'patient.delhi@swasthasync.com' : '');
+  const [password, setPassword] = useState(isDemo ? 'Delhi@123' : '');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberDevice, setRememberDevice] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // If already authenticated, redirect to appropriate active dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (authRole === 'hospital') {
+        navigate('/hospital', { replace: true });
+      } else if (authRole === 'district_admin') {
+        navigate('/district-admin', { replace: true });
+      } else {
+        navigate('/patient', { replace: true });
+      }
+    }
+  }, [isAuthenticated, authRole, navigate]);
+
   // Sync initial role credentials and theme on mount
   useEffect(() => {
     const search = new URLSearchParams(location.search);
     const r = search.get('role');
-    const targetRole = (r === 'hospital' || r === 'district_admin' || r === 'patient') ? (r as UserRole) : selectedRole;
+    const targetRole: UserRole = (r === 'hospital' || r === 'district_admin' || r === 'patient') ? (r as UserRole) : 'patient';
     setSelectedRole(targetRole);
     setThemeRole(targetRole);
-    updateCredentialsForRoleAndRegion(targetRole, selectedDemoRegion);
-  }, []);
+    if (isDemoMode()) {
+      updateCredentialsForRoleAndRegion(targetRole, selectedDemoRegion);
+    }
+  }, [location.search, setThemeRole]);
 
   // Handle Role Tab Switching
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
     setThemeRole(role);
     setErrorMessage(null);
-    updateCredentialsForRoleAndRegion(role, selectedDemoRegion);
+    if (isDemoMode()) {
+      updateCredentialsForRoleAndRegion(role, selectedDemoRegion);
+    }
   };
 
   const handleRegionSelect = (region: 'Maharashtra' | 'Delhi' | 'Karnataka') => {
     setSelectedDemoRegion(region);
-    updateCredentialsForRoleAndRegion(selectedRole, region);
+    if (isDemoMode()) {
+      updateCredentialsForRoleAndRegion(selectedRole, region);
+    }
   };
 
   const updateCredentialsForRoleAndRegion = (role: UserRole, region: 'Maharashtra' | 'Delhi' | 'Karnataka') => {
+    if (!isDemoMode()) return;
     if (region === 'Delhi') {
       if (role === 'patient') {
         setIdentifier('patient.delhi@swasthasync.com');
@@ -347,40 +369,42 @@ export const LoginPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2. Demo Environment Region Quick Selector */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{t.testRegionPersona || "Test Region Persona:"}</span>
-                  </span>
-                  <span className="font-mono text-slate-700 font-semibold bg-white px-2 py-0.5 rounded-md border border-slate-200 text-[11px]">
-                    {selectedDemoRegion}
-                  </span>
-                </div>
+              {/* 2. Demo Environment Region Quick Selector (Active ONLY in Demo Mode) */}
+              {isDemoMode() && (
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{t.testRegionPersona || "Test Region Persona:"}</span>
+                    </span>
+                    <span className="font-mono text-slate-700 font-semibold bg-white px-2 py-0.5 rounded-md border border-slate-200 text-[11px]">
+                      {selectedDemoRegion} (Demo)
+                    </span>
+                  </div>
 
-                <div className="grid grid-cols-3 gap-1.5">
-                  {(['Delhi', 'Maharashtra', 'Karnataka'] as const).map((reg) => (
-                    <button
-                      key={reg}
-                      type="button"
-                      onClick={() => handleRegionSelect(reg)}
-                      className={`py-1 px-2 rounded-md text-xs font-medium transition-colors ${
-                        selectedDemoRegion === reg
-                          ? 'bg-slate-800 text-white shadow-xs'
-                          : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {reg}
-                    </button>
-                  ))}
-                </div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {(['Delhi', 'Maharashtra', 'Karnataka'] as const).map((reg) => (
+                      <button
+                        key={reg}
+                        type="button"
+                        onClick={() => handleRegionSelect(reg)}
+                        className={`py-1 px-2 rounded-md text-xs font-medium transition-colors ${
+                          selectedDemoRegion === reg
+                            ? 'bg-slate-800 text-white shadow-xs'
+                            : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {reg}
+                      </button>
+                    ))}
+                  </div>
 
-                <div className="text-[11px] text-slate-500 flex items-center justify-between pt-0.5">
-                  <span>{t.accountId || "Account ID:"} <strong className="text-slate-900 font-mono break-all">{identifier}</strong></span>
-                  <span className="text-emerald-700 font-medium">{t.autoFilled || "Auto-filled"}</span>
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between pt-0.5">
+                    <span>{t.accountId || "Account ID:"} <strong className="text-slate-900 font-mono break-all">{identifier}</strong></span>
+                    <span className="text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-[10px] font-semibold">Demo Evaluation</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Error Message */}
               {errorMessage && (

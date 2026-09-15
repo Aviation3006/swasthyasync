@@ -47,24 +47,24 @@ export const DistrictDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Command Center Top Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 rounded-2xl p-6 sm:p-7 text-white shadow-elevated border border-emerald-800/50">
+      {/* Command Center Operations Header */}
+      <div className="bg-white rounded-xl p-5 sm:p-6 text-slate-900 shadow-card border border-slate-200">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                {location.state ? `${location.state} Health Administration` : 'National Health Governance'}
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                {location.state ? `${location.state} Health Administration` : 'Regional Health Governance'}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                 ● Live Command Active
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
               {jurisdiction?.administrativeJurisdiction || (location.district ? `${location.district} District Health Operations Command` : 'District Health Administration & Operations Command')}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300">
+            <p className="text-xs sm:text-sm text-slate-600">
               {user?.name || 'District Health Officer'} ({jurisdiction?.adminRole || 'DHO'}) • {jurisdiction?.departmentOrAuthority || (location.district ? `${location.district} Directorate of Health Services` : 'District Health Authority')}
             </p>
           </div>
@@ -76,7 +76,7 @@ export const DistrictDashboard: React.FC = () => {
               </Button>
             </Link>
             <Link to="/district-admin/analytics">
-              <Button variant="outline" size="md" leftIcon={<BarChart3 className="w-4 h-4" />} className="bg-slate-800 text-white border-slate-700 hover:bg-slate-700">
+              <Button variant="outline" size="md" leftIcon={<BarChart3 className="w-4 h-4" />}>
                 {t.navDistrictAnalytics}
               </Button>
             </Link>
@@ -84,34 +84,34 @@ export const DistrictDashboard: React.FC = () => {
         </div>
 
         {/* Aggregate District Capacity Stats */}
-        <div className="mt-6 pt-5 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+        <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div>
-            <span className="text-slate-400 block">{t.bedOccupancyRate}</span>
-            <div className="text-xl font-bold text-white mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.bedOccupancyRate}</span>
+            <div className="text-xl font-bold text-slate-900 mt-0.5">
               {summary.overallBedOccupancyRate}%{' '}
               <span className="text-xs font-normal text-slate-400">({summary.occupiedBeds}/{summary.totalBeds})</span>
             </div>
           </div>
 
           <div>
-            <span className="text-slate-400 block">{t.icuBedsAvailable}</span>
-            <div className="text-xl font-bold text-amber-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.icuBedsAvailable}</span>
+            <div className="text-xl font-bold text-amber-700 mt-0.5">
               {summary.occupiedIcuBeds} / {summary.totalIcuBeds}{' '}
               <span className="text-xs font-normal text-slate-400">{t.beds}</span>
             </div>
           </div>
 
           <div>
-            <span className="text-slate-400 block">{t.ambulancesActive}</span>
-            <div className="text-xl font-bold text-sky-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.ambulancesActive}</span>
+            <div className="text-xl font-bold text-slate-900 mt-0.5">
               {summary.ambulanceFleetActive} / {summary.ambulanceFleetTotal}{' '}
               <span className="text-xs font-normal text-slate-400">Fleet</span>
             </div>
           </div>
 
           <div>
-            <span className="text-slate-400 block">{t.opdPatientsToday}</span>
-            <div className="text-xl font-bold text-emerald-400 mt-0.5">
+            <span className="text-slate-500 font-medium block">{t.opdPatientsToday}</span>
+            <div className="text-xl font-bold text-emerald-700 mt-0.5">
               {summary.todayOpdFootfall.toLocaleString('en-IN')}{' '}
               <span className="text-xs font-normal text-slate-400">Patients</span>
             </div>
@@ -121,10 +121,10 @@ export const DistrictDashboard: React.FC = () => {
 
       {/* Critical Alerts Ribbon */}
       {activeAlerts.length > 0 && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-300 text-xs space-y-2 shadow-subtle">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs space-y-2 shadow-card">
           <div className="flex items-center justify-between font-bold text-rose-900">
             <span className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-rose-600 animate-pulse" />
+              <AlertTriangle className="w-4 h-4 text-rose-600" />
               HIGH-PRIORITY DISTRICT HEALTH ALERTS ({activeAlerts.length} ACTIVE)
             </span>
             <Link to="/district-admin/alerts" className="text-rose-700 underline hover:text-rose-900">
@@ -266,7 +266,7 @@ export const DistrictDashboard: React.FC = () => {
                   const pct = Math.round((occupied / total) * 100);
 
                   return (
-                    <div key={hosp.id} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <div key={hosp.id} className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="text-sm font-bold text-slate-900">{hosp.name}</h4>
@@ -344,11 +344,11 @@ export const DistrictDashboard: React.FC = () => {
           <Card>
             <CardHeader
               title="State Health Programs Scorecard"
-              subtitle={`${location.state || "National"} Health Coverage & Empanelment`}
+              subtitle={`${location.state || "Regional"} Public Health Coverage & Participating Facilities`}
               icon={<CheckCircle2 className="w-5 h-5 text-emerald-600" />}
             />
             <CardContent className="space-y-3">
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xs font-bold text-slate-900">MJPJAY 2.0 Coverage</h5>
                   <span className="text-xs font-bold text-emerald-700">90.5%</span>
@@ -359,7 +359,7 @@ export const DistrictDashboard: React.FC = () => {
                 <p className="text-[10px] text-slate-500">1.34M of 1.48M target ration card holders</p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xs font-bold text-slate-900">Mission Indradhanush (Immunization)</h5>
                   <span className="text-xs font-bold text-emerald-700">96.1%</span>
@@ -370,7 +370,7 @@ export const DistrictDashboard: React.FC = () => {
                 <p className="text-[10px] text-slate-500">88.4K infants vaccinated</p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xs font-bold text-slate-900">NCD Doorstep Screening</h5>
                   <span className="text-xs font-bold text-amber-700">77.0%</span>

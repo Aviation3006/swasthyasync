@@ -3,6 +3,7 @@ import { User, UserRole, Language } from '../types/common';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { authService, AuthSessionUser } from '../services/authService';
 import { LocationInfo, HealthcareProfessionalProfile, AdministratorProfile } from '../types/location';
+import { isDemoMode } from '../config/appConfig';
 
 export interface DemoPersona {
   role: UserRole;
@@ -306,7 +307,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [role, setRole] = useState<UserRole>(() => {
-    return (localStorage.getItem('swasthyasync_active_role') as UserRole) || 'patient';
+    const isAuth = typeof window !== 'undefined' && localStorage.getItem('swasthyasync_auth_status') === 'true';
+    if (isAuth) {
+      const active = localStorage.getItem('swasthyasync_active_role');
+      if (active === 'hospital' || active === 'district_admin' || active === 'patient') {
+        return active as UserRole;
+      }
+    }
+    return 'patient';
   });
 
   const [language, setLanguageState] = useState<Language>(() => {
@@ -335,8 +343,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [language]);
 
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(() => {
+    const isAuth = typeof window !== 'undefined' && localStorage.getItem('swasthyasync_auth_status') === 'true';
+    if (isAuth) {
+      const raw = localStorage.getItem('swasthyasync_session_user');
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+    return null;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const isAuth = typeof window !== 'undefined' && localStorage.getItem('swasthyasync_auth_status') === 'true';
+    return isAuth && !!localStorage.getItem('swasthyasync_session_user');
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Restore authenticated session on mount from Supabase Auth or Local Storage
@@ -344,6 +370,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let mounted = true;
 
     async function checkSession() {
+      let resolvedUser: User | null = null;
+      let resolvedRole: UserRole = 'patient';
+      let resolvedAuth = false;
+
+      // 1. Check Supabase Auth if configured
       if (isSupabaseConfigured && supabase) {
         try {
           const { data: { session } } = await supabase.auth.getSession();
@@ -374,7 +405,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               pinCode: userPin || ''
             };
 
-            const appUser: User = {
+            resolvedUser = {
               id: session.user.id,
               email: session.user.email || '',
               name: profile?.full_name || session.user.user_metadata?.full_name || 'User',
@@ -388,29 +419,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               professionalProfile: session.user.user_metadata?.professional_profile,
               adminProfile: session.user.user_metadata?.admin_profile
             };
-
-            setUser(appUser);
-            setRole(mappedRole);
-            setIsAuthenticated(true);
-            localStorage.setItem('swasthyasync_active_role', mappedRole);
-            localStorage.setItem('swasthyasync_auth_status', 'true');
-          } else if (mounted) {
-            setUser(null);
-            setIsAuthenticated(false);
-            localStorage.setItem('swasthyasync_auth_status', 'false');
+            resolvedRole = mappedRole;
+            resolvedAuth = true;
           }
         } catch (e) {
-          if (mounted) {
-            setUser(null);
-            setIsAuthenticated(false);
+          // Supabase session check error; fallback to local session
+        }
+      }
+
+      // 2. Check local authenticated session ONLY when Demo Mode is explicitly enabled
+      // CRITICAL SECURITY CONTROL: In production mode (!isDemoMode()), unauthenticated or invalid
+      // Supabase sessions MUST NOT trust localStorage to grant privileged role access.
+      if (!resolvedAuth && isDemoMode()) {
+        const authStatus = localStorage.getItem('swasthyasync_auth_status');
+        const sessionRaw = localStorage.getItem('swasthyasync_session_user');
+        if (authStatus === 'true' && sessionRaw) {
+          try {
+            const parsed = JSON.parse(sessionRaw) as User;
+            if (parsed && parsed.id && parsed.role) {
+              resolvedUser = parsed;
+              resolvedRole = parsed.role;
+              resolvedAuth = true;
+            }
+          } catch (e) {
+            // Corrupt stored session
           }
         }
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
       }
 
       if (mounted) {
+        if (resolvedAuth && resolvedUser) {
+          setUser(resolvedUser);
+          setRole(resolvedRole);
+          setIsAuthenticated(true);
+          localStorage.setItem('swasthyasync_active_role', resolvedRole);
+          localStorage.setItem('swasthyasync_auth_status', 'true');
+          localStorage.setItem('swasthyasync_session_user', JSON.stringify(resolvedUser));
+        } else {
+          // Unauthenticated: explicitly reset role to 'patient' and clean stale session keys
+          setUser(null);
+          setRole('patient');
+          setIsAuthenticated(false);
+          localStorage.setItem('swasthyasync_auth_status', 'false');
+          localStorage.removeItem('swasthyasync_session_user');
+          localStorage.removeItem('swasthyasync_active_role');
+        }
         setIsLoading(false);
       }
     }
@@ -419,6 +472,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const switchRole = (newRole: UserRole) => {
+    if (!isDemoMode()) {
+      console.warn('Role switching via demo personas is disabled in production mode.');
+      return;
+    }
     setRole(newRole);
     localStorage.setItem('swasthyasync_active_role', newRole);
     const personaKey = `${newRole}-mh`;
@@ -426,15 +483,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(defaultPersona.user);
     setIsAuthenticated(true);
     localStorage.setItem('swasthyasync_auth_status', 'true');
+    localStorage.setItem('swasthyasync_session_user', JSON.stringify(defaultPersona.user));
   };
 
   const signInWithPersona = (personaKey: string) => {
+    if (!isDemoMode()) {
+      console.warn('Direct demo persona sign-in is disabled in production mode.');
+      return;
+    }
     const persona = DEMO_PERSONAS[personaKey] || DEMO_PERSONAS['patient-mh'];
     setRole(persona.role);
     setUser(persona.user);
     setIsAuthenticated(true);
     localStorage.setItem('swasthyasync_active_role', persona.role);
     localStorage.setItem('swasthyasync_auth_status', 'true');
+    localStorage.setItem('swasthyasync_session_user', JSON.stringify(persona.user));
   };
 
   const signInWithEmail = async (email: string, pass: string): Promise<{ user: User | null; error: Error | null }> => {
@@ -466,6 +529,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(true);
       localStorage.setItem('swasthyasync_active_role', sessionUser.role);
       localStorage.setItem('swasthyasync_auth_status', 'true');
+      localStorage.setItem('swasthyasync_session_user', JSON.stringify(appUser));
       return { user: appUser, error: null };
     }
 
@@ -529,6 +593,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(true);
       localStorage.setItem('swasthyasync_active_role', sessionUser.role);
       localStorage.setItem('swasthyasync_auth_status', 'true');
+      localStorage.setItem('swasthyasync_session_user', JSON.stringify(appUser));
       return { user: appUser, error: null };
     }
 
@@ -539,12 +604,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     await authService.signOut();
     setUser(null);
+    setRole('patient');
     setIsAuthenticated(false);
+    localStorage.setItem('swasthyasync_auth_status', 'false');
+    localStorage.removeItem('swasthyasync_session_user');
+    localStorage.removeItem('swasthyasync_active_role');
+    localStorage.removeItem('swasthyasync_cached_user');
     setIsLoading(false);
   };
 
   const updateUser = (updatedUser: User) => {
     setUser(updatedUser);
+    localStorage.setItem('swasthyasync_session_user', JSON.stringify(updatedUser));
     localStorage.setItem('swasthyasync_cached_user', JSON.stringify(updatedUser));
   };
 

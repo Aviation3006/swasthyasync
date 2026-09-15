@@ -219,16 +219,16 @@ export const SignupPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto my-4 animate-fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl border-2 border-pink-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden">
         
         {/* Deep Burgundy/Pink Header */}
-        <div className="bg-gradient-to-r from-[#4A0420] via-[#5C0628] to-[#360317] text-white p-6 sm:p-8 text-center space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase bg-white/20 text-white border border-white/30 shadow-xs backdrop-blur-xs">
+        <div className="bg-[#831843] text-white p-6 sm:p-8 text-center space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold tracking-widest uppercase bg-white/20 text-white border border-white/30 shadow-2xs">
             <HeartPulse className="w-3.5 h-3.5 text-white" />
             <span>PATIENT PORTAL • CITIZEN REGISTRATION</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
             Create Patient Account
           </h2>
 
@@ -241,7 +241,7 @@ export const SignupPage: React.FC = () => {
         <div className="p-4 sm:p-8 md:p-10 space-y-6 sm:space-y-8">
           
           {/* Public Citizen Notice */}
-          <div className="bg-pink-50 border border-pink-200 rounded-2xl p-4 text-xs text-slate-800 flex items-start gap-3">
+          <div className="bg-pink-50 border border-pink-200 rounded-lg p-4 text-xs text-slate-800 flex items-start gap-3">
             <Info className="w-4 h-4 text-[#DB2777] shrink-0 mt-0.5" />
             <div>
               <p className="font-bold text-slate-900">Citizen & Patient Health Locker</p>

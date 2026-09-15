@@ -119,12 +119,10 @@ export const FunctionalHospitalMap: React.FC<FunctionalHospitalMapProps> = ({
           align-items: center;
           justify-content: center;
           color: white;
-          font-size: ${isActive ? '16px' : '13px'};
-          font-weight: bold;
           cursor: pointer;
           transition: transform 0.2s ease;
         ">
-          🏥
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v12M6 12h12"/></svg>
         </div>
       `;
 
@@ -143,20 +141,54 @@ export const FunctionalHospitalMap: React.FC<FunctionalHospitalMapProps> = ({
 
       const popupContent = document.createElement('div');
       popupContent.className = 'p-2 min-w-[200px] text-xs font-sans space-y-2';
-      popupContent.innerHTML = `
-        <div class="border-b border-slate-200 pb-1.5">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block">${fac.facilityType || 'Healthcare Facility'}</span>
-          <h4 class="font-bold text-sm text-slate-900 leading-tight">${fac.name}</h4>
-          ${distLabel ? `<span class="text-xs font-bold text-emerald-600 mt-0.5 inline-block">📍 ${distLabel}</span>` : ''}
-        </div>
-        <p class="text-[11px] text-slate-600 leading-snug">${addressLabel}</p>
-        ${fac.contactNumber ? `<p class="text-[10px] text-slate-500">📞 ${fac.contactNumber}</p>` : ''}
-        <div class="pt-1.5 flex gap-1.5">
-          <button id="popup-btn-select-${fac.id}" class="w-full px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition-colors shadow-sm">
-            Book OPD Appointment
-          </button>
-        </div>
-      `;
+
+      // Header Container
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 'border-b border-slate-200 pb-1.5';
+
+      const typeSpan = document.createElement('span');
+      typeSpan.className = 'text-[10px] font-bold uppercase tracking-wider text-emerald-700 block';
+      typeSpan.textContent = fac.facilityType || 'Healthcare Facility';
+      headerDiv.appendChild(typeSpan);
+
+      const nameH4 = document.createElement('h4');
+      nameH4.className = 'font-bold text-sm text-slate-900 leading-tight';
+      nameH4.textContent = fac.name;
+      headerDiv.appendChild(nameH4);
+
+      if (distLabel) {
+        const distSpan = document.createElement('span');
+        distSpan.className = 'text-xs font-semibold text-emerald-700 mt-0.5 inline-flex items-center gap-1';
+        distSpan.innerHTML = '<svg class="w-3 h-3 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+        distSpan.appendChild(document.createTextNode(distLabel));
+        headerDiv.appendChild(distSpan);
+      }
+      popupContent.appendChild(headerDiv);
+
+      // Address
+      const addressP = document.createElement('p');
+      addressP.className = 'text-[11px] text-slate-600 leading-snug';
+      addressP.textContent = addressLabel;
+      popupContent.appendChild(addressP);
+
+      // Contact Number
+      if (fac.contactNumber) {
+        const contactP = document.createElement('p');
+        contactP.className = 'text-[10px] text-slate-500 inline-flex items-center gap-1 mt-0.5';
+        contactP.innerHTML = '<svg class="w-3 h-3 text-slate-400 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+        contactP.appendChild(document.createTextNode(fac.contactNumber));
+        popupContent.appendChild(contactP);
+      }
+
+      // Action Button
+      const btnDiv = document.createElement('div');
+      btnDiv.className = 'pt-1.5 flex gap-1.5';
+      const selectBtn = document.createElement('button');
+      selectBtn.id = `popup-btn-select-${fac.id}`;
+      selectBtn.className = 'w-full px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition-colors shadow-sm';
+      selectBtn.textContent = 'Book OPD Appointment';
+      btnDiv.appendChild(selectBtn);
+      popupContent.appendChild(btnDiv);
 
       marker.bindPopup(popupContent, { maxWidth: 280 });
 
@@ -184,11 +216,11 @@ export const FunctionalHospitalMap: React.FC<FunctionalHospitalMapProps> = ({
   }, [facilities, userCoords, activeFacilityId, isDemo]);
 
   return (
-    <div className="relative w-full h-[300px] sm:h-[420px] rounded-2xl overflow-hidden border border-slate-300 shadow-subtle z-0">
+    <div className="relative w-full h-[300px] sm:h-[420px] rounded-xl overflow-hidden border border-slate-300 shadow-subtle z-0">
       <div ref={mapContainerRef} className="w-full h-full" />
       
       {/* Map Legend Overlay - Responsive for mobile */}
-      <div className="absolute bottom-2 left-2 right-2 sm:right-auto bg-white/95 backdrop-blur-sm px-2.5 py-1.5 rounded-xl shadow-md border border-slate-200 text-[10px] sm:text-[11px] text-slate-700 z-[1000] flex items-center justify-around sm:justify-start gap-2.5">
+      <div className="absolute bottom-2 left-2 right-2 sm:right-auto bg-white/95 backdrop-blur-sm px-2.5 py-1.5 rounded-lg shadow-md border border-slate-200 text-[10px] sm:text-[11px] text-slate-700 z-[1000] flex items-center justify-around sm:justify-start gap-2.5">
         <div className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 border border-white inline-block"></span>
           <span>You</span>

@@ -112,14 +112,14 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
   const activeDisplayTranscript = finalTranscript || liveTranscript;
 
   const recognitionLanguages = [
-    { code: 'en-IN', label: 'English (India)', flag: '🇮🇳' },
-    { code: 'hi-IN', label: 'हिन्दी', flag: '🇮🇳' },
-    { code: 'mr-IN', label: 'मराठी', flag: '🇮🇳' }
+    { code: 'en-IN', label: 'English (India)' },
+    { code: 'hi-IN', label: 'हिन्दी' },
+    { code: 'mr-IN', label: 'मराठी' }
   ];
 
   return (
     <div 
-      className={`p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-white border-2 border-emerald-500/40 shadow-xl space-y-4 ${className}`}
+      className={`p-4 sm:p-5 rounded-xl bg-slate-900 text-white border border-slate-800 shadow-card space-y-4 ${className}`}
       role="region"
       aria-label="Voice Symptom Logger"
     >
@@ -143,20 +143,19 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
         </div>
 
         {/* Language Selector */}
-        <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-700 w-full sm:w-auto justify-center">
+        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-700 w-full sm:w-auto justify-center">
           {recognitionLanguages.map((lang) => (
             <button
               key={lang.code}
               type="button"
               disabled={isListening}
               onClick={() => setSelectedLang(lang.code)}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                 selectedLang === lang.code
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 disabled:opacity-50'
               }`}
             >
-              <span>{lang.flag}</span>
               <span>{lang.label}</span>
             </button>
           ))}
@@ -183,7 +182,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
                 <button
                   type="button"
                   onClick={handleStartListening}
-                  className="w-12 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 flex items-center justify-center shadow-lg shadow-emerald-500/20 cursor-pointer transition-transform active:scale-95 shrink-0"
+                  className="w-12 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 flex items-center justify-center shadow-lg shadow-emerald-500/20 cursor-pointer transition-transform active:scale-95 shrink-0"
                   aria-label="Start recording symptoms"
                   title="Click to speak symptoms"
                 >
@@ -193,7 +192,7 @@ export const VoiceSymptomLogger: React.FC<VoiceSymptomLoggerProps> = ({
                 <button
                   type="button"
                   onClick={handleStopListening}
-                  className="w-12 h-12 rounded-2xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white flex items-center justify-center shadow-lg shadow-rose-600/30 cursor-pointer animate-pulse shrink-0 ring-4 ring-rose-500/40"
+                  className="w-12 h-12 rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white flex items-center justify-center shadow-lg shadow-rose-600/30 cursor-pointer animate-pulse shrink-0 ring-4 ring-rose-500/40"
                   aria-label="Stop recording"
                   title="Click to stop listening"
                 >

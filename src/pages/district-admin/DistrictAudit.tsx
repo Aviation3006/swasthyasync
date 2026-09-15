@@ -111,7 +111,7 @@ export const DistrictAudit: React.FC = () => {
       />
 
       {/* Internal Governance Disclaimer */}
-      <div className="bg-slate-900 text-slate-100 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-md flex items-start gap-4">
+      <div className="bg-slate-900 text-slate-100 p-4 sm:p-5 rounded-xl border border-slate-800 shadow-card flex items-start gap-4">
         <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0 mt-0.5" />
         <div className="text-xs sm:text-sm space-y-1">
           <span className="font-bold text-white block">{t.clinicalGovernanceNotice}</span>
@@ -187,28 +187,26 @@ export const DistrictAudit: React.FC = () => {
 
       {/* SECTION 2: Dynamic Best & Lowest Performing Doctors Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 🏆 Best Performing Doctor */}
+        {/* Best Performing Doctor */}
         {bestDoctor && (
-          <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-white rounded-2xl p-6 border-2 border-emerald-300 shadow-sm relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-200/40 rounded-full blur-2xl -mr-10 -mt-10" />
-
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-emerald-300 shadow-card flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold shadow-xs">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-700 text-white rounded-md text-xs font-bold shadow-xs">
                   <Award className="w-4 h-4 text-amber-300" />
-                  🏆 {t.bestPerformingDoctor}
+                  {t.bestPerformingDoctor}
                 </span>
-                <span className="text-xs text-emerald-800 font-semibold bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span className="text-xs text-emerald-800 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   {bestDoctor.specialization}
                 </span>
               </div>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-700 text-white font-extrabold text-lg flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-800 font-bold text-base flex items-center justify-center border border-emerald-200 shrink-0">
                   {bestDoctor.doctorName.replace('Dr. ', '').split(' ').map((n) => n[0]).join('')}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">{bestDoctor.doctorName}</h3>
+                  <h3 className="text-base font-bold text-slate-900">{bestDoctor.doctorName}</h3>
                   <p className="text-xs text-slate-600 flex items-center gap-1 mt-0.5">
                     <Building2 className="w-3.5 h-3.5 text-emerald-700" />
                     {bestDoctor.facilityName}
@@ -218,27 +216,27 @@ export const DistrictAudit: React.FC = () => {
 
               <p className="text-xs text-slate-600 mb-4">{t.bestDoctorDesc}</p>
 
-              <div className="grid grid-cols-3 gap-2 bg-white/90 p-3 rounded-xl border border-emerald-100 mb-4 text-center">
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 mb-4 text-center">
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.doctorOverallRating}</span>
-                  <span className="text-lg font-black text-emerald-800 flex items-center justify-center gap-1">
+                  <span className="text-base font-black text-emerald-800 flex items-center justify-center gap-1">
                     {bestDoctor.averageOverall.toFixed(1)} <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   </span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.totalVerifiedReviews}</span>
-                  <span className="text-lg font-black text-slate-900">{bestDoctor.totalRatings}</span>
+                  <span className="text-base font-black text-slate-900">{bestDoctor.totalRatings}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.totalConsultationsCompleted}</span>
-                  <span className="text-lg font-black text-slate-900">{bestDoctor.totalCompletedVisits}</span>
+                  <span className="text-base font-black text-slate-900">{bestDoctor.totalCompletedVisits}</span>
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => navigate(`/district-admin/audit/doctor/${bestDoctor.doctorId}`)}
-              className="w-full py-2.5 bg-emerald-700 text-white rounded-xl font-bold text-xs hover:bg-emerald-800 transition flex items-center justify-center gap-1.5 shadow-sm"
+              className="w-full py-2.5 bg-emerald-700 text-white rounded-lg font-bold text-xs hover:bg-emerald-800 transition flex items-center justify-center gap-1.5 shadow-xs"
             >
               <Stethoscope className="w-4 h-4" />
               {t.viewReviewsBtn} & Clinical Breakdown
@@ -247,28 +245,26 @@ export const DistrictAudit: React.FC = () => {
           </div>
         )}
 
-        {/* ⚠️ Lowest Performing Doctor */}
+        {/* Lowest Performing Doctor */}
         {lowestDoctor && (
-          <div className="bg-gradient-to-br from-rose-50 via-amber-50 to-white rounded-2xl p-6 border-2 border-rose-300 shadow-sm relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-200/40 rounded-full blur-2xl -mr-10 -mt-10" />
-
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-rose-300 shadow-card flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shadow-xs">
-                  <AlertTriangle className="w-4 h-4 text-amber-200" />
-                  ⚠️ {t.lowestPerformingDoctor}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-700 text-white rounded-md text-xs font-bold shadow-xs">
+                  <AlertTriangle className="w-4 h-4 text-amber-300" />
+                  {t.lowestPerformingDoctor}
                 </span>
-                <span className="text-xs text-rose-800 font-semibold bg-rose-100/80 px-2.5 py-0.5 rounded-full border border-rose-200">
+                <span className="text-xs text-rose-800 font-semibold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
                   {lowestDoctor.specialization}
                 </span>
               </div>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl bg-rose-700 text-white font-extrabold text-lg flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-800 font-bold text-base flex items-center justify-center border border-rose-200 shrink-0">
                   {lowestDoctor.doctorName.replace('Dr. ', '').split(' ').map((n) => n[0]).join('')}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">{lowestDoctor.doctorName}</h3>
+                  <h3 className="text-base font-bold text-slate-900">{lowestDoctor.doctorName}</h3>
                   <p className="text-xs text-slate-600 flex items-center gap-1 mt-0.5">
                     <Building2 className="w-3.5 h-3.5 text-rose-700" />
                     {lowestDoctor.facilityName}
@@ -278,27 +274,27 @@ export const DistrictAudit: React.FC = () => {
 
               <p className="text-xs text-slate-600 mb-4">{t.lowestDoctorDesc}</p>
 
-              <div className="grid grid-cols-3 gap-2 bg-white/90 p-3 rounded-xl border border-rose-100 mb-4 text-center">
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 mb-4 text-center">
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.doctorOverallRating}</span>
-                  <span className="text-lg font-black text-rose-700 flex items-center justify-center gap-1">
+                  <span className="text-base font-black text-rose-700 flex items-center justify-center gap-1">
                     {lowestDoctor.averageOverall.toFixed(1)} <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   </span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.totalVerifiedReviews}</span>
-                  <span className="text-lg font-black text-slate-900">{lowestDoctor.totalRatings}</span>
+                  <span className="text-base font-black text-slate-900">{lowestDoctor.totalRatings}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 font-semibold block">{t.totalConsultationsCompleted}</span>
-                  <span className="text-lg font-black text-slate-900">{lowestDoctor.totalCompletedVisits}</span>
+                  <span className="text-base font-black text-slate-900">{lowestDoctor.totalCompletedVisits}</span>
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => navigate(`/district-admin/audit/doctor/${lowestDoctor.doctorId}`)}
-              className="w-full py-2.5 bg-rose-700 text-white rounded-xl font-bold text-xs hover:bg-rose-800 transition flex items-center justify-center gap-1.5 shadow-sm"
+              className="w-full py-2.5 bg-rose-700 text-white rounded-lg font-bold text-xs hover:bg-rose-800 transition flex items-center justify-center gap-1.5 shadow-xs"
             >
               <AlertTriangle className="w-4 h-4" />
               {t.viewReviewsBtn} & Remediation Logs
@@ -309,7 +305,7 @@ export const DistrictAudit: React.FC = () => {
       </div>
 
       {/* SECTION 3: Hospital Facility Performance Summary */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-card space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -337,9 +333,9 @@ export const DistrictAudit: React.FC = () => {
                 key={hosp.facilityId}
                 type="button"
                 onClick={() => setSelectedHospitalId(isSelected ? 'all' : hosp.facilityId)}
-                className={`p-4 rounded-xl text-left transition border-2 ${
+                className={`p-4 rounded-lg text-left transition border ${
                   isSelected
-                    ? 'border-emerald-600 bg-emerald-50/50 shadow-sm'
+                    ? 'border-emerald-600 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-600'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
@@ -383,7 +379,7 @@ export const DistrictAudit: React.FC = () => {
       </div>
 
       {/* SECTION 4: Comprehensive Doctor Performance & Ratings Table (20 Doctors) */}
-      <div className="bg-white rounded-2xl p-3.5 sm:p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-xl p-3.5 sm:p-6 sm:p-8 border border-slate-200 shadow-card space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -403,7 +399,7 @@ export const DistrictAudit: React.FC = () => {
                 placeholder={t.searchDoctorPlaceholder}
                 value={searchDoctor}
                 onChange={(e) => setSearchDoctor(e.target.value)}
-                className="pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60"
+                className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 w-44 sm:w-60 shadow-subtle"
               />
             </div>
 
@@ -411,7 +407,7 @@ export const DistrictAudit: React.FC = () => {
             <select
               value={selectedHospitalId}
               onChange={(e) => setSelectedHospitalId(e.target.value)}
-              className="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700"
+              className="py-1.5 px-3 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 font-medium text-slate-700 shadow-subtle"
             >
               <option value="all">{t.allHospitals}</option>
               {auditData.hospitalAudits.map((h) => (
@@ -435,7 +431,7 @@ export const DistrictAudit: React.FC = () => {
             <select
               value={selectedSpecialty}
               onChange={(e) => setSelectedSpecialty(e.target.value)}
-              className="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700"
+              className="py-1.5 px-3 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 font-medium text-slate-700 shadow-subtle"
             >
               <option value="all">{t.allSpecialties}</option>
               {uniqueSpecialties.map((s) => (
@@ -449,7 +445,7 @@ export const DistrictAudit: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="py-2 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-900"
+              className="py-1.5 px-3 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 font-semibold text-slate-900 shadow-subtle"
             >
               <option value="rating_desc">{t.sortByRatingDesc}</option>
               <option value="rating_asc">{t.sortByRatingAsc}</option>
@@ -464,14 +460,14 @@ export const DistrictAudit: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 text-[11px] uppercase tracking-wider text-slate-500 font-bold bg-slate-50/50">
-                <th className="py-3 px-4">Doctor & Experience</th>
-                <th className="py-3 px-4">Specialization</th>
+                <th className="py-3 px-4">{t.doctorNameCol || 'Doctor'} & Experience</th>
+                <th className="py-3 px-4">{t.allSpecialties || 'Specialization'}</th>
                 <th className="py-3 px-4">Hospital Facility</th>
-                <th className="py-3 px-4 text-center">Consultations</th>
-                <th className="py-3 px-4 text-center">Overall Score</th>
+                <th className="py-3 px-4 text-center">{t.totalConsultations || 'Consultations'}</th>
+                <th className="py-3 px-4 text-center">{t.overallRatingCol || 'Overall Score'}</th>
                 <th className="py-3 px-4">Clinical Sub-Scores</th>
                 <th className="py-3 px-4 text-center">Trend</th>
-                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">{t.status || 'Status'}</th>
                 <th className="py-3 px-4 text-right">Audit Action</th>
               </tr>
             </thead>
@@ -481,7 +477,7 @@ export const DistrictAudit: React.FC = () => {
                   {/* Doctor Info */}
                   <td className="py-3.5 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs shrink-0">
+                      <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs shrink-0">
                         {doc.doctorName.replace('Dr. ', '').split(' ').map((n) => n[0]).join('')}
                       </div>
                       <div>
@@ -649,7 +645,7 @@ export const DistrictAudit: React.FC = () => {
                   setDrillDownDoctor(null);
                   navigate(`/district-admin/audit/doctor/${id}`);
                 }}
-                className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs transition flex items-center gap-1"
+                className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold text-xs transition flex items-center gap-1 shadow-xs"
               >
                 {t.viewReviewsBtn} & Full Patient Feedback
                 <ChevronRight className="w-4 h-4" />
@@ -657,7 +653,7 @@ export const DistrictAudit: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDrillDownDoctor(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold text-xs transition"
               >
                 {t.close}
               </button>

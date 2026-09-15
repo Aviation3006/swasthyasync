@@ -1,6 +1,7 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { User, UserRole } from '../types/common';
 import { LocationInfo, HealthcareProfessionalProfile, AdministratorProfile } from '../types/location';
+import { isDemoMode } from '../config/appConfig';
 
 export interface AuthSessionUser {
   id: string;
@@ -27,6 +28,264 @@ export interface AuthSessionUser {
   location?: LocationInfo;
   professionalProfile?: HealthcareProfessionalProfile;
   adminProfile?: AdministratorProfile;
+}
+
+export interface DemoCredential {
+  email: string;
+  password: string;
+  role: UserRole;
+  personaKey: string;
+}
+
+export const KNOWN_DEMO_CREDENTIALS: Record<string, DemoCredential> = {
+  // Maharashtra Personas
+  'patient.test@swasthasync.com': {
+    email: 'patient.test@swasthasync.com',
+    password: 'Patient@123',
+    role: 'patient',
+    personaKey: 'patient-mh'
+  },
+  'hospital.test@swasthasync.com': {
+    email: 'hospital.test@swasthasync.com',
+    password: 'Hospital@123',
+    role: 'hospital',
+    personaKey: 'hospital-mh'
+  },
+  'admin.test@swasthasync.com': {
+    email: 'admin.test@swasthasync.com',
+    password: 'Admin@123',
+    role: 'district_admin',
+    personaKey: 'admin-mh'
+  },
+  // Delhi Personas
+  'patient.delhi@swasthasync.com': {
+    email: 'patient.delhi@swasthasync.com',
+    password: 'Delhi@123',
+    role: 'patient',
+    personaKey: 'patient-delhi'
+  },
+  'hospital.delhi@swasthasync.com': {
+    email: 'hospital.delhi@swasthasync.com',
+    password: 'Delhi@123',
+    role: 'hospital',
+    personaKey: 'hospital-delhi'
+  },
+  'admin.delhi@swasthasync.com': {
+    email: 'admin.delhi@swasthasync.com',
+    password: 'Delhi@123',
+    role: 'district_admin',
+    personaKey: 'admin-delhi'
+  },
+  // Karnataka Personas
+  'patient.karnataka@swasthasync.com': {
+    email: 'patient.karnataka@swasthasync.com',
+    password: 'Karnataka@123',
+    role: 'patient',
+    personaKey: 'patient-karnataka'
+  },
+  'hospital.karnataka@swasthasync.com': {
+    email: 'hospital.karnataka@swasthasync.com',
+    password: 'Karnataka@123',
+    role: 'hospital',
+    personaKey: 'hospital-karnataka'
+  },
+  'admin.karnataka@swasthasync.com': {
+    email: 'admin.karnataka@swasthasync.com',
+    password: 'Karnataka@123',
+    role: 'district_admin',
+    personaKey: 'admin-karnataka'
+  }
+};
+
+export function getDemoSessionUser(personaKey: string): AuthSessionUser {
+  switch (personaKey) {
+    case 'patient-mh':
+      return {
+        id: 'pat-mh-001',
+        email: 'patient.test@swasthasync.com',
+        fullName: 'Rameshwar B. Jadhav',
+        role: 'patient',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'Aundh District Hospital (Attached)',
+        location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' },
+        phone: '+91 98224 51902'
+      };
+    case 'hospital-mh':
+      return {
+        id: 'doc-01',
+        email: 'hospital.test@swasthasync.com',
+        fullName: 'Dr. Anjali Deshmukh',
+        role: 'hospital',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'Aundh District Hospital, Pune',
+        phone: '+91 20 2728 0122',
+        location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' },
+        professionalProfile: {
+          professionalRole: 'Doctor',
+          registrationNumber: 'MMC-2014-9912',
+          employeeId: 'ADH-DOC-01',
+          facilityName: 'Aundh District Hospital, Pune',
+          facilityType: 'District Hospital',
+          department: 'General Medicine',
+          designation: 'Chief Medical Officer',
+          facilityAddress: 'Chikhalwadi, Aundh, Pune 411027',
+          facilityPinCode: '411027',
+          location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' }
+        }
+      };
+    case 'admin-mh':
+      return {
+        id: 'admin-dho-01',
+        email: 'admin.test@swasthasync.com',
+        fullName: 'Dr. Suresh Patil',
+        role: 'district_admin',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'District Health Directorate',
+        phone: '+91 20 2605 1888',
+        location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411001' },
+        adminProfile: {
+          adminRole: 'District Health Officer (DHO)',
+          administratorId: 'DHO-PUNE-01',
+          departmentOrAuthority: 'District Health Directorate',
+          jurisdictionLevel: 'District',
+          administrativeJurisdiction: 'Pune District Health Directorate',
+          officeAddress: 'Collector Office Compound, Pune 411001',
+          officePinCode: '411001',
+          location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411001' }
+        }
+      };
+    case 'patient-delhi':
+      return {
+        id: 'pat-del-001',
+        email: 'patient.delhi@swasthasync.com',
+        fullName: 'Ankit Sharma',
+        role: 'patient',
+        district: 'West Delhi',
+        state: 'Delhi (NCT)',
+        facilityName: 'Deen Dayal Upadhyay Hospital (Attached)',
+        phone: '+91 98110 23456',
+        location: { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Paschim Vihar', pinCode: '110063' }
+      };
+    case 'hospital-delhi':
+      return {
+        id: 'doc-del-01',
+        email: 'hospital.delhi@swasthasync.com',
+        fullName: 'Dr. Rajiv Malhotra',
+        role: 'hospital',
+        district: 'West Delhi',
+        state: 'Delhi (NCT)',
+        facilityName: 'Deen Dayal Upadhyay Hospital (DDU)',
+        phone: '+91 11 2549 4402',
+        location: { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Delhi', pinCode: '110064' },
+        professionalProfile: {
+          professionalRole: 'Doctor',
+          registrationNumber: 'DMC-2016-8821',
+          employeeId: 'EMP-DDU-401',
+          facilityName: 'Deen Dayal Upadhyay Hospital (DDU)',
+          facilityType: 'District Hospital',
+          department: 'General Medicine',
+          designation: 'Senior Consultant & In-Charge',
+          facilityAddress: 'Clock Tower, Hari Nagar, West Delhi 110064',
+          facilityPinCode: '110064',
+          location: { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Delhi', pinCode: '110064' }
+        }
+      };
+    case 'admin-delhi':
+      return {
+        id: 'admin-del-01',
+        email: 'admin.delhi@swasthasync.com',
+        fullName: 'Dr. Alok Verma',
+        role: 'district_admin',
+        district: 'West Delhi',
+        state: 'Delhi (NCT)',
+        facilityName: 'West Delhi District Health Directorate',
+        phone: '+91 11 2598 4744',
+        location: { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Delhi', pinCode: '110027' },
+        adminProfile: {
+          adminRole: 'District Health Officer (DHO)',
+          administratorId: 'DHO-DELHI-WEST-01',
+          departmentOrAuthority: 'Directorate of Health Services, Delhi',
+          jurisdictionLevel: 'District',
+          administrativeJurisdiction: 'West Delhi District Health Directorate',
+          officeAddress: 'Shivaji Enclave, Raja Garden, West Delhi 110027',
+          officePinCode: '110027',
+          location: { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Delhi', pinCode: '110027' }
+        }
+      };
+    case 'patient-karnataka':
+      return {
+        id: 'pat-ka-001',
+        email: 'patient.karnataka@swasthasync.com',
+        fullName: 'Vijay Kumar',
+        role: 'patient',
+        district: 'Bengaluru Urban',
+        state: 'Karnataka',
+        facilityName: 'Victoria Hospital (Attached)',
+        phone: '+91 98450 12345',
+        location: { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560002' }
+      };
+    case 'hospital-karnataka':
+      return {
+        id: 'doc-ka-01',
+        email: 'hospital.karnataka@swasthasync.com',
+        fullName: 'Dr. Ramesh Rao',
+        role: 'hospital',
+        district: 'Bengaluru Urban',
+        state: 'Karnataka',
+        facilityName: 'Victoria Hospital & Bangalore Medical College',
+        phone: '+91 80 2670 1150',
+        location: { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560002' },
+        professionalProfile: {
+          professionalRole: 'Doctor',
+          registrationNumber: 'KMC-2012-4419',
+          employeeId: 'BMC-VIC-109',
+          facilityName: 'Victoria Hospital & Bangalore Medical College',
+          facilityType: 'Teaching & Multispecialty Hospital',
+          department: 'General Medicine',
+          designation: 'Chief Medical Officer',
+          facilityAddress: 'Fort Road, Near City Market, Kalasipalya, Bengaluru 560002',
+          facilityPinCode: '560002',
+          location: { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560002' }
+        }
+      };
+    case 'admin-karnataka':
+      return {
+        id: 'admin-ka-01',
+        email: 'admin.karnataka@swasthasync.com',
+        fullName: 'Dr. Nandita Hegde',
+        role: 'district_admin',
+        district: 'Bengaluru Urban',
+        state: 'Karnataka',
+        facilityName: 'Bengaluru Urban District Health Command',
+        phone: '+91 80 2221 4433',
+        location: { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560009' },
+        adminProfile: {
+          adminRole: 'Chief Medical Officer of Health (CMOH)',
+          administratorId: 'DHO-BLR-URBAN-01',
+          departmentOrAuthority: 'Karnataka State Health & Family Welfare Directorate',
+          jurisdictionLevel: 'District',
+          administrativeJurisdiction: 'Bengaluru Urban District Health Authority',
+          officeAddress: 'Anand Rao Circle, Bengaluru 560009',
+          officePinCode: '560009',
+          location: { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560009' }
+        }
+      };
+    default:
+      return {
+        id: 'pat-mh-001',
+        email: 'patient.test@swasthasync.com',
+        fullName: 'Rameshwar B. Jadhav',
+        role: 'patient',
+        district: 'Pune',
+        state: 'Maharashtra',
+        facilityName: 'Aundh District Hospital (Attached)',
+        location: { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' },
+        phone: '+91 98224 51902'
+      };
+  }
 }
 
 export const authService = {
@@ -88,7 +347,14 @@ export const authService = {
     };
 
     if (!this.isConfigured() || !supabase) {
-      // Prototype Offline / Client-side fallback
+      if (!isDemoMode()) {
+        return {
+          user: null,
+          error: new Error('Production registration requires active Supabase authentication backend.')
+        };
+      }
+
+      // Prototype Offline / Client-side fallback (Demo Mode Only)
       const fallbackUser: AuthSessionUser = {
         id: `user-${Date.now()}`,
         email: params.email.trim(),
@@ -198,179 +464,57 @@ export const authService = {
   },
 
   /**
-   * Sign in with email and password (multi-region test personas and provisioned accounts aware)
+   * Sign in with email and password
+   * 
+   * SECURITY ENFORCEMENT:
+   * - In demo mode (IS_DEMO_MODE=true), exact demo persona credentials require the exact demo password.
+   * - In production mode (IS_DEMO_MODE=false), all logins strictly authenticate against Supabase Auth.
+   * - Substring matching and arbitrary email role escalations are strictly forbidden.
    */
   async signIn(email: string, password: string): Promise<{ user: AuthSessionUser | null; error: Error | null }> {
     const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
 
-    // Check if customized profile exists in localStorage
-    const savedProfile = localStorage.getItem(`user_profile_${cleanEmail}`);
-    if (savedProfile) {
-      try {
-        const parsed = JSON.parse(savedProfile);
-        return { user: parsed, error: null };
-      } catch (e) {}
-    }
-
-    // MULTI-REGION TEST ACCOUNTS CONFIGURATION (PROVISIONED / SEEDED ACCOUNTS)
-    if (cleanEmail.includes('delhi')) {
-      const role: UserRole = cleanEmail.includes('admin') ? 'district_admin' : cleanEmail.includes('hospital') ? 'hospital' : 'patient';
-      const loc: LocationInfo = { country: 'India', state: 'Delhi (NCT)', district: 'West Delhi', city: 'Paschim Vihar', pinCode: '110063' };
-      const delhiUser: AuthSessionUser = {
-        id: `usr-delhi-${role}`,
-        email: cleanEmail,
-        fullName: role === 'patient' ? 'Ankit Sharma' : role === 'hospital' ? 'Dr. Rajiv Malhotra' : 'Dr. Alok Verma',
-        role,
-        district: 'West Delhi',
-        state: 'Delhi (NCT)',
-        facilityName: role === 'hospital' ? 'Deen Dayal Upadhyay Hospital (DDU)' : undefined,
-        location: loc,
-        professionalProfile: role === 'hospital' ? {
-          professionalRole: 'Doctor',
-          registrationNumber: 'DMC-2016-8821',
-          employeeId: 'EMP-DDU-401',
-          facilityName: 'Deen Dayal Upadhyay Hospital (DDU)',
-          facilityType: 'District Hospital',
-          department: 'General Medicine',
-          designation: 'Senior Consultant & In-Charge',
-          facilityAddress: 'Clock Tower, Hari Nagar, West Delhi 110064',
-          facilityPinCode: '110064',
-          location: loc
-        } : undefined,
-        adminProfile: role === 'district_admin' ? {
-          adminRole: 'District Health Officer (DHO)',
-          administratorId: 'DHO-DELHI-WEST-01',
-          departmentOrAuthority: 'Directorate of Health Services, Delhi',
-          jurisdictionLevel: 'District',
-          administrativeJurisdiction: 'West Delhi District Health Directorate',
-          officeAddress: 'Shivaji Enclave, Raja Garden, West Delhi 110027',
-          officePinCode: '110027',
-          location: loc
-        } : undefined
-      };
-      return { user: delhiUser, error: null };
-    }
-
-    if (cleanEmail.includes('karnataka')) {
-      const role: UserRole = cleanEmail.includes('admin') ? 'district_admin' : cleanEmail.includes('hospital') ? 'hospital' : 'patient';
-      const loc: LocationInfo = { country: 'India', state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru', pinCode: '560002' };
-      const karnatakaUser: AuthSessionUser = {
-        id: `usr-ka-${role}`,
-        email: cleanEmail,
-        fullName: role === 'patient' ? 'Vijay Kumar' : role === 'hospital' ? 'Dr. Ramesh Rao' : 'Dr. Nandita Hegde',
-        role,
-        district: 'Bengaluru Urban',
-        state: 'Karnataka',
-        facilityName: role === 'hospital' ? 'Victoria Hospital & Bangalore Medical College' : undefined,
-        location: loc,
-        professionalProfile: role === 'hospital' ? {
-          professionalRole: 'Doctor',
-          registrationNumber: 'KMC-2012-4419',
-          employeeId: 'BMC-VIC-109',
-          facilityName: 'Victoria Hospital & Bangalore Medical College',
-          facilityType: 'Teaching & Multispecialty Hospital',
-          department: 'General Medicine',
-          designation: 'Chief Medical Officer',
-          facilityAddress: 'Fort Road, Near City Market, Kalasipalya, Bengaluru 560002',
-          facilityPinCode: '560002',
-          location: loc
-        } : undefined,
-        adminProfile: role === 'district_admin' ? {
-          adminRole: 'Chief Medical Officer of Health (CMOH)',
-          administratorId: 'DHO-BLR-URBAN-01',
-          departmentOrAuthority: 'Karnataka State Health & Family Welfare Directorate',
-          jurisdictionLevel: 'District',
-          administrativeJurisdiction: 'Bengaluru Urban District Health Authority',
-          officeAddress: 'Anand Rao Circle, Bengaluru 560009',
-          officePinCode: '560009',
-          location: loc
-        } : undefined
-      };
-      return { user: karnatakaUser, error: null };
-    }
-
-    // Default Maharashtra Test Users
-    if (cleanEmail.includes('admin') || cleanEmail === 'admin.test@swasthasync.com') {
-      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411001' };
-      const mhAdmin: AuthSessionUser = {
-        id: 'admin-dho-01',
-        email: cleanEmail,
-        fullName: 'Dr. Suresh Patil',
-        role: 'district_admin',
-        district: 'Pune',
-        state: 'Maharashtra',
-        facilityName: 'District Health Directorate',
-        location: loc,
-        adminProfile: {
-          adminRole: 'District Health Officer (DHO)',
-          administratorId: 'DHO-PUNE-01',
-          departmentOrAuthority: 'District Health Directorate',
-          jurisdictionLevel: 'District',
-          administrativeJurisdiction: 'Pune District Health Directorate',
-          officeAddress: 'Collector Office Compound, Pune 411001',
-          officePinCode: '411001',
-          location: loc
-        }
-      };
-      return { user: mhAdmin, error: null };
-    }
-
-    if (cleanEmail.includes('hospital') || cleanEmail.includes('doctor') || cleanEmail === 'hospital.test@swasthasync.com') {
-      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' };
-      const mhDoctor: AuthSessionUser = {
-        id: 'doc-01',
-        email: cleanEmail,
-        fullName: 'Dr. Anjali Deshmukh',
-        role: 'hospital',
-        district: 'Pune',
-        state: 'Maharashtra',
-        facilityName: 'Aundh District Hospital, Pune',
-        location: loc,
-        professionalProfile: {
-          professionalRole: 'Doctor',
-          registrationNumber: 'MMC-2014-9912',
-          employeeId: 'ADH-DOC-01',
-          facilityName: 'Aundh District Hospital, Pune',
-          facilityType: 'District Hospital',
-          department: 'General Medicine',
-          designation: 'Chief Medical Officer',
-          facilityAddress: 'Chikhalwadi, Aundh, Pune 411027',
-          facilityPinCode: '411027',
-          location: loc
-        }
-      };
-      return { user: mhDoctor, error: null };
-    }
-
-    // Default Maharashtra Patient Test Account
-    if (cleanEmail === 'patient.test@swasthasync.com' || cleanEmail.includes('patient')) {
-      const loc: LocationInfo = { country: 'India', state: 'Maharashtra', district: 'Pune', city: 'Pune', pinCode: '411027' };
-      const mhPatient: AuthSessionUser = {
-        id: 'pat-mh-001',
-        email: cleanEmail,
-        fullName: 'Rameshwar B. Jadhav',
-        role: 'patient',
-        district: 'Pune',
-        state: 'Maharashtra',
-        facilityName: 'Aundh District Hospital (Attached)',
-        location: loc
-      };
-      return { user: mhPatient, error: null };
-    }
-
-    if (!this.isConfigured() || !supabase) {
-      // General Offline Patient Fallback
+    if (!cleanEmail || !cleanPassword) {
       return {
-        user: {
-          id: `usr-${Date.now()}`,
-          email: cleanEmail,
-          fullName: 'Citizen User',
-          role: 'patient',
-          district: '',
-          state: '',
-          location: { country: 'India', state: '', district: '', city: '', locality: '', pinCode: '' }
-        },
-        error: null
+        user: null,
+        error: new Error('Please enter both email and password.')
+      };
+    }
+
+    // 1. Explicit Demo Mode Authentication
+    if (isDemoMode()) {
+      const demoAccount = KNOWN_DEMO_CREDENTIALS[cleanEmail];
+      if (demoAccount) {
+        if (cleanPassword === demoAccount.password) {
+          const demoUser = getDemoSessionUser(demoAccount.personaKey);
+          return { user: demoUser, error: null };
+        } else {
+          return {
+            user: null,
+            error: new Error('Invalid credentials for demo persona.')
+          };
+        }
+      }
+
+      // In demo mode only: allow registered demo patient profiles from localStorage
+      const savedProfile = localStorage.getItem(`user_profile_${cleanEmail}`);
+      if (savedProfile) {
+        try {
+          const parsed = JSON.parse(savedProfile);
+          // Strict security: Only 'patient' role allowed from unverified local storage
+          if (parsed && parsed.role === 'patient') {
+            return { user: parsed, error: null };
+          }
+        } catch (e) {}
+      }
+    }
+
+    // 2. Production Authentication Boundary (Strict Fail-Closed)
+    if (!this.isConfigured() || !supabase) {
+      return {
+        user: null,
+        error: new Error('Authentication backend is unavailable. Supabase must be configured for production authentication.')
       };
     }
 

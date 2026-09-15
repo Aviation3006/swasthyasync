@@ -19,14 +19,14 @@ export const NotFound: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full text-center bg-white rounded-2xl border border-slate-200 p-8 shadow-card space-y-5">
-        <div className="w-16 h-16 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center mx-auto">
-          <FileQuestion className="w-8 h-8" />
+      <div className="max-w-md w-full text-center bg-white rounded-xl border border-slate-200 p-8 shadow-card space-y-5">
+        <div className="w-14 h-14 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center mx-auto">
+          <FileQuestion className="w-7 h-7" />
         </div>
         <div className="space-y-1.5">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">404 - {t('pageNotFound') || 'Page Not Found'}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">404 - {t.pageNotFound || 'Page Not Found'}</h1>
           <p className="text-xs sm:text-sm text-slate-500">
-            {t('pageNotFoundDesc') || 'The requested medical portal route could not be found or may have been moved.'}
+            {t.pageNotFoundDesc || 'The requested medical portal route could not be found or may have been moved.'}
           </p>
         </div>
         <div className="flex items-center justify-center gap-3 pt-2">

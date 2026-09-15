@@ -16,12 +16,12 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { role: authRole } = useAuth();
+  const { role: authRole, isAuthenticated } = useAuth();
   const location = useLocation();
 
   // Determine initial role from URL path or query params if unauthenticated
   const getInitialRole = (): UserRole => {
-    if (authRole) return authRole;
+    if (isAuthenticated && authRole) return authRole;
     if (typeof window !== 'undefined') {
       const path = location.pathname.toLowerCase();
       const search = new URLSearchParams(location.search);
@@ -39,14 +39,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Sync with authRole when user logs in or out
   useEffect(() => {
-    if (authRole) {
+    if (isAuthenticated && authRole) {
       setOverrideRole(null);
     }
-  }, [authRole]);
+  }, [isAuthenticated, authRole]);
 
   // Sync with location change when switching routes directly
   useEffect(() => {
-    if (!authRole) {
+    if (!isAuthenticated) {
       const path = location.pathname.toLowerCase();
       const search = new URLSearchParams(location.search);
       const roleParam = search.get('role');
@@ -56,13 +56,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setOverrideRole('hospital');
       } else if (path.startsWith('/district-admin')) {
         setOverrideRole('district_admin');
-      } else if (path.startsWith('/signup') || path.startsWith('/patient')) {
+      } else if (path.startsWith('/signup') || path.startsWith('/patient') || path === '/login') {
         setOverrideRole('patient');
       }
     }
-  }, [location.pathname, location.search, authRole]);
+  }, [location.pathname, location.search, isAuthenticated]);
 
-  const currentRole: UserRole = overrideRole || authRole || getInitialRole();
+  const currentRole: UserRole = overrideRole || (isAuthenticated ? authRole : null) || getInitialRole();
   const theme = useMemo(() => ROLE_THEMES[currentRole] || ROLE_THEMES.patient, [currentRole]);
 
   const setThemeRole = useCallback((newRole: UserRole) => {

@@ -1,25 +1,23 @@
 import { generateCloudTTS } from '../server/ttsService';
+import { applyCorsHeaders, authenticateApiRequest } from '../server/apiSecurity';
 
 export default async function handler(req: any, res: any) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  // 1. Strict CORS validation & OPTIONS preflight (eliminates wildcard credentials vulnerability)
+  if (applyCorsHeaders(req, res)) return;
 
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
     return;
   }
 
+  // 2. Server-side Supabase JWT Authentication & Authorization
+  const auth = await authenticateApiRequest(req);
+  if (!auth.authenticated) {
+    res.status(auth.statusCode || 401).json({ error: auth.error || 'Unauthorized access' });
+    return;
+  }
+
+  // 3. Payload validation & character limits (Max 1,000 characters)
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const { text, languageCode } = body;
@@ -29,10 +27,16 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    if (text.length > 1000) {
+      res.status(400).json({ error: 'Text exceeds maximum allowable limit of 1,000 characters for voice synthesis.' });
+      return;
+    }
+
     const result = await generateCloudTTS({ text, languageCode });
     res.status(200).json(result);
   } catch (error: any) {
-    console.error('Vercel API /api/tts error:', error.message || error);
-    res.status(500).json({ error: error.message || 'Internal Cloud TTS Error' });
+    // Sanitized logging: do not log spoken text or secrets
+    console.error('API /api/tts error:', error?.message || 'Processing failed');
+    res.status(500).json({ error: 'An error occurred during audio synthesis.' });
   }
 }

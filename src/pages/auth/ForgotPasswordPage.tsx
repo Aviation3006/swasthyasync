@@ -46,7 +46,7 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-md mx-auto py-6 animate-fade-in text-slate-900">
-      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-2xl shadow-elevated">
+      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-xl shadow-card">
         <div className="text-center mb-6 space-y-2">
           <div className="w-12 h-12 rounded-xl bg-theme-primary-subtle text-theme-primary border border-theme-primary-border flex items-center justify-center mx-auto shadow-sm">
             <KeyRound className="w-6 h-6" />
@@ -59,7 +59,7 @@ export const ForgotPasswordPage: React.FC = () => {
 
         {isSubmitted ? (
           <div className="space-y-4 text-center">
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-2">
+            <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
               <h4 className="font-bold text-sm text-slate-900">{t.resetLinkSent}</h4>
               <p>

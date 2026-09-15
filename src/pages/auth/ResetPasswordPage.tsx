@@ -50,7 +50,7 @@ export const ResetPasswordPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-md mx-auto py-6 animate-fade-in text-slate-900">
-      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-2xl shadow-elevated">
+      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-xl shadow-card">
         <div className="text-center mb-6 space-y-2">
           <h1 className="text-2xl font-bold text-slate-900">{t.setNewPasswordTitle}</h1>
           <p className="text-xs text-slate-500">

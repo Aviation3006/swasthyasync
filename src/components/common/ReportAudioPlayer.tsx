@@ -155,7 +155,7 @@ export const ReportAudioPlayer: React.FC<ReportAudioPlayerProps> = ({
     <div 
       role="region" 
       aria-label="Medical Report Cloud Audio Reader"
-      className={`p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 border border-emerald-500/40 text-white shadow-md transition-all space-y-3 ${className}`}
+      className={`p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 text-white shadow-card transition-all space-y-3 ${className}`}
     >
       {/* 1. Top Bar: Header, Cloud Voice Label & Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

@@ -121,7 +121,7 @@ export const PatientHealthQR: React.FC = () => {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1.5">
-                      Care<span className="text-emerald-400">Setu</span>™
+                      Care<span className="text-emerald-400">Setu</span>
                     </span>
                     <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-600/50 flex items-center gap-1 shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />

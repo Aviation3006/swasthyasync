@@ -155,7 +155,7 @@ export const DistrictHospitals: React.FC = () => {
           <select
             value={selectedTaluka}
             onChange={(e) => setSelectedTaluka(e.target.value)}
-            className="border border-slate-300 rounded-lg px-3 py-1 bg-white text-slate-800"
+            className="border border-slate-200 rounded-md px-3 py-1.5 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 font-medium"
           >
             {talukas.map((t) => (
               <option key={t} value={t}>{t === 'All' ? 'All Talukas' : `${t} Taluka`}</option>
@@ -187,7 +187,7 @@ export const DistrictHospitals: React.FC = () => {
           }
         >
           <div className="space-y-4 text-xs">
-            <div className="p-3.5 bg-slate-50 border rounded-xl space-y-1">
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
               <span className="text-slate-500 block">Address & Helpline:</span>
               <p className="font-bold text-slate-900">{selectedHospital.address}</p>
               <p className="text-health-800 font-medium">Emergency: {selectedHospital.emergencyHelpline}</p>
@@ -197,19 +197,19 @@ export const DistrictHospitals: React.FC = () => {
             <div>
               <h4 className="font-bold uppercase tracking-wider text-slate-700 mb-2">Bed Capacity Breakdown</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                <div className="p-2.5 bg-white border rounded-lg">
+                <div className="p-2.5 bg-white border border-slate-200 rounded-lg">
                   <span className="text-[10px] text-slate-500">General Beds</span>
                   <div className="font-bold text-slate-900">{selectedHospital.beds.generalOccupied} / {selectedHospital.beds.generalTotal}</div>
                 </div>
-                <div className="p-2.5 bg-white border rounded-lg">
+                <div className="p-2.5 bg-white border border-slate-200 rounded-lg">
                   <span className="text-[10px] text-slate-500">ICU Beds</span>
                   <div className="font-bold text-amber-700">{selectedHospital.beds.icuOccupied} / {selectedHospital.beds.icuTotal}</div>
                 </div>
-                <div className="p-2.5 bg-white border rounded-lg">
+                <div className="p-2.5 bg-white border border-slate-200 rounded-lg">
                   <span className="text-[10px] text-slate-500">Oxygen Beds</span>
                   <div className="font-bold text-sky-700">{selectedHospital.beds.oxygenOccupied} / {selectedHospital.beds.oxygenTotal}</div>
                 </div>
-                <div className="p-2.5 bg-white border rounded-lg">
+                <div className="p-2.5 bg-white border border-slate-200 rounded-lg">
                   <span className="text-[10px] text-slate-500">Maternity Beds</span>
                   <div className="font-bold text-emerald-700">{selectedHospital.beds.maternityOccupied} / {selectedHospital.beds.maternityTotal}</div>
                 </div>
@@ -221,7 +221,7 @@ export const DistrictHospitals: React.FC = () => {
               <h4 className="font-bold uppercase tracking-wider text-slate-700 mb-2">Departments & OPD Load</h4>
               <div className="space-y-1.5">
                 {selectedHospital.departments.map((d) => (
-                  <div key={d.id} className="p-2.5 bg-slate-50 border rounded-lg flex items-center justify-between">
+                  <div key={d.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
                     <div>
                       <span className="font-bold text-slate-900">{d.name}</span>
                       <span className="text-slate-500 text-[11px] block">Head: {d.headDoctor}</span>

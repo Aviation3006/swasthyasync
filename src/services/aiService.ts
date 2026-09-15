@@ -1,4 +1,27 @@
 import { SimplifiedReportOutput, SymptomAnalysisOutput, VoiceSymptomAnalysisOutput } from '../types/ai';
+import { supabase } from '../lib/supabase';
+import { isDemoMode } from '../config/appConfig';
+
+async function getAuthorizedHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+
+  if (supabase) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.access_token) {
+        headers['Authorization'] = `Bearer ${data.session.access_token}`;
+      }
+    } catch (e) {}
+  }
+
+  if (isDemoMode()) {
+    headers['X-SwasthyaSync-Demo'] = 'true';
+  }
+
+  return headers;
+}
 
 export const aiService = {
   /**
@@ -41,9 +64,10 @@ export const aiService = {
         mimeType = file.type || 'application/pdf';
       }
 
+      const headers = await getAuthorizedHeaders();
       const response = await fetch('/api/report-simplify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           fileName,
           mimeType,
@@ -106,9 +130,10 @@ export const aiService = {
     language?: string;
   }): Promise<VoiceSymptomAnalysisOutput> {
     try {
+      const headers = await getAuthorizedHeaders();
       const response = await fetch('/api/symptom-analysis', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(params)
       });
 
@@ -163,9 +188,10 @@ export const aiService = {
     triggersOrNotes?: string;
   }): Promise<SymptomAnalysisOutput> {
     try {
+      const headers = await getAuthorizedHeaders();
       const response = await fetch('/api/symptom-analysis', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(data)
       });
 

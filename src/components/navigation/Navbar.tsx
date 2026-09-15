@@ -21,8 +21,7 @@ import {
   ChevronDown,
   Check,
   CheckCheck,
-  Search,
-  ArrowLeftRight
+  Search
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -85,11 +84,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
   };
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
-  const handleSwitchAccount = async () => {
     await logout();
     navigate('/login');
   };
@@ -187,16 +181,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                 <span>{t.scanCareSetuBtn || 'Scan CareSetu'}</span>
               </Link>
             )}
-
-            {/* Fast Switch Account/Role for Demo Mode (Large screens) */}
-            <button
-              onClick={handleSwitchAccount}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-medium transition-colors shrink-0"
-              title={t.switchAccount}
-            >
-              <ArrowLeftRight className="w-3 h-3 text-white/80" />
-              <span>{t.switchAccount}</span>
-            </button>
 
             {/* 23 Indian Languages Selector Dropdown */}
             <div className="relative shrink-0" ref={langMenuRef}>
@@ -364,14 +348,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                     <User className="w-3.5 h-3.5 text-slate-400" />
                     <span>{t.navProfile}</span>
                   </Link>
-
-                  <button
-                    onClick={handleSwitchAccount}
-                    className="w-full flex items-center gap-2 px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-100 font-medium"
-                  >
-                    <ArrowLeftRight className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{t.switchAccount}</span>
-                  </button>
 
                   <button
                     onClick={handleLogout}

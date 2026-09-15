@@ -141,7 +141,7 @@ export const DistrictReports: React.FC = () => {
             <CardContent className="space-y-4 pt-2 flex-1 flex flex-col justify-between">
               <p className="text-xs text-slate-600 leading-relaxed">{r.summary}</p>
 
-              <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1 text-xs">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1 text-xs">
                 <span className="font-bold text-slate-700 block mb-1">Key Findings:</span>
                 {r.highlights.map((h, i) => (
                   <div key={i} className="flex items-start gap-1.5 text-slate-600 text-[11px]">
@@ -184,7 +184,7 @@ export const DistrictReports: React.FC = () => {
           title={selectedReport.title}
         >
           <div className="space-y-4 text-xs">
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900">
               <span className="font-bold">{t.authoringBody || "Authoring Body:"} </span>
               <span>{selectedReport.author} ({selectedReport.date})</span>
             </div>
@@ -194,7 +194,7 @@ export const DistrictReports: React.FC = () => {
               <p className="text-slate-600 leading-relaxed">{selectedReport.summary}</p>
             </div>
 
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
               <span className="font-bold text-slate-800">{t.detailedFindings || "Detailed Highlights"}</span>
               {selectedReport.highlights.map((h, i) => (
                 <div key={i} className="flex items-start gap-2 text-slate-700 text-xs">

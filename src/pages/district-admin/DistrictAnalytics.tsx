@@ -79,7 +79,7 @@ export const DistrictAnalytics: React.FC = () => {
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
-              className="text-xs border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-800 shadow-subtle"
+              className="text-xs border border-slate-200 rounded-md px-3 py-1.5 bg-white text-slate-800 shadow-subtle focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600"
             >
               <option value="1M">{t.last30Days || "Past 30 Days"}</option>
               <option value="3M">{t.last90Days || "Past Quarter (3M)"}</option>

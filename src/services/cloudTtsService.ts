@@ -2,6 +2,8 @@
  * SwasthyaSync Cloud TTS Client Service
  * Calls server-side /api/tts (Gemini 2.5 Flash TTS) with in-memory caching
  */
+import { supabase } from '../lib/supabase';
+import { isDemoMode } from '../config/appConfig';
 
 export interface CloudTTSRequest {
   text: string;
@@ -18,6 +20,27 @@ export interface CloudTTSResponse {
 
 // In-memory audio session cache to prevent redundant requests
 const audioCache = new Map<string, string>();
+
+async function getAuthorizedHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+
+  if (supabase) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.access_token) {
+        headers['Authorization'] = `Bearer ${data.session.access_token}`;
+      }
+    } catch (e) {}
+  }
+
+  if (isDemoMode()) {
+    headers['X-SwasthyaSync-Demo'] = 'true';
+  }
+
+  return headers;
+}
 
 /**
  * Clean & normalize text for synthesis
@@ -55,11 +78,10 @@ export async function fetchCloudTTSAudio(params: CloudTTSRequest): Promise<strin
   }
 
   try {
+    const headers = await getAuthorizedHeaders();
     const res = await fetch('/api/tts', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
         text: cleaned,
         languageCode: langCode
